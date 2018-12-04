@@ -10,8 +10,19 @@
     "client": "webpack-dev-server --mode development --config config/webpack.config.js",
     "server": "nodemon src/server/bin/www",
     "dev": "cross-env NODE_ENV=development concurrently \"npm run server\" \"npm run client\"",
-    "heroku-postbuild": "npm run build",
-    "cypress:open": "cypress open"
+
+    "cy:verify": "cypress verify",
+    "cy:version": "cypress version",
+    "cy:run": "cypress run",
+    "cy:run:record": "cypress run --record",
+    "cy:open": "cypress open",
+
+    "e2e": "cypress run",
+    "e2e:chrome": "cypress run --browser chrome",
+    "e2e:record": "cypress run --record",
+    "e2e:record:parallel": "cypress run --record --parallel",
+
+    "cypress:react-test": "cypress run --spec 'cypress/integration/react/*'"
   },
   "dependencies": {
     "bootstrap": "^4.1.3",

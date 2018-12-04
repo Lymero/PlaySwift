@@ -9,8 +9,9 @@ pipeline {
     }
 
     environment {
-        // see https://jenkins.io/doc/book/using/using-credentials/
-        CYPRESS_RECORD_KEY = credentials("cypress_dashboard_key")
+        // https://jenkins.io/doc/book/using/using-credentials/
+        // https://support.cloudbees.com/hc/en-us/articles/203802500-Injecting-Secrets-into-Jenkins-Build-Jobs
+        CYPRESS_RECORD_KEY = credentials('e3154325-d3a8-47cb-a950-ae3f78672558')
     }
 
     stages {
@@ -53,9 +54,9 @@ pipeline {
         always {
             echo "Stopping local server"
             // kills process matching regex on name
-            node('master') {
-                sh "pkill -f http-server"
-            }
+            // node('master') {
+            //     sh "pkill -f node"
+            // }
         }
     }
 }
