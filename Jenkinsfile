@@ -6,6 +6,11 @@ pipeline {
         }
     }
 
+    environment {
+        // see https://jenkins.io/doc/book/using/using-credentials/
+        CYPRESS_RECORD_KEY = credentials("cypress_dashboard_key")
+    }
+
     stages {
         stage("Testing node") {
             steps {
@@ -28,14 +33,6 @@ pipeline {
                 // we will shut it down in "post" command block
                 sh "nohup npm start &"
             }
-        }
-
-        environment {
-            // see https://jenkins.io/doc/book/using/using-credentials/
-            CYPRESS_RECORD_KEY = credentials("cypress_dashboard_key")
-            // only needed for parallel runs
-            // (cf. https://github.com/cypress-io/cypress-example-kitchensink/blob/master/Jenkinsfile)
-            // CYPRESS_trashAssetsBeforeRuns = "false"
         }
 
         // this tage runs end-to-end tests, and each agent uses the workspace
