@@ -14,7 +14,7 @@ pipeline {
         }
 
         // first stage installs node dependencies and Cypress binary
-        stage("build") {
+        stage("Build") {
             steps {
                 echo "Running build ${env.BUILD_ID} on ${env.JENKINS_URL}"
                 sh "npm ci"
@@ -22,7 +22,7 @@ pipeline {
             }
         }
 
-        stage("start local server") {
+        stage("Start local server") {
             steps {
                 // start local server in the background
                 // we will shut it down in "post" command block
@@ -30,29 +30,21 @@ pipeline {
             }
         }
 
+        environment {
+            // see https://jenkins.io/doc/book/using/using-credentials/
+            CYPRESS_RECORD_KEY = credentials("cypress_dashboard_key")
+            // only needed for parallel runs
+            // (cf. https://github.com/cypress-io/cypress-example-kitchensink/blob/master/Jenkinsfile)
+            // CYPRESS_trashAssetsBeforeRuns = "false"
+        }
+
         // this tage runs end-to-end tests, and each agent uses the workspace
         // from the previous stage
-        stage("cypress tests") {
-            environment {
-                // we will be recording test results and video on Cypress dashboard
-                // to record we need to set an environment variable
-                // we can load the record key variable from credentials store
-                // see https://jenkins.io/doc/book/using/using-credentials/
-                CYPRESS_RECORD_KEY = credentials("cypress_dashboard_key")
-                // because parallel steps share the workspace they might race to delete
-                // screenshots and videos folders. Tell Cypress not to delete these folders
-                CYPRESS_trashAssetsBeforeRuns = "false"
+        stage("Testing react") {
+            steps {
+                echo "Running build ${env.BUILD_ID}"
+                sh "npm run cypress:react-test"
             }
-            
-            // start several test jobs in parallel, and they all
-            // will use Cypress Dashboard to load balance any found spec files
-            stage("Testing react") {
-                steps {
-                    echo "Running build ${env.BUILD_ID}"
-                    sh "npm run cypress:react-test"
-                }
-            }
-
         }
     }
 
