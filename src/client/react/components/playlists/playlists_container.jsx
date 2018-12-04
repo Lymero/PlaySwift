@@ -1,13 +1,9 @@
 import React from "react";
+import { connect } from "react-redux";
 
 class PlaylistsContainer extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { playlists: [] };
-  }
-
   fetchPlaylists() {
-    fetch("/playlists", {
+    /* fetch("/playlists", {
       method: "GET"
     })
       .then(resp => {
@@ -17,16 +13,22 @@ class PlaylistsContainer extends React.Component {
         this.setState({
           playlists: playslists
         });
-      });
+      }); */
   }
 
   componentDidMount() {
-    this.fetchPlaylists();
+    console.log("mount");
+    this.props.dispatch({ type: "DISPLAY_PLAYLISTS" });
   }
 
   render() {
-    return <p>{this.state.playlists["playlist"]}</p>;
+    console.log(this.props.playlists);
+    return <p>{this.props.playlists["playlist"]}</p>;
   }
 }
 
-export default PlaylistsContainer;
+const mapStateToProps = state => ({
+  playlists: state.playlists
+});
+
+export default connect(mapStateToProps)(PlaylistsContainer);
