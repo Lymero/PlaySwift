@@ -11,6 +11,7 @@ const assetPath = require("./asset_path.js");
 const db = require("./modules/db.js");
 // routeurs
 const indexRouter = require("./routes/index");
+const playlistsRouter = require("./routes/playlists");
 // static files
 const serverRoot = path.join(__dirname, ".");
 // express
@@ -44,6 +45,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "../../dist")));
 
 app.use("/", indexRouter);
+app.use("/playlists", playlistsRouter);
 // public api routes
 // jwt check middleware
 // private api routes

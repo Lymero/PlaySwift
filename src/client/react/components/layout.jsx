@@ -1,5 +1,7 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
 import { Container, Row, Col } from "react-bootstrap";
+
+import RouterOutlet from "./router_outlet";
 
 // components
 
@@ -7,10 +9,12 @@ export class Layout extends Component {
   render() {
     return (
       <div>
-        {/* components */}
+        <React.Fragment>
+          <RouterOutlet />
+        </React.Fragment>
       </div>
-    )
+    );
   }
 }
 
-export default Layout
+export default Layout;
