@@ -1,6 +1,8 @@
 pipeline {
     agent {
         // this image provides everything needed to run Cypress
+        // https://github.com/cypress-io/cypress-docker-images
+        // https://jenkins.io/doc/book/pipeline/docker/
         docker {
             image "cypress/base:10"
         }
@@ -45,11 +47,15 @@ pipeline {
         }
     }
 
+    // https://jenkins.io/doc/pipeline/tour/post/
     post {
         // shutdown the server running in the background
         always {
             echo "Stopping local server"
-            sh "pkill -f http-server"
+            // kills process matching regex on name
+            node('master') {
+                sh "pkill -f http-server"
+            }
         }
     }
 }
