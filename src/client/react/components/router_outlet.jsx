@@ -1,16 +1,15 @@
 import React from "react";
-import { Route, Redirect, withRouter } from "react-router-dom";
+import { Route, withRouter } from "react-router-dom";
 import PlaylistsContainer from "./playlists/playlists_container";
-// redux
-
-// components
 
 function RouterOutlet() {
   return (
     <React.Fragment>
-      {/* check authenticated + redirect */}
-      {/* routes */}
+      {/* Usage of <PrivateRoute path={} component={}></PrivateRoute> */}
+      {/* <Route path="/login" component={...} /> */}
+      {/* <Route exact path="/" component={LoginContainer} /> */}
       <Route path="/playlists" component={PlaylistsContainer} />
+      {/* <Route path="/logout" component={...} /> */}
     </React.Fragment>
   );
 }

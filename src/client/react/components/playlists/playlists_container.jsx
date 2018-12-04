@@ -1,29 +1,21 @@
 import React from "react";
 import { connect } from "react-redux";
+import PlaylistsComponent from "./playlists_component";
+import { displayPlaylists } from "../../redux/actions";
 
 class PlaylistsContainer extends React.Component {
-  fetchPlaylists() {
-    /* fetch("/playlists", {
-      method: "GET"
-    })
-      .then(resp => {
-        return resp.json();
-      })
-      .then(playslists => {
-        this.setState({
-          playlists: playslists
-        });
-      }); */
+  constructor(props) {
+    super(props);
   }
 
   componentDidMount() {
-    console.log("mount");
-    this.props.dispatch({ type: "DISPLAY_PLAYLISTS" });
+    this.props.dispatch(displayPlaylists());
   }
 
   render() {
-    console.log(this.props.playlists);
-    return <p>{this.props.playlists["playlist"]}</p>;
+    return (
+      <PlaylistsComponent/>
+    );
   }
 }
 
