@@ -1,26 +1,32 @@
 import React from "react";
-import { connect } from "react-redux";
 import PlaylistsComponent from "./playlists_component";
-import { displayPlaylists } from "../../redux/actions";
+import { connect } from "react-redux";
 
 class PlaylistsContainer extends React.Component {
   constructor(props) {
     super(props);
+    this.state = { playlists: [] };
   }
 
   componentDidMount() {
-    this.props.dispatch(displayPlaylists());
+    fetch("/playlists", { method: "GET" })
+      .then(resp => {
+        return resp.json();
+      })
+      .then(playlists => {
+        this.setState(Object.assign({}, this.state, { playlists: playlists }));
+      });
   }
 
   render() {
     return (
-      <PlaylistsComponent/>
+      <PlaylistsComponent playlists={this.state.playlists} {...this.props} />
     );
   }
 }
 
 const mapStateToProps = state => ({
-  playlists: state.playlists
+  current_user: state.usersSession.current_user
 });
 
 export default connect(mapStateToProps)(PlaylistsContainer);
