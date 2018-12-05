@@ -15,12 +15,6 @@ pipeline {
     }
 
     stages {
-        stage("Testing node") {
-            steps {
-                sh "node --version"
-            }
-        }
-
         // first stage installs node dependencies and Cypress binary
         stage("Build") {
             steps {
@@ -40,25 +34,11 @@ pipeline {
             }
         }
 
-        // this tage runs end-to-end tests, and each agent uses the workspace
-        // from the previous stage
         stage("Testing react") {
             steps {
                 echo "Running build ${env.BUILD_ID}"
                 sh "npm run cypress:react-test"
             }
-        }
-    }
-
-    // https://jenkins.io/doc/pipeline/tour/post/
-    post {
-        // shutdown the server running in the background
-        always {
-            echo "Stopping local server"
-            // kills process matching regex on name
-            // node('master') {
-            //     sh "pkill -f node"
-            // }
         }
     }
 }
