@@ -1,9 +1,16 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../modules/db");
+const logger = require("../modules/logger").logger;
+const { db } = require("../modules/db");
 
-router.get("/", (req, res, next) => {
-  res.json({ playlist: "hello world" });
+router.get("/", async (req, res, next) => {
+  try {
+    await db.connect();
+    const result = await db.query("select * from playswift.playlists");
+    res.send(result);
+  } catch (err) {
+    logger.info(err.stack);
+  }
 });
 
 module.exports = router;
