@@ -35,7 +35,8 @@ pipeline {
                 // start local server in the background
                 // we will shut it down in "post" command block
                 // sh "nohup npm start &"
-                sh "npm start &"
+                // sh "npm start &"
+                sh "npm run dev &"
             }
         }
 
