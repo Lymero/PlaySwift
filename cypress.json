@@ -1,5 +1,6 @@
 {
   "baseUrl": "http://127.0.0.1:3030",
   "video": false,
-  "projectId": "nszesw"
+  "projectId": "nszesw",
+  "failOnStatusCode": false
 }
