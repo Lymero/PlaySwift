@@ -7,6 +7,8 @@ const sassMiddleware = require("node-sass-middleware");
 const logger = require("morgan");
 // application.js mapping
 const assetPath = require("./asset_path.js");
+//winston logger setup
+require("./modules/logger.js");
 // db
 const db = require("./modules/db.js");
 // routeurs
@@ -16,7 +18,6 @@ const playlistsRouter = require("./routes/playlists");
 const serverRoot = path.join(__dirname, ".");
 // express
 const app = express();
-
 // Connect to DB
 db.connect();
 
