@@ -1,18 +1,14 @@
 import React from "react";
 import { Container, ListGroup } from "react-bootstrap";
-import { connect } from "react-redux";
 
-const PlaylistsComponent = ({ playlists }) => {
+const PlaylistsComponent = ({ playlists, current_user }) => {
   return (
     <Container>
+      <h2>Bonjour {current_user.name}</h2>
       <h3>Playlists</h3>
-      <p> {playlists["playlist"]} </p>
+      {playlists.length > 0 && <p>{playlists[0]["playlist"]}</p>}
     </Container>
   );
 };
 
-const mapStateToProps = state => ({
-  playlists: state.playlists
-});
-
-export default connect(mapStateToProps)(PlaylistsComponent);
+export default PlaylistsComponent;
