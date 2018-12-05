@@ -3,14 +3,14 @@ import { HashRouter } from "react-router-dom";
 
 import { createStore } from "redux";
 import { Provider } from "react-redux";
-import rootReducers from "../redux/reducers/root";
+import rootReducers from "./reducers/root";
 
-import Layout from "./layout";
+import Layout from "./components/layout/layout";
 
 const store = createStore(rootReducers);
 
 // A mettre dans la route /login
-import { setCurrentUser } from "../redux/actions/actions";
+import { setCurrentUser } from "./actions/actions";
 store.dispatch(setCurrentUser({ name: "chris" }));
 
 function Main() {

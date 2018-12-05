@@ -1,9 +1,6 @@
 import React from "react";
 import { Route, Redirect, withRouter } from "react-router-dom";
-import PlaylistsContainer from "./playlists/playlists_container";
-// redux
-
-// components
+import PlaylistsContainer from "../../containers/playlists/playlists_container";
 
 function RouterOutlet() {
   return (

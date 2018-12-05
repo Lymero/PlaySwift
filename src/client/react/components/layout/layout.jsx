@@ -1,21 +1,17 @@
 import React, { Component } from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import RouterOutlet from "./router_outlet";
-import Navigation from "./navigations/navigation";
+import RouterOutlet from "../routes/router_outlet";
+import NavigationContainer from "../../containers/navigations/navigiation_container";
 
 export class Layout extends Component {
   render() {
     return (
       <div>
         <React.Fragment>
-          <Navigation />
+          <NavigationContainer />
           <Container>
             <Row>
-              <Col xs={4} />
-              <Col xs={8}>
-                <RouterOutlet />
-              </Col>
-              <Col xs={4} />
+              <RouterOutlet />
             </Row>
           </Container>
         </React.Fragment>

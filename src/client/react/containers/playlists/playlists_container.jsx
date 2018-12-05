@@ -1,5 +1,5 @@
 import React from "react";
-import PlaylistsComponent from "./playlists_component";
+import PlaylistsComponent from "../../components/playlists/playlists_component";
 import { connect } from "react-redux";
 
 class PlaylistsContainer extends React.Component {
@@ -14,7 +14,7 @@ class PlaylistsContainer extends React.Component {
         return resp.json();
       })
       .then(playlists => {
-        this.setState(Object.assign({}, this.state, { playlists: playlists }));
+        this.setState(Object.assign({}, this.state, { playlists: playlists["rows"] }));
       });
   }
 

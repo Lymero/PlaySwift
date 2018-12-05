@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 import SearchForm from "./search_form";
 
-const Navigation = ({ onClick }) => {
+const Navigation = ({ current_user, onClick }) => {
   return (
     <Navbar bg="dark" variant="dark">
       <Navbar.Brand as={Link} to="/">
@@ -14,7 +14,8 @@ const Navigation = ({ onClick }) => {
       <SearchForm />
       <Nav className="mr-auto">
         <Nav.Link as={Link} to="/playlists">
-          My playlists
+          {/* display user's image instead of his name */}
+          My playlists - Current user = {current_user.name}
         </Nav.Link>
       </Nav>
       <Button variant="outline-warning" onClick={onClick}>

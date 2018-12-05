@@ -1,12 +1,18 @@
 import React from "react";
 import { Container, ListGroup } from "react-bootstrap";
+import PlaylistPreview from "./playlist_preview";
 
-const PlaylistsComponent = ({ playlists, current_user }) => {
+const PlaylistsComponent = ({ playlists }) => {
   return (
     <Container>
-      <h2>Bonjour {current_user.name}</h2>
       <h3>Playlists</h3>
-      {playlists.length > 0 && <p>{playlists[0]["playlist"]}</p>}
+      <ListGroup>
+        {playlists.map((playlist, i) => (
+          <ListGroup.Item key={i}>
+            <PlaylistPreview playlist={playlist} />
+          </ListGroup.Item>
+        ))}
+      </ListGroup>
     </Container>
   );
 };
