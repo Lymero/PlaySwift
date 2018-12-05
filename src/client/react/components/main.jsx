@@ -9,9 +9,9 @@ import Layout from "./layout";
 
 const store = createStore(rootReducers);
 
-import { addCurrentUser } from "../redux/actions/actions";
-store.dispatch(addCurrentUser({ name: "chris" }));
-console.log(store.getState());
+// A mettre dans la route /login
+import { setCurrentUser } from "../redux/actions/actions";
+store.dispatch(setCurrentUser({ name: "chris" }));
 
 function Main() {
   return (
