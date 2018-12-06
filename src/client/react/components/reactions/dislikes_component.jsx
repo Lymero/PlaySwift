@@ -1,12 +1,12 @@
 import React from "react";
 import { Button } from "react-bootstrap";
-import FontAwesome from "react-fontawesome";
+import { faThumbsDown } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Dislikes = ({ dislikes_number }) => {
   return (
     <Button>
-      <FontAwesome name="rocket" />
-      Dislikes = {dislikes_number}
+      {dislikes_number} <FontAwesomeIcon icon={faThumbsDown} />
     </Button>
   );
 };
