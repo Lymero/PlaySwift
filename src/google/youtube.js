@@ -1,6 +1,7 @@
 var fs = require("fs");
 var readline = require("readline");
-var google = require("googleapis");
+const logger = require("../server/modules/logger").logger;
+var { google } = require("googleapis");
 var googleAuth = require("google-auth-library");
 
 // If modifying these scopes, delete your previously saved credentials
@@ -23,7 +24,7 @@ function getYoutubeVideo(url) {
     content
   ) {
     if (err) {
-      console.log("Error loading client secret file: " + err);
+      logger.error("Error loading client secret file: " + err);
       return;
     }
     // Authorize a client with the loaded credentials, then call the YouTube API.
@@ -79,7 +80,7 @@ function getNewToken(oauth2Client, requestData, callback) {
     access_type: "offline",
     scope: SCOPES
   });
-  console.log("Authorize this app by visiting this url: ", authUrl);
+  logger.info("Authorize this app by visiting this url: ", authUrl);
   var rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
@@ -88,7 +89,7 @@ function getNewToken(oauth2Client, requestData, callback) {
     rl.close();
     oauth2Client.getToken(code, function(err, token) {
       if (err) {
-        console.log("Error while trying to retrieve access token", err);
+        logger.error("Error while trying to retrieve access token", err);
         return;
       }
       oauth2Client.credentials = token;
@@ -112,7 +113,7 @@ function storeToken(token) {
     }
   }
   fs.writeFile(TOKEN_PATH, JSON.stringify(token));
-  console.log("Token stored to " + TOKEN_PATH);
+  logger.info("Token stored to " + TOKEN_PATH);
 }
 
 /**
@@ -171,19 +172,13 @@ function createResource(properties) {
   return resource;
 }
 
-function videosListById(auth, requestData) {
-  /*var service = google.youtube({
+async function videosListById(auth, requestData) {
+  var service = google.youtube({
     version: "v3",
     auth: process.env.API_KEY
-  });*/
-  var service = google.youtube("v3");
+  });
   var parameters = removeEmptyParameters(requestData["params"]);
   parameters["auth"] = auth;
-  service.videos.list(parameters, function(err, response) {
-    if (err) {
-      console.log("The API returned an error: " + err);
-      return;
-    }
-    console.log(response);
-  });
+  var response = await service.videos.list(parameters);
+  console.log(response.data.items);
 }
