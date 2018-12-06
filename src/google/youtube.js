@@ -1,6 +1,7 @@
 var fs = require("fs");
 var readline = require("readline");
-var google = require("googleapis");
+const logger = require("../server/modules/logger").logger;
+var { google } = require("googleapis");
 var googleAuth = require("google-auth-library");
 
 // If modifying these scopes, delete your previously saved credentials
@@ -9,16 +10,21 @@ var SCOPES = ["https://www.googleapis.com/auth/youtube.force-ssl"];
 var TOKEN_DIR = "src/google/.credentials/";
 var TOKEN_PATH = TOKEN_DIR + "google-api-tokens.json";
 
-getYoutubeVideo("_zJ1b-atqpA");
+getYoutubeVideo("https://www.youtube.com/watch?v=_zJ1b-atqpA");
+
+function getYoutubeVideoId(url) {
+  return url.split("=")[1];
+}
 
 // Load client secrets from a local file.
-function getYoutubeVideo(_id) {
+function getYoutubeVideo(url) {
+  const _id = getYoutubeVideoId(url);
   fs.readFile("src/google/client_secret.json", function processClientSecrets(
     err,
     content
   ) {
     if (err) {
-      console.log("Error loading client secret file: " + err);
+      logger.error("Error loading client secret file: " + err);
       return;
     }
     // Authorize a client with the loaded credentials, then call the YouTube API.
@@ -74,7 +80,7 @@ function getNewToken(oauth2Client, requestData, callback) {
     access_type: "offline",
     scope: SCOPES
   });
-  console.log("Authorize this app by visiting this url: ", authUrl);
+  logger.info("Authorize this app by visiting this url: ", authUrl);
   var rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
@@ -83,7 +89,7 @@ function getNewToken(oauth2Client, requestData, callback) {
     rl.close();
     oauth2Client.getToken(code, function(err, token) {
       if (err) {
-        console.log("Error while trying to retrieve access token", err);
+        logger.error("Error while trying to retrieve access token", err);
         return;
       }
       oauth2Client.credentials = token;
@@ -107,7 +113,7 @@ function storeToken(token) {
     }
   }
   fs.writeFile(TOKEN_PATH, JSON.stringify(token));
-  console.log("Token stored to " + TOKEN_PATH);
+  logger.info("Token stored to " + TOKEN_PATH);
 }
 
 /**
@@ -166,18 +172,13 @@ function createResource(properties) {
   return resource;
 }
 
-function videosListById(auth, requestData) {
+async function videosListById(auth, requestData) {
   var service = google.youtube({
     version: "v3",
     auth: process.env.API_KEY
   });
   var parameters = removeEmptyParameters(requestData["params"]);
   parameters["auth"] = auth;
-  service.videos.list(parameters, function(err, response) {
-    if (err) {
-      console.log("The API returned an error: " + err);
-      return;
-    }
-    console.log(response);
-  });
+  var response = await service.videos.list(parameters);
+  console.log(response.data.items);
 }
