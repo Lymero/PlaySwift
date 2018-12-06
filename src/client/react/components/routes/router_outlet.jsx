@@ -28,4 +28,4 @@ const mapStateToProps = state => ({
   authState: state.usersSession.authState
 });
 
-export default connect(mapStateToProps)(withRouter(RouterOutlet));
+export default withRouter(connect(mapStateToProps)(RouterOutlet));
