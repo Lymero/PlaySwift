@@ -12,6 +12,8 @@ require("./modules/logger.js");
 // routeurs
 const indexRouter = require("./routes/index");
 const playlistsRouter = require("./routes/playlists");
+const playlistRouter = require("./routes/playlist");
+const videosRouter = require("./routes/videos");
 // static files
 const serverRoot = path.join(__dirname, ".");
 // express
@@ -44,6 +46,8 @@ app.use(express.static(path.join(__dirname, "../../dist")));
 
 app.use("/", indexRouter);
 app.use("/playlists", playlistsRouter);
+app.use("/playlist", playlistRouter);
+app.use("/videos", videosRouter);
 app.use("/authCallback", indexRouter);
 // public api routes
 // jwt check middleware

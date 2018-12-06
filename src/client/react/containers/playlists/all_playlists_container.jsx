@@ -2,7 +2,7 @@ import React from "react";
 import PlaylistsComponent from "../../components/playlists/playlists_component";
 import { connect } from "react-redux";
 
-class PlaylistsContainer extends React.Component {
+class AllPlaylistsContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = { playlists: [] };
@@ -14,7 +14,7 @@ class PlaylistsContainer extends React.Component {
         return resp.json();
       })
       .then(playlists => {
-        this.setState(Object.assign({}, this.state, { playlists: playlists["rows"] }));
+        this.setState(Object.assign({}, this.state, { playlists: playlists }));
       });
   }
 
@@ -25,8 +25,4 @@ class PlaylistsContainer extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  current_user: state.usersSession.current_user
-});
-
-export default connect(mapStateToProps)(PlaylistsContainer);
+export default connect()(AllPlaylistsContainer);
