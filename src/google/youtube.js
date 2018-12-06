@@ -9,7 +9,13 @@ var SCOPES = ["https://www.googleapis.com/auth/youtube.force-ssl"];
 var TOKEN_DIR = "src/google/.credentials/";
 var TOKEN_PATH = TOKEN_DIR + "google-api-tokens.json";
 
-getYoutubeVideo("_zJ1b-atqpA");
+getYoutubeVideo(
+  getYoutubeVideoId("https://www.youtube.com/watch?v=_zJ1b-atqpA")
+);
+
+function getYoutubeVideoId(url) {
+  return url.split("=")[1];
+}
 
 // Load client secrets from a local file.
 function getYoutubeVideo(_id) {
@@ -167,10 +173,11 @@ function createResource(properties) {
 }
 
 function videosListById(auth, requestData) {
-  var service = google.youtube({
+  /*var service = google.youtube({
     version: "v3",
     auth: process.env.API_KEY
-  });
+  });*/
+  var service = google.youtube("v3");
   var parameters = removeEmptyParameters(requestData["params"]);
   parameters["auth"] = auth;
   service.videos.list(parameters, function(err, response) {
