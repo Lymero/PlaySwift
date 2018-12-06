@@ -7,6 +7,10 @@ pipeline {
             image "cypress/base:10"
         }
     }
+    
+    triggers {
+        cron('H/3 * * * *')
+    }
 
     environment {
         // https://jenkins.io/doc/book/using/using-credentials/
