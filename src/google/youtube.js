@@ -9,16 +9,15 @@ var SCOPES = ["https://www.googleapis.com/auth/youtube.force-ssl"];
 var TOKEN_DIR = "src/google/.credentials/";
 var TOKEN_PATH = TOKEN_DIR + "google-api-tokens.json";
 
-getYoutubeVideo(
-  getYoutubeVideoId("https://www.youtube.com/watch?v=_zJ1b-atqpA")
-);
+getYoutubeVideo("https://www.youtube.com/watch?v=_zJ1b-atqpA");
 
 function getYoutubeVideoId(url) {
   return url.split("=")[1];
 }
 
 // Load client secrets from a local file.
-function getYoutubeVideo(_id) {
+function getYoutubeVideo(url) {
+  const _id = getYoutubeVideoId(url);
   fs.readFile("src/google/client_secret.json", function processClientSecrets(
     err,
     content
