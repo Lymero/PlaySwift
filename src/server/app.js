@@ -47,6 +47,7 @@ app.use(express.static(path.join(__dirname, "../../dist")));
 
 app.use("/", indexRouter);
 app.use("/playlists", playlistsRouter);
+app.use("/authCallback", indexRouter);
 // public api routes
 // jwt check middleware
 // private api routes
