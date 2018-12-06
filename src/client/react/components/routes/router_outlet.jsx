@@ -5,6 +5,7 @@ import MyPlaylistsContainer from "../../containers/playlists/my_playlists_contai
 import LoginContainer from "../auth/login_container";
 import CallbackContainer from "../auth/callback_container";
 import { connect } from "react-redux";
+import PlayerContainer from "../../containers/player/player_container";
 
 function RouterOutlet({ authState, location: { pathname } }) {
   const redirectToLogin = !authState.authenticated && pathname !== "/login";
@@ -18,6 +19,7 @@ function RouterOutlet({ authState, location: { pathname } }) {
       <Route path="/login" component={LoginContainer} />
       <Route path="/authCallback" component={CallbackContainer} />
       <Route path="/playlists" component={MyPlaylistsContainer} />
+      <Route path="/player" component={PlayerContainer} />
       {/* </React.Fragment>
       )} */}
     </React.Fragment>
