@@ -1,4 +1,6 @@
 import AuthModule from "auth0-lock";
+import { setAuthState } from "react/actions/actions";
+import store from "react/reducers/root";
 
 // https://auth0.com/docs/libraries/lock/v11/configuration#database-options
 const passwordlessOptions = {
@@ -6,7 +8,7 @@ const passwordlessOptions = {
   closable: true,
   auth: {
     audience: "http://localhost:3030",
-    redirectUrl: "http://localhost:3030/authCallback",
+    redirectUrl: "http://localhost:3030/#/authCallback",
     responseType: "token id_token",
     params: {
       scope: "openid email profile"
@@ -26,6 +28,7 @@ function errorCallback() {
 
 function successCallback() {
   console.log("auth0-lock authentication success");
+  store.dispatch(setAuthState({ 'authenticated': true }));
 }
 
 lock.on("authenticated", authResult => {
@@ -45,6 +48,22 @@ function show() {
   lock.show();
 }
 
+function verify() {
+  if (localStorage.getItem("accessToken") !== null && localStorage.getItem("profile") !== null) {
+      store.dispatch(setAuthState({ 'authenticated': true }));
+      return true;
+  }
+  return false;
+}
+
+function logout() {
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("profile");
+  store.dispatch(setAuthState({ 'authenticated': false }));
+}
+
 export default {
-  show: show
+  show: show,
+  logout: logout,
+  verify: verify
 };

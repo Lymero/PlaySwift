@@ -1,10 +1,10 @@
 import React from "react";
 import { Nav, Navbar, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-
 import SearchForm from "./search_form";
+import auth from "react/services/auth0";
 
-const Navigation = ({ current_user, onClick }) => {
+const Navigation = ({ authState }) => {
   return (
     <Navbar bg="dark" variant="dark">
       <Navbar.Brand as={Link} to="/">
@@ -14,11 +14,12 @@ const Navigation = ({ current_user, onClick }) => {
       <SearchForm />
       <Nav className="mr-auto">
         <Nav.Link as={Link} to="/playlists">
-          {/* display user's image instead of his name */}
-          My playlists - Current user = {current_user.name}
+          {console.log(authState)}
+
+          My playlists - Current user = {authState.authenticated ? "true" : "false"}
         </Nav.Link>
       </Nav>
-      <Button variant="outline-warning" onClick={onClick}>
+      <Button variant="outline-warning" onClick={ auth.logout }>
         Logout
       </Button>
     </Navbar>

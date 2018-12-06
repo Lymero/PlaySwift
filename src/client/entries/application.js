@@ -5,6 +5,9 @@ import ReactMain from "../react/main"
 import 'bootstrap/dist/css/bootstrap.css';
 import "../style/application.scss";
 
+import auth from "react/services/auth0";
+auth.verify();
+
 // react
 const rootElem = document.body.querySelector('#root');
 const reactMainElem = React.createElement(ReactMain, {});

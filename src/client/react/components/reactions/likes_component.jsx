@@ -1,8 +1,10 @@
 import React from "react";
 import { Button } from "react-bootstrap";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faThumbsUp } from '@fortawesome/free-solid-svg-icons'
 
 const Likes = ({ likes_number }) => {
-  return <Button>Likes = {likes_number}</Button>;
+  return <Button>{likes_number} <FontAwesomeIcon icon={faThumbsUp} /></Button>;
 };
 
 export default Likes;
