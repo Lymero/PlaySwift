@@ -1,8 +1,8 @@
 import React from "react";
 import { Route, withRouter } from "react-router-dom";
 import PlaylistsContainer from "../../containers/playlists/playlists_container";
-import LoginContainer from "./auth/login_container";
-import CallbackContainer from "./auth/callback_container";
+import LoginContainer from "react/components/auth/login_container";
+import CallbackContainer from "react/components/auth/callback_container";
 
 function RouterOutlet() {
   return (

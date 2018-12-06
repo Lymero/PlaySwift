@@ -8,12 +8,16 @@ class NavigationContainer extends React.Component {
     }
 
     render() {
+        console.log("render()" + this.props);
+        if (this.props.authState)
         return <Navigation {...this.props} />;
+        return null
     }
 }
 
 const mapStateToProps = state => ({
-    current_user: state.usersSession.current_user
+    current_user: localStorage.getItem('profile'),
+    authState: state.usersSession.authState
 });
 
 export default connect(mapStateToProps)(NavigationContainer);

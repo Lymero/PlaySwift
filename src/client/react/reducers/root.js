@@ -1,4 +1,5 @@
-import { combineReducers } from "redux";
+import { combineReducers, createStore } from "redux";
 import usersSession from "./users_session";
 
-export default combineReducers({ usersSession });
+const rootReducers = combineReducers({ usersSession });
+export default createStore(rootReducers);

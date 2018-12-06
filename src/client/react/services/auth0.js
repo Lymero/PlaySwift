@@ -1,4 +1,6 @@
 import AuthModule from "auth0-lock";
+import { setAuthState } from "react/actions/actions";
+import store from "react/reducers/root";
 
 // https://auth0.com/docs/libraries/lock/v11/configuration#database-options
 const passwordlessOptions = {
@@ -26,6 +28,9 @@ function errorCallback() {
 
 function successCallback() {
   console.log("auth0-lock authentication success");
+  // A mettre dans la route /login
+  store.dispatch(setAuthState({ 'authenticated': true }));
+  console.log("store " + store.getState());
 }
 
 lock.on("authenticated", authResult => {
