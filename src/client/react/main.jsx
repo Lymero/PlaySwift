@@ -1,13 +1,17 @@
 import React from "react";
 import { HashRouter } from "react-router-dom";
-import Layout from "./layout";
 
-// TODO : wrap with authentication provider from redux
 import { createStore } from "redux";
 import { Provider } from "react-redux";
-import playlistsApp from "../redux/reducers";
+import rootReducers from "./reducers/root";
 
-const store = createStore(playlistsApp);
+import Layout from "./components/layout/layout";
+
+const store = createStore(rootReducers);
+
+// A mettre dans la route /login
+import { setCurrentUser } from "./actions/actions";
+store.dispatch(setCurrentUser({ name: "chris" }));
 
 function Main() {
   return (

@@ -1,18 +1,20 @@
 import React from "react";
 import { Container, ListGroup } from "react-bootstrap";
-import { connect } from "react-redux";
+import PlaylistPreview from "./playlist_preview";
 
 const PlaylistsComponent = ({ playlists }) => {
   return (
     <Container>
       <h3>Playlists</h3>
-      <p> {playlists["playlist"]} </p>
+      <ListGroup>
+        {playlists.map((playlist, i) => (
+          <ListGroup.Item key={i}>
+            <PlaylistPreview playlist={playlist} />
+          </ListGroup.Item>
+        ))}
+      </ListGroup>
     </Container>
   );
 };
 
-const mapStateToProps = state => ({
-  playlists: state.playlists
-});
-
-export default connect(mapStateToProps)(PlaylistsComponent);
+export default PlaylistsComponent;
