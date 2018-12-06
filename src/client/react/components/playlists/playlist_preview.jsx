@@ -1,6 +1,6 @@
 import React from "react";
 import { Row, Col, ButtonToolbar, Button } from "react-bootstrap";
-import Reactions from "../reactions/reactions_component";
+import Reactions from "react/components/reactions/reactions_component";
 
 const PlaylistPreview = ({ playlist }) => {
   return (
