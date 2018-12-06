@@ -1,10 +1,10 @@
 import React from "react";
 import { Nav, Navbar, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-
 import SearchForm from "./search_form";
+import auth from "react/services/auth0";
 
-const Navigation = ({ authState, onClick }) => {
+const Navigation = ({ authState }) => {
   return (
     <Navbar bg="dark" variant="dark">
       <Navbar.Brand as={Link} to="/">
@@ -19,7 +19,7 @@ const Navigation = ({ authState, onClick }) => {
           My playlists - Current user = {authState.authenticated ? "true" : "false"}
         </Nav.Link>
       </Nav>
-      <Button variant="outline-warning" onClick={onClick}>
+      <Button variant="outline-warning" onClick={ auth.logout }>
         Logout
       </Button>
     </Navbar>

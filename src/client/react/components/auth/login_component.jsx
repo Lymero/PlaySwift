@@ -5,7 +5,7 @@ import Auth from "react/services/auth0.js";
 const LoginComponent = () => {
   return (
     <Container>
-      <Button bsstyle="info" onClick={Auth.show()}>
+      <Button bsstyle="info" onClick={Auth.show}>
         Info
       </Button>
     </Container>
