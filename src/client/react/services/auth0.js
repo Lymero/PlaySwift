@@ -8,7 +8,7 @@ const passwordlessOptions = {
   closable: true,
   auth: {
     audience: "http://localhost:3030",
-    redirectUrl: "http://localhost:3030/authCallback",
+    redirectUrl: "http://localhost:3030/#/authCallback",
     responseType: "token id_token",
     params: {
       scope: "openid email profile"
@@ -28,9 +28,7 @@ function errorCallback() {
 
 function successCallback() {
   console.log("auth0-lock authentication success");
-  // A mettre dans la route /login
   store.dispatch(setAuthState({ 'authenticated': true }));
-  console.log("store " + store.getState());
 }
 
 lock.on("authenticated", authResult => {
@@ -50,6 +48,22 @@ function show() {
   lock.show();
 }
 
+function verify() {
+  if (localStorage.getItem("accessToken") !== null && localStorage.getItem("profile") !== null) {
+      store.dispatch(setAuthState({ 'authenticated': true }));
+      return true;
+  }
+  return false;
+}
+
+function logout() {
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("profile");
+  store.dispatch(setAuthState({ 'authenticated': false }));
+}
+
 export default {
-  show: show
+  show: show,
+  logout: logout,
+  verify: verify
 };
