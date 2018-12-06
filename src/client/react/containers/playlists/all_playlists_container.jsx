@@ -14,9 +14,7 @@ class AllPlaylistsContainer extends React.Component {
         return resp.json();
       })
       .then(playlists => {
-        this.setState(
-          Object.assign({}, this.state, { playlists: playlists["rows"] })
-        );
+        this.setState(Object.assign({}, this.state, { playlists: playlists }));
       });
   }
 
