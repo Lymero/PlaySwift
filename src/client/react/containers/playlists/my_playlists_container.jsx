@@ -6,6 +6,7 @@ class MyPlaylistsContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = { playlists: [] };
+    this.displayNumberPlaylists = this.displayNumberPlaylists.bind(this);
   }
 
   componentDidMount() {
@@ -18,9 +19,21 @@ class MyPlaylistsContainer extends React.Component {
       });
   }
 
+  displayNumberPlaylists() {
+    return this.state.playlists.length;
+  }
+
   render() {
     return (
-      <PlaylistsComponent playlists={this.state.playlists} {...this.props} />
+      <div>
+        <h1>
+          My playlists
+          <span className="badge badge-secondary">
+            {this.displayNumberPlaylists()}
+          </span>
+        </h1>
+        <PlaylistsComponent playlists={this.state.playlists} {...this.props} />
+      </div>
     );
   }
 }

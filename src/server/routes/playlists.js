@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const logger = require("../modules/logger").logger;
-const { db } = require("../modules/db");
+const {
+  db
+} = require("../modules/db");
 
 router.get("/", async (req, res) => {
   try {
@@ -9,6 +11,7 @@ router.get("/", async (req, res) => {
     const result = await db.query(
       `select * from playswift.playlists where visible=true`
     );
+    //console.log(result.rows);
     res.send(result.rows);
     logger.info("SELECT:playlists");
   } catch (err) {
