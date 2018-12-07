@@ -1,23 +1,22 @@
-var fs = require("fs");
-var readline = require("readline");
+const fs = require("fs");
+const readline = require("readline");
 const logger = require("../server/modules/logger").logger;
-var { google } = require("googleapis");
-var googleAuth = require("google-auth-library");
+const { google } = require("googleapis");
+const googleAuth = require("google-auth-library");
 
 // If modifying these scopes, delete your previously saved credentials
 // at ~/.credentials/google-apis-nodejs-quickstart.json
-var SCOPES = ["https://www.googleapis.com/auth/youtube.force-ssl"];
-var TOKEN_DIR = "src/google/.credentials/";
-var TOKEN_PATH = TOKEN_DIR + "google-api-tokens.json";
-
-getYoutubeVideo("https://www.youtube.com/watch?v=_zJ1b-atqpA");
+const SCOPES = ["https://www.googleapis.com/auth/youtube.force-ssl"];
+const TOKEN_DIR = "src/google/.credentials/";
+const TOKEN_PATH = TOKEN_DIR + "google-api-tokens.json";
 
 function getYoutubeVideoId(url) {
   return url.split("=")[1];
 }
 
 // Load client secrets from a local file.
-function getYoutubeVideo(url) {
+async function getYoutubeVideo(url, bubbleResponse) {
+  logger.info("Fetching url = " + url);
   const _id = getYoutubeVideoId(url);
   fs.readFile("src/google/client_secret.json", function processClientSecrets(
     err,
@@ -27,14 +26,13 @@ function getYoutubeVideo(url) {
       logger.error("Error loading client secret file: " + err);
       return;
     }
-    // Authorize a client with the loaded credentials, then call the YouTube API.
-    //See full code sample for authorize() function code.
     authorize(
       JSON.parse(content),
       {
         params: { id: _id, part: "snippet,contentDetails,statistics" }
       },
-      videosListById
+      videosListById,
+      bubbleResponse
     );
   });
 }
@@ -46,11 +44,11 @@ function getYoutubeVideo(url) {
  * @param {Object} credentials The authorization client credentials.
  * @param {function} callback The callback to call with the authorized client.
  */
-function authorize(credentials, requestData, callback) {
-  var clientSecret = credentials.installed.client_secret;
-  var clientId = credentials.installed.client_id;
-  var redirectUrl = credentials.installed.redirect_uris[0];
-  var oauth2Client = new googleAuth.OAuth2Client(
+function authorize(credentials, requestData, callback, bubbleResponse) {
+  const clientSecret = credentials.installed.client_secret;
+  const clientId = credentials.installed.client_id;
+  const redirectUrl = credentials.installed.redirect_uris[0];
+  let oauth2Client = new googleAuth.OAuth2Client(
     clientId,
     clientSecret,
     redirectUrl
@@ -62,7 +60,7 @@ function authorize(credentials, requestData, callback) {
       getNewToken(oauth2Client, requestData, callback);
     } else {
       oauth2Client.credentials = JSON.parse(token);
-      callback(oauth2Client, requestData);
+      callback(oauth2Client, requestData, bubbleResponse);
     }
   });
 }
@@ -76,12 +74,12 @@ function authorize(credentials, requestData, callback) {
  *     client.
  */
 function getNewToken(oauth2Client, requestData, callback) {
-  var authUrl = oauth2Client.generateAuthUrl({
+  const authUrl = oauth2Client.generateAuthUrl({
     access_type: "offline",
     scope: SCOPES
   });
   logger.info("Authorize this app by visiting this url: ", authUrl);
-  var rl = readline.createInterface({
+  const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
   });
@@ -132,53 +130,15 @@ function removeEmptyParameters(params) {
   return params;
 }
 
-/**
- * Create a JSON object, representing an API resource, from a list of
- * properties and their values.
- *
- * @param {Object} properties A list of key-value pairs representing resource
- *                            properties and their values.
- * @return {Object} A JSON object. The function nests properties based on
- *                  periods (.) in property names.
- */
-function createResource(properties) {
-  var resource = {};
-  var normalizedProps = properties;
-  for (var p in properties) {
-    var value = properties[p];
-    if (p && p.substr(-2, 2) == "[]") {
-      var adjustedName = p.replace("[]", "");
-      if (value) {
-        normalizedProps[adjustedName] = value.split(",");
-      }
-      delete normalizedProps[p];
-    }
-  }
-  for (var p in normalizedProps) {
-    // Leave properties that don't have values out of inserted resource.
-    if (normalizedProps.hasOwnProperty(p) && normalizedProps[p]) {
-      var propArray = p.split(".");
-      var ref = resource;
-      for (var pa = 0; pa < propArray.length; pa++) {
-        var key = propArray[pa];
-        if (pa == propArray.length - 1) {
-          ref[key] = normalizedProps[p];
-        } else {
-          ref = ref[key] = ref[key] || {};
-        }
-      }
-    }
-  }
-  return resource;
-}
-
-async function videosListById(auth, requestData) {
-  var service = google.youtube({
+async function videosListById(auth, requestData, bubbleResponse) {
+  const service = google.youtube({
     version: "v3",
     auth: process.env.API_KEY
   });
-  var parameters = removeEmptyParameters(requestData["params"]);
+  let parameters = removeEmptyParameters(requestData["params"]);
   parameters["auth"] = auth;
-  var response = await service.videos.list(parameters);
-  console.log(response.data.items);
+  const response = await service.videos.list(parameters);
+  bubbleResponse(response.data.items);
 }
+
+exports.getYoutubeVideo = getYoutubeVideo;

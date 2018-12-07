@@ -14,6 +14,7 @@ const indexRouter = require("./routes/index");
 const playlistsRouter = require("./routes/playlists");
 const playlistRouter = require("./routes/playlist");
 const videosRouter = require("./routes/videos");
+const tagsRouter = require("./routes/tags");
 // static files
 const serverRoot = path.join(__dirname, ".");
 // express
@@ -48,6 +49,7 @@ app.use("/", indexRouter);
 app.use("/playlists", playlistsRouter);
 app.use("/playlist", playlistRouter);
 app.use("/videos", videosRouter);
+app.use("/tags", tagsRouter);
 app.use("/authCallback", indexRouter);
 // public api routes
 // jwt check middleware
