@@ -41,7 +41,7 @@ router.post("/:id_playlist", async (req, res) => {
       query = `insert into playswift.videos
       values(default, $1, 0, $2, $3)
       returning id_video, url_video`;
-      getYoutubeVideo(req.body.url_video, async (resp, res) => {
+      getYoutubeVideo(req.body.url_video, async (resp) => {
         const { title } = resp[0].snippet;
         const { url } = resp[0].snippet.thumbnails.high;
         values = [url_video, title, url];
@@ -50,7 +50,7 @@ router.post("/:id_playlist", async (req, res) => {
         logger.info("INSERT:" + values);
 
         query = `insert into playswift.videos_playlists
-        values($1, $2, $3, $4)`;
+        values(default, $1, $2, $3, $4)`;
         values = [
           req.params.id_playlist,
           _id_video,
@@ -69,7 +69,7 @@ router.post("/:id_playlist", async (req, res) => {
       const _id_video = new_video.id_video;
 
       query = `insert into playswift.videos_playlists
-      values($1, $2, $3, $4)`;
+      values(default, $1, $2, $3, $4)`;
       values = [
         req.params.id_playlist,
         _id_video,
