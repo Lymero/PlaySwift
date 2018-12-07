@@ -11,11 +11,11 @@ import Auth from "react/services/auth0.js";
 const authenticated = Auth.isAuthenticated();
 
 function RouterOutlet({ authState, location: { pathname } }) {
-  const redirectToLogin = !authenticated && pathname !== "/login";
+  const redirectToLogin = !authState.authenticated && pathname !== "/login";
 
   console.log(authenticated + " " + redirectToLogin);
 
-  if (false) {
+  if (redirectToLogin) {
     return (
       <React.Fragment>
         <Redirect to="/login" />
