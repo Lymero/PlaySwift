@@ -48,14 +48,11 @@ app.use(express.static(path.join(__dirname, "../../dist")));
 
 app.use("/", indexRouter);
 app.use("/authCallback", authRouter);
+// api
 app.use("/playlists", playlistsRouter);
 app.use("/playlist", playlistRouter);
 app.use("/videos", videosRouter);
 app.use("/tags", tagsRouter);
-app.use("/authCallback", indexRouter);
-// public api routes
-// jwt check middleware
-// private api routes
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
