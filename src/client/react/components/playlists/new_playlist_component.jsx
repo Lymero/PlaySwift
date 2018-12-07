@@ -11,7 +11,6 @@ const NewPlaylistComponent = ({
   return (
     <div>
       <h3>Add a new playlist</h3>
-
       <FormControl
         type="text"
         name="name"

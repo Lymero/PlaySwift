@@ -1,5 +1,6 @@
 import React from "react";
 import NewPlaylistComponent from "react/components/playlists/new_playlist_component";
+import UsersUtils from "react/utils/users.js";
 
 class NewPlaylistContainer extends React.Component {
   constructor(props) {
@@ -8,12 +9,12 @@ class NewPlaylistContainer extends React.Component {
     this.state = {
       name: "",
       description: "",
-      tag: ""
+      tag: 1
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.addPlaylist = this.addPlaylist.bind(this);
-  }
+  } 
 
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
@@ -21,7 +22,27 @@ class NewPlaylistContainer extends React.Component {
 
   addPlaylist(event) {
     event.preventDefault();
-    console.log("fetch les enroules");
+    let userID = JSON.parse(UsersUtils.getUserProfile()).sub.split("|")[1];
+
+    fetch('/playlists', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: this.state.name,
+        id_tag: this.state.tag,
+        visible: 1,
+        id_user: userID,
+        description: this.state.description
+      })
+    }).then(function(response) {
+      console.log(response.text());
+    });
+
+    // THIS PART SHOULD BE IN A REDUX ACTION
+
   }
 
   render() {
