@@ -40,12 +40,12 @@ router.post("/:id_playlist", async (req, res) => {
     if (result.rows[0].count == 0) {
       query = `insert into playswift.videos
       values(default, $1, 0, $2, $3)
-      returning id_video`;
+      returning id_video, url_video`;
       getYoutubeVideo(req.body.url_video, async (resp, res) => {
         const { title } = resp[0].snippet;
         const { url } = resp[0].snippet.thumbnails.high;
         values = [url_video, title, url];
-        const new_video = await db.query(query, values).rows[0];
+        const new_video = (await db.query(query, values)).rows[0];
         const _id_video = new_video.id_video;
         logger.info("INSERT:" + values);
 
@@ -61,10 +61,11 @@ router.post("/:id_playlist", async (req, res) => {
         res.send(new_video);
       });
     } else {
+      console.log("else");
       // else we can directly create the videos_playlists entity
-      query = `select id_video from playswift.videos where url_video=$1`;
+      query = `select id_video, url_video from playswift.videos where url_video=$1`;
       values = [url_video];
-      const new_video = await db.query(query, values).rows[0];
+      const new_video = (await db.query(query, values)).rows[0];
       const _id_video = new_video.id_video;
 
       query = `insert into playswift.videos_playlists
