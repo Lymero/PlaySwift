@@ -40,7 +40,6 @@ pipeline {
 
         stage("Testing react") {
             steps {
-                echo "Running build ${env.BUILD_ID}"
                 sh "npm run cypress:react-test"
             }
         }
