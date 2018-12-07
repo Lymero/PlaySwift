@@ -11,6 +11,7 @@ const assetPath = require("./asset_path.js");
 require("./modules/logger.js");
 // routeurs
 const indexRouter = require("./routes/index");
+const authRouter = require("./routes/auth");
 const playlistsRouter = require("./routes/playlists");
 const playlistRouter = require("./routes/playlist");
 const videosRouter = require("./routes/videos");
@@ -45,10 +46,10 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "../../dist")));
 
 app.use("/", indexRouter);
+app.use("/authCallback", authRouter);
 app.use("/playlists", playlistsRouter);
 app.use("/playlist", playlistRouter);
 app.use("/videos", videosRouter);
-app.use("/authCallback", indexRouter);
 // public api routes
 // jwt check middleware
 // private api routes
