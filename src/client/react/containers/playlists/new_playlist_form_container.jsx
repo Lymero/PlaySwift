@@ -22,7 +22,7 @@ class NewPlaylistContainer extends React.Component {
 
   addPlaylist(event) {
     event.preventDefault();
-    let userID = JSON.parse(UsersUtils.getUserProfile()).sub.split("|")[1];
+    let userID = UsersUtils.getUserProfile().sub;
 
     fetch('/playlists', {
       method: 'POST',
