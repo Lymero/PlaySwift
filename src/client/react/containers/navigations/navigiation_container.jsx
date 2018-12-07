@@ -15,7 +15,7 @@ class NavigationContainer extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  current_user: localStorage.getItem("profile"),
+  currentUser: localStorage.getItem("profile"),
   authState: state.usersSession.authState
 });
 

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import SearchForm from "./search_form";
 import auth from "react/services/auth0";
 
-const Navigation = ({ authState }) => {
+const Navigation = ({ authState, currentUser }) => {
   return (
     <Navbar bg="dark" variant="dark">
       <Navbar.Brand as={Link} to="/">
@@ -14,9 +14,7 @@ const Navigation = ({ authState }) => {
       <SearchForm />
       <Nav className="mr-auto">
         <Nav.Link as={Link} to="/playlists">
-          {console.log(authState)}
-
-          My playlists - Current user = {authState.authenticated ? "true" : "false"}
+          My playlists - Current user = {authState.authenticated ? "true" : "false"} ( { currentUser })
         </Nav.Link>
       </Nav>
       <Button variant="outline-warning" onClick={ auth.logout }>
