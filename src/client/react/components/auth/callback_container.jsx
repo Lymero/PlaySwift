@@ -6,7 +6,6 @@ class CallbackContainer extends React.Component {
   }
 
   render() {
-    console.log("Auth Callback");
     return <p>Auth Callback..</p>;
   }
 }

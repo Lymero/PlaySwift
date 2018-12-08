@@ -21,7 +21,6 @@ class NewPlaylistContainer extends React.Component {
 
   addPlaylist(event) {
     event.preventDefault();
-    console.log("fetch les enroules");
   }
 
   render() {

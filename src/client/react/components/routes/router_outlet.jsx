@@ -6,14 +6,8 @@ import LoginPrompt from "../auth/login_prompt";
 import CallbackContainer from "../auth/callback_container";
 import { connect } from "react-redux";
 
-import Auth from "react/services/auth0.js";
-
-const authenticated = Auth.isAuthenticated();
-
 function RouterOutlet({ authState, location: { pathname } }) {
   const redirectToLogin = !authState.authenticated && pathname !== "/login";
-
-  console.log(authenticated + " " + redirectToLogin);
 
   if (redirectToLogin) {
     return (

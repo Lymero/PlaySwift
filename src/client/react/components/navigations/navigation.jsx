@@ -2,7 +2,7 @@ import React from "react";
 import { Nav, Navbar, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import SearchForm from "./search_form";
-import auth from "react/services/auth0";
+import Auth from "react/services/auth0";
 
 const Navigation = ({ authState }) => {
   return (
@@ -14,12 +14,13 @@ const Navigation = ({ authState }) => {
       <SearchForm />
       <Nav className="mr-auto">
         <Nav.Link as={Link} to="/playlists">
-          {console.log(authState)}
-
-          My playlists - Current user = {authState.authenticated ? "true" : "false"}
+          My playlists - Current user =
+          {authState.authenticated
+            ? Auth.getUserProfile().name
+            : "not logged in"}
         </Nav.Link>
       </Nav>
-      <Button variant="outline-warning" onClick={ auth.logout }>
+      <Button variant="outline-warning" onClick={Auth.logout}>
         Logout
       </Button>
     </Navbar>
