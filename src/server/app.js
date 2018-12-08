@@ -5,17 +5,20 @@ const createError = require("http-errors");
 const cookieParser = require("cookie-parser");
 const sassMiddleware = require("node-sass-middleware");
 const logger = require("morgan");
+var fs = require("fs");
 // application.js mapping
 const assetPath = require("./asset_path.js");
 //winston logger setup
 require("./modules/logger.js");
 // routeurs
-const indexRouter = require("./routes/index");
 const authRouter = require("./routes/auth");
+const indexRouter = require("./routes/index");
 const playlistsRouter = require("./routes/playlists");
-const playlistRouter = require("./routes/playlist");
-const videosRouter = require("./routes/videos");
+const reactionsRouter = require("./routes/reactions");
+const suggestionsRouter = require("./routes/suggestions");
 const tagsRouter = require("./routes/tags");
+const usersRouter = require("./routes/users");
+const videosRouter = require("./routes/videos");
 // static files
 const serverRoot = path.join(__dirname, ".");
 // express
@@ -31,7 +34,35 @@ app.locals.assetPath = assetPath;
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
-app.use(logger("dev"));
+// logs status >= 400 on stderr
+app.use(
+  logger("dev", {
+    skip: function(req, res) {
+      return res.statusCode < 400;
+    },
+    stream: process.stderr
+  })
+);
+
+// logs status < 400 on stdout
+app.use(
+  logger("dev", {
+    skip: function(req, res) {
+      return res.statusCode >= 400;
+    },
+    stream: process.stdout
+  })
+);
+
+// logs all access
+app.use(
+  logger("common", {
+    stream: fs.createWriteStream(path.join(__dirname, "logs/access.log"), {
+      flags: "a"
+    })
+  })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -48,11 +79,14 @@ app.use(express.static(path.join(__dirname, "../../dist")));
 
 app.use("/", indexRouter);
 app.use("/authCallback", authRouter);
-// api
+
+// API
 app.use("/playlists", playlistsRouter);
-app.use("/playlist", playlistRouter);
-app.use("/videos", videosRouter);
+app.use("/reactions", reactionsRouter);
+app.use("/suggestions", suggestionsRouter);
 app.use("/tags", tagsRouter);
+app.use("/users", usersRouter);
+app.use("/videos", videosRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
