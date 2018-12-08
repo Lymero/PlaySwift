@@ -62,7 +62,7 @@ router.put("/:id_playlist", async (req, res) => {
 
 router.delete("/:id_playlist", async (req, res) => {
   const query = `delete from playswift.playlists where id_playlist=$1`;
-  const values = [req.params.id];
+  const values = [req.params.id_playlist];
   try {
     await db.connect();
     const result = await db.query(query, values);
@@ -109,7 +109,7 @@ router.post("/:id_playlist/videos", async (req, res) => {
     if (result.rows[0].count == 0) {
       query = `insert into playswift.videos
       values(default, $1, 0, $2, $3)
-      returning id_video, url_video`;
+      returning id_video_playlist, url_video`;
       getYoutubeVideo(req.body.url_video, async resp => {
         const { title } = resp[0].snippet;
         const { url } = resp[0].snippet.thumbnails.high;
