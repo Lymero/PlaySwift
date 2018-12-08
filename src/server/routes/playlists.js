@@ -129,7 +129,7 @@ router.post("/:id_playlist/videos", async (req, res) => {
         console.log(new_video)
         values = [id_playlist, new_video.id_video, description, position];
         logger.info("QUERY queryInsertVideoPlaylist : " + queryInsertVideoPlaylist);
-        client.query(queryInsertVideoPlaylist, values);
+        await client.query(queryInsertVideoPlaylist, values);
         res.send(new_video);
       });
     } else {
