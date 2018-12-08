@@ -82,7 +82,7 @@ router.get("/:id_playlist/videos", async (req, res) => {
     await db.connect();
     const result = await db.query(query, values);
     res.send(result.rows);
-    logger.info("SELECT" + values);
+    logger.info("SELECT " + values);
   } catch (err) {
     logger.info(err.stack);
   }

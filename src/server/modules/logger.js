@@ -1,9 +1,8 @@
 const { createLogger, format, transports } = require("winston");
 const { combine, timestamp } = format;
-var path = require("path");
+const path = require("path");
 
-// Set this to whatever, by default the path of the script.
-var logPath = __dirname;
+const logPath = path.join(__dirname, "..\\logs");
 
 const logger = createLogger({
   format: combine(
