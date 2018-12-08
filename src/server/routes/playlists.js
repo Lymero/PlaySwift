@@ -97,67 +97,56 @@ router.get("/:id_playlist/videos", async (req, res) => {
 });
 
 router.post("/:id_playlist/videos", async (req, res) => {
-  const client = await pool.connect();
-  try {
-    // verify video is already registered
-    let query = `select count(id_video) 
-    from playswift.videos 
-    where url_video=$1`;
-    const { url_video } = req.body;
-    let values = [url_video];
-    let result = await client.query(query, values);
+  const { id_playlist } = req.params;
+  const { url_video, description } = req.body;
 
-    query = `select max(position)
-    from playswift.videos_playlists
-    where id_playlist=$1`;
-    values = [req.params.id_playlist];
-    const position = (await client.query(query, values)).rows[0].max + 1;
+  const client = await pool.connect();
+  const queryDoesVideoExist = `select count(id_video) from playswift.videos where url_video = $1`;
+  const queryVideoPosition = `select max(position) from playswift.videos_playlists where id_playlist = $1`;
+  const queryInsertVideo = `insert into playswift.videos values(default, $1, 0, $2, $3) returning id_video, url_video`;
+  const queryInsertVideoPlaylist = `insert into playswift.videos_playlists values(default, $1, $2, $3, $4)`;
+  const queryExistingVideo = `select id_video, url_video from playswift.videos where url_video = $1`;
+
+  try {
+    await client.query("BEGIN");
+
+    let values = [url_video];
+    logger.info("QUERY queryDoesVideoExist : " + queryDoesVideoExist);
+    let result = await client.query(queryDoesVideoExist, values);
+
+    values = [id_playlist];
+    logger.info("QUERY queryVideoPosition : " + queryVideoPosition);
+    const position = (await client.query(queryVideoPosition, values)).rows[0].max + 1;
 
     // if it doesn't, add it to db
     if (result.rows[0].count == 0) {
-      query = `insert into playswift.videos
-      values(default, $1, 0, $2, $3)
-      returning id_video_playlist, url_video`;
-      getYoutubeVideo(req.body.url_video, async resp => {
+      getYoutubeVideo(url_video, async resp => {
         const { title } = resp[0].snippet;
         const { url } = resp[0].snippet.thumbnails.high;
         values = [url_video, title, url];
-        const new_video = (await client.query(query, values)).rows[0];
-        const _id_video = new_video.id_video;
-        logger.info("INSERT:" + values);
-
-        query = `insert into playswift.videos_playlists
-        values(default, $1, $2, $3, $4)`;
-        values = [
-          req.params.id_playlist,
-          _id_video,
-          req.body.description,
-          position
-        ];
-        client.query(query, values);
+        logger.info("QUERY queryInsertVideo : " + queryInsertVideo);
+        const new_video = (await client.query(queryInsertVideo, values)).rows[0];
+        console.log(new_video)
+        values = [id_playlist, new_video.id_video, description, position];
+        logger.info("QUERY queryInsertVideoPlaylist : " + queryInsertVideoPlaylist);
+        client.query(queryInsertVideoPlaylist, values);
         res.send(new_video);
       });
     } else {
       // else we can directly create the videos_playlists entity
-      query = `select id_video, url_video from playswift.videos where url_video=$1`;
       values = [url_video];
-      const new_video = (await client.query(query, values)).rows[0];
-      const _id_video = new_video.id_video;
-
-      query = `insert into playswift.videos_playlists
-      values(default, $1, $2, $3, $4)`;
-      values = [
-        req.params.id_playlist,
-        _id_video,
-        req.body.description,
-        position
-      ];
-      client.query(query, values);
+      logger.info("QUERY queryExistingVideo : " + queryExistingVideo);
+      const new_video = (await client.query(queryExistingVideo, values)).rows[0];
+      values = [id_playlist, new_video.id_video, description, position];
+      logger.info("QUERY queryInsertVideoPlaylist : " + queryInsertVideoPlaylist);
+      await client.query(queryInsertVideoPlaylist, values);
       res.send(new_video);
     }
+    await client.query("COMMIT");
   } catch (err) {
+    await client.query("ROLLBACK");
     res.status(400);
-    logger.info(err.stack);
+    logger.warn("POST /playlists/:id_playlist/videos : " + err);
   } finally {
     client.release();
   }
