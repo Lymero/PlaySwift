@@ -4,25 +4,19 @@
   "main": "src/server/bin/www",
   "private": true,
   "scripts": {
-    "start": "node src/server/bin/www",
+    "server": "node src/server/bin/www",
+    "nodemon": "nodemon src/server/bin/www",
+    "client_dev": "webpack-dev-server --mode development --config config/webpack.config.js",
     "build": "webpack --mode production --config config/webpack.config.js",
     "clean": "rm -rf dist",
-    "client": "webpack-dev-server --mode development --config config/webpack.config.js",
-    "server": "nodemon src/server/bin/www",
-    "dev": "cross-env NODE_ENV=development concurrently \"npm run server\" \"npm run client\"",
-
+    "dev": "cross-env NODE_ENV=development concurrently \"npm run nodemon\" \"npm run client_dev\"",
+    "prod": "cross-env NODE_ENV=production \"npm run server\"",
     "cy:verify": "cypress verify",
     "cy:version": "cypress version",
     "cy:run": "cypress run",
     "cy:run:record": "cypress run --record",
     "cy:open": "cypress open",
-
-    "e2e": "cypress run",
-    "e2e:chrome": "cypress run --browser chrome",
-    "e2e:record": "cypress run --record",
-    "e2e:record:parallel": "cypress run --record --parallel",
-
-    "cypress:react-test": "cypress run --spec 'cypress/integration/react/*'"
+    "cy:react-test": "cypress run --spec 'cypress/integration/react/*'"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.8",
