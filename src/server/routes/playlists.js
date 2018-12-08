@@ -160,8 +160,9 @@ router.get("/:id_playlist/suggestions", async (req, res) => {
   }
 });
 
+// TODO
 router.post("/:id_playlist/suggestions", async (req, res) => {
-  const text = `insert into playswift.suggestions values(default, 'pending', $1)`;
+  const text = `insert into playswift.suggestions values(default, $1, $2, 'pending', $3)`;
   const values = [req.body.id_user];
   try {
     await db.connect();
