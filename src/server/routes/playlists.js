@@ -69,7 +69,7 @@ router.delete("/:id_playlist", async (req, res) => {
   }
 });
 
-router.get(":id_playlist/videos", async(req, res) => {
+router.get("/:id_playlist/videos", async(req, res) => {
   const query = `select vp.id_playlist,v.id_video,v.url_video,v.video_length,v.title,v.url_thumbnail
   from playswift.videos_playlists vp,playswift.videos v
   where vp.id_video=v.id_video and id_playlist=$1`;
@@ -84,7 +84,7 @@ router.get(":id_playlist/videos", async(req, res) => {
   }
 })
 
-router.post(":id_playlist/videos", async (req, res) => {
+router.post("/:id_playlist/videos", async (req, res) => {
   try {
     await db.connect();
     // verify video is already registered
@@ -121,7 +121,6 @@ router.post(":id_playlist/videos", async (req, res) => {
         res.send(new_video);
       });
     } else {
-      console.log("else");
       // else we can directly create the videos_playlists entity
       query = `select id_video, url_video from playswift.videos where url_video=$1`;
       values = [url_video];
