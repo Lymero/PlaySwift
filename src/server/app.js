@@ -5,6 +5,7 @@ const createError = require("http-errors");
 const cookieParser = require("cookie-parser");
 const sassMiddleware = require("node-sass-middleware");
 const logger = require("morgan");
+var fs = require("fs");
 // application.js mapping
 const assetPath = require("./asset_path.js");
 //winston logger setup
@@ -33,7 +34,35 @@ app.locals.assetPath = assetPath;
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
-app.use(logger("dev"));
+// logs status >= 400 on stderr
+app.use(
+  logger("dev", {
+    skip: function(req, res) {
+      return res.statusCode < 400;
+    },
+    stream: process.stderr
+  })
+);
+
+// logs status < 400 on stdout
+app.use(
+  logger("dev", {
+    skip: function(req, res) {
+      return res.statusCode >= 400;
+    },
+    stream: process.stdout
+  })
+);
+
+// logs all access
+app.use(
+  logger("common", {
+    stream: fs.createWriteStream(path.join(__dirname, "logs/access.log"), {
+      flags: "a"
+    })
+  })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
