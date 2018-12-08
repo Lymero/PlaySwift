@@ -1,8 +1,6 @@
 import AuthModule from "auth0-lock";
 import JWT from "jsonwebtoken";
-import {
-  setAuthState
-} from "react/actions/actions";
+import { setAuthState } from "react/actions/actions";
 import store from "react/reducers/root";
 
 // https://auth0.com/docs/libraries/lock/v11/configuration#database-options
@@ -31,9 +29,11 @@ function show() {
 
 function verify() {
   if (isAuthenticated()) {
-    store.dispatch(setAuthState({
-      'authenticated': true
-    }));
+    store.dispatch(
+      setAuthState({
+        authenticated: true
+      })
+    );
     return true;
   }
   return false;
@@ -43,20 +43,35 @@ function isAuthenticated() {
   let token = localStorage.getItem("accessToken");
   if (token === null) return false;
   let decoded = JWT.decode(token);
-  return (new Date().getTime() / 1000) < decoded.exp;
+  return new Date().getTime() / 1000 < decoded.exp;
+}
+
+function getUserProfile() {
+  let token = localStorage.getItem("profile");
+  if (token === null) return null;
+  let decoded = JWT.decode(token);
+  return decoded;
+}
+
+function getUserId() {
+  return getUserProfile().sub.split("|")[1];
 }
 
 function logout() {
   localStorage.removeItem("accessToken");
   localStorage.removeItem("profile");
-  store.dispatch(setAuthState({
-    'authenticated': false
-  }));
+  store.dispatch(
+    setAuthState({
+      authenticated: false
+    })
+  );
 }
 
 export default {
   show: show,
   logout: logout,
   verify: verify,
+  getUserProfile: getUserProfile,
+  getUserId: getUserId,
   isAuthenticated: isAuthenticated
 };

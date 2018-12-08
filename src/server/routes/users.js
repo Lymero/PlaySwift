@@ -3,13 +3,13 @@ const router = express.Router();
 const logger = require("../modules/logger").logger;
 const { pool } = require("../modules/db");
 
-router.get("/", async (req, res) => {
+router.get("/:id_user/playlists", async (req, res) => {
   const client = await pool.connect();
-  const query = `select * from playswift.tags order by tag_name, id_tag`;
+  const query = `select * from playswift.playlists where id_user = $1 order by name`;
+  const values = [req.params.id_user];
   try {
-    const result = await client.query(query);
-    res.send(result.rows);
-    logger.info("SELECT:tags");
+    const result = await client.query(query, values);
+    res.send(result.rows[0]);
   } catch (err) {
     logger.info(err.stack);
   } finally {
@@ -17,16 +17,13 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.get("/:id_user/subscriptions", async (req, res) => {
   const client = await pool.connect();
-  const query = `insert into playswift.tags
-    values(default, $1)
-    returning id_tag,name,tag_name`;
-  const values = [req.body.tag_name];
+  const query = `select * from playswift.subscriptions where id_user = $1 order by id_tag`;
+  const values = [req.params.id_user];
   try {
     const result = await client.query(query, values);
     res.send(result.rows[0]);
-    logger.info("INSERT:" + values);
   } catch (err) {
     logger.info(err.stack);
   } finally {
