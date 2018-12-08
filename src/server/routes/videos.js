@@ -17,7 +17,7 @@ router.get("/:id_video", async (req, res) => {
 });
 
 // TODO
-router.post("/:id_video", async (req, res) => {
+router.put("/:id_video", async (req, res) => {
   const text = ``;
   const values = [];
   try {
@@ -43,7 +43,7 @@ router.delete("/:id_video", async (req, res) => {
 });
 
 // TODO
-router.get("/:id_video/reactions", async(req, res) => {
+router.get("/:id_video/reactions", async (req, res) => {
   const text = ``;
   const values = [];
   try {
@@ -53,6 +53,6 @@ router.get("/:id_video/reactions", async(req, res) => {
   } catch (err) {
     logger.info(err.stack);
   }
-})
+});
 
 module.exports = router;
