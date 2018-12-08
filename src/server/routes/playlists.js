@@ -44,8 +44,12 @@ router.put("/:id_playlist", async (req, res) => {
     set name=$1, visible=$2, description=$3
     where id_playlist=$4
     returning id_playlist,name,id_tag,visible,id_user,creation_date,last_update_date,description,likes_number,dislikes_number`;
-  const values = [req.body.name, req.body.visible, req.body.description, //Date.now(),
-    req.params.id];
+  const values = [
+    req.body.name,
+    req.body.visible,
+    req.body.description, //Date.now(),
+    req.params.id
+  ];
   try {
     await db.connect();
     const result = await db.query(query, values);
@@ -69,7 +73,7 @@ router.delete("/:id_playlist", async (req, res) => {
   }
 });
 
-router.get("/:id_playlist/videos", async(req, res) => {
+router.get("/:id_playlist/videos", async (req, res) => {
   const query = `select vp.id_playlist,v.id_video,v.url_video,v.video_length,v.title,v.url_thumbnail
   from playswift.videos_playlists vp,playswift.videos v
   where vp.id_video=v.id_video and id_playlist=$1`;
@@ -82,7 +86,7 @@ router.get("/:id_playlist/videos", async(req, res) => {
   } catch (err) {
     logger.info(err.stack);
   }
-})
+});
 
 router.post("/:id_playlist/videos", async (req, res) => {
   try {
@@ -116,7 +120,12 @@ router.post("/:id_playlist/videos", async (req, res) => {
 
         query = `insert into playswift.videos_playlists
         values(default, $1, $2, $3, $4)`;
-        values = [req.params.id_playlist, _id_video, req.body.description, position];
+        values = [
+          req.params.id_playlist,
+          _id_video,
+          req.body.description,
+          position
+        ];
         db.query(query, values);
         res.send(new_video);
       });
@@ -129,7 +138,12 @@ router.post("/:id_playlist/videos", async (req, res) => {
 
       query = `insert into playswift.videos_playlists
       values(default, $1, $2, $3, $4)`;
-      values = [req.params.id_playlist, _id_video, req.body.description, position];
+      values = [
+        req.params.id_playlist,
+        _id_video,
+        req.body.description,
+        position
+      ];
       db.query(query, values);
       res.send(new_video);
     }
@@ -137,7 +151,7 @@ router.post("/:id_playlist/videos", async (req, res) => {
     res.status(400);
     logger.info(err.stack);
   }
-})
+});
 
 // TODO
 router.get("/:id_playlist/suggestions", async (req, res) => {
@@ -163,6 +177,6 @@ router.post("/:id_playlist/suggestions", async (req, res) => {
   } catch (err) {
     logger.info(err.stack);
   }
-})
+});
 
 module.exports = router;
