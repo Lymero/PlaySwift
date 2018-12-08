@@ -4,6 +4,24 @@ const logger = require("../modules/logger").logger;
 const {
   db
 } = require("../modules/db");
+// TODO change "1" in :idPlaylist
+router.get("/:idPlaylist", async (req, res) => {
+  try {
+    await db.connect();
+    const result = await db.query(
+      `select vp.id_video_playlist, vp.id_playlist, vp.id_video, vp.description, vp.position, v.id_video, v.url_video, v.video_length, v.title, v.url_thumbnail
+      from playswift.videos_playlists vp
+      inner join playswift.videos v
+      on vp.id_video = v.id_video
+      where vp.id_playlist = 1`
+    );
+    //console.log(result.rows);
+    res.send(result.rows);
+    logger.info("SELECT:videos and videos_playlists");
+  } catch (err) {
+    logger.info(err.stack);
+  }
+});
 
 router.get("/", async (req, res) => {
   try {

@@ -7,14 +7,14 @@ class AllPlaylistsContainer extends React.Component {
     super(props);
     this.state = { playlists: [] };
   }
-
+  //TODO
   componentDidMount() {
-    fetch("/playlists", { method: "GET" })
+    fetch("/playlists/1", { method: "GET" })
       .then(resp => {
         return resp.json();
       })
-      .then(playlists => {
-        this.setState(Object.assign({}, this.state, { playlists: playlists }));
+      .then(videos => {
+        this.setState(Object.assign({}, this.state, { videos: videos }));
       });
   }
 
