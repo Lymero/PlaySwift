@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const logger = require("../modules/logger").logger;
 const { db } = require("../modules/db");
-const { getYoutubeVideo } = require("../../google/youtube");
+const { getYoutubeVideo } = require("../modules/google/youtube");
 
 router.get("/", async (req, res) => {
   try {
