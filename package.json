@@ -6,17 +6,18 @@
   "scripts": {
     "server": "node src/server/bin/www",
     "nodemon": "nodemon src/server/bin/www",
-    "client_dev": "webpack-dev-server --mode development --config config/webpack.config.js",
-    "build": "webpack --mode production --config config/webpack.config.js",
+    "build_dev": "webpack-dev-server --mode development --config config/webpack.config.js",
+    "build_prod": "webpack --mode production --config config/webpack.config.js",
     "clean": "rm -rf dist",
-    "dev": "cross-env NODE_ENV=development concurrently \"npm run nodemon\" \"npm run client_dev\"",
-    "prod": "cross-env NODE_ENV=production \"npm run server\"",
+    "dev": "cross-env NODE_ENV=development concurrently \"npm run nodemon\" \"npm run build_dev\"",
+    "prod": "cross-env NODE_ENV=production concurrently \"npm run nodemon\" \"npm run build_prod\"",
     "cy:verify": "cypress verify",
     "cy:version": "cypress version",
     "cy:run": "cypress run",
     "cy:run:record": "cypress run --record",
     "cy:open": "cypress open",
-    "cy:react-test": "cypress run --spec 'cypress/integration/react/*'"
+    "cy:test-react": "cypress run --spec cypress/integration/react/*.spec.js",
+    "cy:test-api": "cypress run --spec cypress/integration/api/*.spec.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.8",
