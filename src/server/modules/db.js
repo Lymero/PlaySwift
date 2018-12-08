@@ -1,25 +1,9 @@
-/**
- * Imports
- */
-// TODO
-
-/**
- * Variables
- */
-// Connection URL
-const URL = process.env.DB_URL;
-// Database Name
-const DB_NAME = process.env.DB_DB;
-
-/**
- * Connect to the database
- */
-let connect = () => {
-    // TODO
-};
-
-/**
- * Exports
- */
-exports.connect = connect;
-exports.db = null; // db will be set after connected
+const { Pool } = require("pg");
+const pool = new Pool({
+  database: process.env.DB_NAME,
+  host: process.env.DB_URL,
+  port: process.env.DB_PORT,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD
+});
+exports.db = pool;

@@ -7,18 +7,20 @@ const sassMiddleware = require("node-sass-middleware");
 const logger = require("morgan");
 // application.js mapping
 const assetPath = require("./asset_path.js");
-// db
-const db = require("./modules/db.js");
+//winston logger setup
+require("./modules/logger.js");
 // routeurs
 const indexRouter = require("./routes/index");
+const authRouter = require("./routes/auth");
 const playlistsRouter = require("./routes/playlists");
+const playlistRouter = require("./routes/playlist");
+const videosRouter = require("./routes/videos");
+const tagsRouter = require("./routes/tags");
 // static files
 const serverRoot = path.join(__dirname, ".");
 // express
 const app = express();
-
 // Connect to DB
-db.connect();
 
 // auth0 jwtCheck middleware
 // TODO
@@ -45,10 +47,12 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "../../dist")));
 
 app.use("/", indexRouter);
+app.use("/authCallback", authRouter);
+// api
 app.use("/playlists", playlistsRouter);
-// public api routes
-// jwt check middleware
-// private api routes
+app.use("/playlist", playlistRouter);
+app.use("/videos", videosRouter);
+app.use("/tags", tagsRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
