@@ -14,7 +14,7 @@ class NewPlaylistContainer extends React.Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.addPlaylist = this.addPlaylist.bind(this);
-  } 
+  }
 
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
@@ -24,11 +24,11 @@ class NewPlaylistContainer extends React.Component {
     event.preventDefault();
     let userID = UsersUtils.getUserProfile().sub;
 
-    fetch('/playlists', {
-      method: 'POST',
+    fetch("/playlists", {
+      method: "POST",
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
+        Accept: "application/json",
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
         name: this.state.name,
@@ -42,7 +42,6 @@ class NewPlaylistContainer extends React.Component {
     });
 
     // THIS PART SHOULD BE IN A REDUX ACTION
-
   }
 
   render() {

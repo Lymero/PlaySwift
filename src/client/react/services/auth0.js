@@ -41,9 +41,20 @@ function verify() {
 
 function isAuthenticated() {
   let token = localStorage.getItem("accessToken");
-  if (token === null) return false;
+  if (token === null) throw "AccessToken not found in localStorage";
   let decoded = JWT.decode(token);
   return (new Date().getTime() / 1000) < decoded.exp;
+}
+
+function getUserProfile() {
+  let token = localStorage.getItem("profile");
+  if (token === null) throw "ProfileToken not found in localStorage";
+  let decoded = JWT.decode(token);
+  return decoded;
+}
+
+function getUserId() {
+  return getUserProfile().sub.split("|")[1];
 }
 
 function logout() {
@@ -58,5 +69,7 @@ export default {
   show: show,
   logout: logout,
   verify: verify,
+  getUserProfile: getUserProfile,
+  getUserId: getUserId,
   isAuthenticated: isAuthenticated
 };
