@@ -34,14 +34,14 @@ pipeline {
                 // we will shut it down in "post" command block
                 // sh "nohup npm start &"
                 // sh "npm start &"
-                sh "npm run dev &"
+                sh "npm run prod &"
             }
         }
 
         stage("Testing react") {
             steps {
                 echo "Running build ${env.BUILD_ID}"
-                sh "npm run cy:react-test"
+                sh "npm run cy:test-react"
             }
         }
     }
