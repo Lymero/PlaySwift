@@ -13,7 +13,6 @@ require("./modules/logger.js");
 const indexRouter = require("./routes/index");
 const authRouter = require("./routes/auth");
 const playlistsRouter = require("./routes/playlists");
-const playlistRouter = require("./routes/playlist");
 const videosRouter = require("./routes/videos");
 const tagsRouter = require("./routes/tags");
 // static files
@@ -50,7 +49,6 @@ app.use("/", indexRouter);
 app.use("/authCallback", authRouter);
 // api
 app.use("/playlists", playlistsRouter);
-app.use("/playlist", playlistRouter);
 app.use("/videos", videosRouter);
 app.use("/tags", tagsRouter);
 
