@@ -4,8 +4,6 @@ const logger = require("../server/modules/logger").logger;
 const { google } = require("googleapis");
 const googleAuth = require("google-auth-library");
 
-// If modifying these scopes, delete your previously saved credentials
-// at ~/.credentials/google-apis-nodejs-quickstart.json
 const SCOPES = ["https://www.googleapis.com/auth/youtube.force-ssl"];
 const TOKEN_DIR = "src/google/.credentials/";
 const TOKEN_PATH = TOKEN_DIR + "google-api-tokens.json";
@@ -14,7 +12,6 @@ function getYoutubeVideoId(url) {
   return url.split("=")[1];
 }
 
-// Load client secrets from a local file.
 async function getYoutubeVideo(url, bubbleResponse) {
   logger.info("Fetching url = " + url);
   const _id = getYoutubeVideoId(url);
