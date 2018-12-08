@@ -10,6 +10,7 @@ class MyPlaylistsContainer extends React.Component {
   }
 
   componentDidMount() {
+    // TODO : fetch sur /users/{id_user}/playlists
     fetch("/playlists", { method: "GET" })
       .then(resp => {
         return resp.json();
