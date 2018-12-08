@@ -44,12 +44,7 @@ router.put("/:id_playlist", async (req, res) => {
     set name=$1, visible=$2, description=$3
     where id_playlist=$4
     returning id_playlist,name,id_tag,visible,id_user,creation_date,last_update_date,description,likes_number,dislikes_number`;
-  const values = [
-    req.body.name,
-    req.body.visible,
-    req.body.description, //Date.now(),
-    req.params.id
-  ];
+  const values = [req.body.name, req.body.visible, req.body.description, req.params.id_playlist];
   try {
     await db.connect();
     const result = await db.query(query, values);
@@ -152,28 +147,26 @@ router.post("/:id_playlist/videos", async (req, res) => {
     logger.info(err.stack);
   }
 });
-
-// TODO
+ 
 router.get("/:id_playlist/suggestions", async (req, res) => {
-  const text = ``;
-  const values = [];
+  const query = `select * from playswift.suggestions where id_playlist = $1 and state = 'pending'`;
+  const values = [req.params.id_playlist];
   try {
     await db.connect();
-    const result = await db.query(text, values);
-    res.send("not yet implemented");
+    const result = await db.query(query, values);
+    res.send(result.rows[0]);
   } catch (err) {
     logger.info(err.stack);
   }
 });
 
-// TODO
 router.post("/:id_playlist/suggestions", async (req, res) => {
-  const text = ``;
-  const values = [];
+  const text = `insert into playswift.suggestions values(default, 'pending', $1)`;
+  const values = [req.body.id_user];
   try {
     await db.connect();
     const result = await db.query(text, values);
-    res.send("not yet implemented");
+    res.send(result.rows[0]);
   } catch (err) {
     logger.info(err.stack);
   }
