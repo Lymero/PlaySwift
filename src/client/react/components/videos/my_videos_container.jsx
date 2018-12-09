@@ -20,7 +20,7 @@ class MyVideosContainer extends React.Component {
     Api({
       url: `/playlists/${parseInt(location.href.split("/").pop())}/videos`,
       method: "GET",
-      param: null
+      params: null
     }).then(videos => {
       this.setState(Object.assign({}, this.state, { videos: videos }));
     });

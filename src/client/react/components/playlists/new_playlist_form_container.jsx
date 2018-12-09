@@ -24,17 +24,20 @@ class NewPlaylistContainer extends React.Component {
   addPlaylist(event) {
     event.preventDefault();
     let userID = this.props.usersSession.userId;
+    let body = {
+      name: this.state.name,
+      id_tag: this.state.tag,
+      visible: 1,
+      id_user: userID,
+      description: this.state.description
+    };
+
+    console.log(body);
 
     Api({
       url: "/playlists",
       method: "POST",
-      param: {
-        name: this.state.name,
-        id_tag: this.state.tag,
-        visible: 1,
-        id_user: userID,
-        description: this.state.description
-      }
+      params: body
     });
   }
 
