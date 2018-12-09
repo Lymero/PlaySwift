@@ -23,7 +23,7 @@ class NewPlaylistContainer extends React.Component {
 
   addPlaylist(event) {
     event.preventDefault();
-    let userID = this.props.usersSession.userId;
+    let userID = this.props.userId;
     let body = {
       name: this.state.name,
       id_tag: this.state.tag,
@@ -55,7 +55,10 @@ class NewPlaylistContainer extends React.Component {
 }
 
 const mapStateToProps = state => {
-  return {profile: state.usersSession.profile}
+  return {
+    profile: state.usersSession.profile,
+    userId: state.usersSession.userId
+  }
 }; 
 
 export default connect(mapStateToProps)(NewPlaylistContainer);
