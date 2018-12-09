@@ -6,15 +6,7 @@ import { Link } from "react-router-dom";
 class PlaylistPreview extends React.Component {
   constructor(props) {
     super(props);
-    this.redirectPlaylistVideos = this.redirectPlaylistVideos.bind(this);
   }
-
-  redirectPlaylistVideos() {
-    console.log("CALL redirectPlaylistVideos");
-    console.log(this.props.playlist["id_playlist"]);
-    // redirection vers http://localhost:3030/#/playlists/(id_pl)
-  }
-
   render() {
     const { playlist } = this.props;
     const toUrl = "/playlists/" + playlist["id_playlist"];

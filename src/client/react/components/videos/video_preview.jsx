@@ -5,7 +5,6 @@ class VideoPreview extends React.Component {
   constructor(props) {
     super(props);
   }
-  //TODO
   render() {
     const { video } = this.props;
     return (

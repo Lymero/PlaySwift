@@ -8,9 +8,18 @@ class MyVideosContainer extends React.Component {
     this.displayNumberVideos = this.displayNumberVideos.bind(this);
   }
 
-  //TODO
+  //TODO fix infinite loop (setState - DidUpdate - setState - DidUpdate - ...)
   componentDidMount() {
-    fetch("/playlists/1", { method: "GET" })
+    this.fetchVideos();
+  }
+  componentDidUpdate() {
+    this.fetchVideos();
+  }
+
+  fetchVideos() {
+    fetch(`/playlists/${parseInt(location.href.split("/").pop())}/videos`, {
+      method: "GET"
+    })
       .then(resp => {
         return resp.json();
       })
