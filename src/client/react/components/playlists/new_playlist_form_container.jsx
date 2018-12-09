@@ -1,6 +1,6 @@
 import React from "react";
 import NewPlaylistComponent from "./new_playlist_component";
-import UsersUtils from "react/utils/users";
+import Auth from "react/services/auth0.js";
 import Api from "react/utils/api";
 
 class NewPlaylistContainer extends React.Component {
@@ -23,18 +23,21 @@ class NewPlaylistContainer extends React.Component {
 
   addPlaylist(event) {
     event.preventDefault();
-    let userID = UsersUtils.getUserProfile().sub;
+    let userID = Auth.getUserId();
+    let body = {
+      name: this.state.name,
+      id_tag: this.state.tag,
+      visible: 1,
+      id_user: userID,
+      description: this.state.description
+    };
+
+    console.log(body);
 
     Api({
       url: "/playlists",
       method: "POST",
-      param: {
-        name: this.state.name,
-        id_tag: this.state.tag,
-        visible: 1,
-        id_user: userID,
-        description: this.state.description
-      }
+      params: body
     });
   }
 

@@ -14,7 +14,7 @@ class MyPlaylistsContainer extends React.Component {
     Api({
       url: "/playlists",
       method: "GET",
-      param: null
+      params: null
     }).then(playlists => {
       this.setState(Object.assign({}, this.state, { playlists: playlists }));
     });
