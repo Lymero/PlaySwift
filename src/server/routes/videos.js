@@ -20,6 +20,7 @@ router.get("/:id_video", async (req, res) => {
   }
 });
 
+// TODO - Swap les positions
 router.put("/:id_video", async (req, res) => {
   const client = await pool.connect();
   const query = `update playswift.videos_playlists
@@ -53,13 +54,14 @@ router.delete("/:id_video", async (req, res) => {
 
 router.get("/:id_video/reactions", async (req, res) => {
   const client = await pool.connect();
-  const query = `select r.*
-  from playswift.videos_playlists vp,playswift.reactions r
-  where vp.id_video_playlist=r.id_video_playlist and r.id_video_playlist=$1`;
+  const query = `select *
+  from playswift.reactions 
+  where id_video_playlist = $1`;
   const values = [req.params.id_video];
   try {
     const result = await client.query(query, values);
-    res.send(result.rows[0]);
+    console.log(result)
+    res.send(result.rows);
   } catch (err) {
     logger.info(err.stack);
   } finally {

@@ -9,7 +9,7 @@ router.get("/:id_user/playlists", async (req, res) => {
   const values = [req.params.id_user];
   try {
     const result = await client.query(query, values);
-    res.send(result.rows[0]);
+    res.send(result.rows);
   } catch (err) {
     logger.info(err.stack);
   } finally {
@@ -23,7 +23,7 @@ router.get("/:id_user/subscriptions", async (req, res) => {
   const values = [req.params.id_user];
   try {
     const result = await client.query(query, values);
-    res.send(result.rows[0]);
+    res.send(result.rows);
   } catch (err) {
     logger.info(err.stack);
   } finally {
