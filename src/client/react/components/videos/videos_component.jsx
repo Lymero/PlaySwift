@@ -1,27 +1,28 @@
 import React from "react";
 import { Container, Row, Col, ListGroup } from "react-bootstrap";
-import VideoPreview from "react/components/videos/video_preview";
-import NewVideoForm from "react/containers/videos/new_video_form_container";
+import VideoPreview from "./video_preview";
+import NewVideoForm from "./new_video_form_container";
 
 const VideosComponent = ({ videos }) => {
   return (
     <Container>
-      <Row>
-        <ListGroup>
-          <Row>
-            {videos.map((video, i) => (
-              <Col xs={12} sm={12} md={6} lg={6} key={i}>
-                <ListGroup.Item key={i}>
-                  <VideoPreview video={video} />
-                </ListGroup.Item>
-              </Col>
-            ))}
-            <Col xs={12} sm={12} md={6} lg={6}>
-              <NewVideoForm />
+      <h3>
+        <span className="badge badge-secondary">{videos.length}</span>
+      </h3>
+      <ListGroup>
+        <Row>
+          {videos.map((video, i) => (
+            <Col xs={12} sm={12} md={6} lg={6} key={i}>
+              <ListGroup.Item key={i}>
+                <VideoPreview video={video} />
+              </ListGroup.Item>
             </Col>
-          </Row>
-        </ListGroup>
-      </Row>
+          ))}
+          <Col xs={12} sm={12} md={6} lg={6}>
+            <NewVideoForm />
+          </Col>
+        </Row>
+      </ListGroup>
     </Container>
   );
 };

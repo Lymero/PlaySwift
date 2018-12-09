@@ -50,13 +50,14 @@ router.put("/:id_playlist", async (req, res) => {
   const client = await pool.connect();
   const query = `update playswift.playlists
     set name=$1, visible=$2, description=$3
-    where id_playlist=$4
+    where id_playlist = $4 and id_user = $5
     returning id_playlist,name,id_tag,visible,id_user,creation_date,last_update_date,description,likes_number,dislikes_number`;
   const values = [
     req.body.name,
     req.body.visible,
     req.body.description,
-    req.params.id_playlist
+    req.params.id_playlist,
+    req.body.id_user
   ];
   try {
     const result = await client.query(query, values);
@@ -69,13 +70,16 @@ router.put("/:id_playlist", async (req, res) => {
   }
 });
 
+// TODO - Gérer les deletes en cascade (ex: supprimer une playlist ayant des videos ayant des reactions)
 router.delete("/:id_playlist", async (req, res) => {
   const client = await pool.connect();
-  const query = `delete from playswift.playlists where id_playlist=$1`;
-  const values = [req.params.id_playlist];
+  const query = `delete from playswift.playlists 
+  where id_playlist = $1 and id_user = $2 
+  returning id_playlist,name,id_tag,visible,id_user,creation_date,last_update_date,description,likes_number,dislikes_number`;
+  const values = [req.params.id_playlist, req.body.id_user];
   try {
     const result = await client.query(query, values);
-    res.send(result);
+    res.send(result.rows[0]);
     logger.info("DELETE:" + values);
   } catch (err) {
     logger.info(err.stack);
@@ -176,7 +180,7 @@ router.get("/:id_playlist/suggestions", async (req, res) => {
   const values = [req.params.id_playlist];
   try {
     const result = await client.query(query, values);
-    res.send(result.rows[0]);
+    res.send(result.rows);
   } catch (err) {
     logger.info(err.stack);
   } finally {
@@ -184,12 +188,14 @@ router.get("/:id_playlist/suggestions", async (req, res) => {
   }
 });
 
-// TODO
+// TODO Verifier id_user = celui de la playlist
+// TODO Créer la video proposée si elle n'existe pas
 router.post("/:id_playlist/suggestions", async (req, res) => {
   const client = await pool.connect();
   const text = `insert into playswift.suggestions values(default, $1, $2, 'pending', $3)`;
-  const values = [req.body.id_user];
   try {
+    // TODO : Récupérer l'id vidéo sur base de l'url (req.body.url_video)
+    const values = [req.params.id_playlist, id_video, req.body.id_user];
     const result = await client.query(text, values);
     res.send(result.rows[0]);
   } catch (err) {

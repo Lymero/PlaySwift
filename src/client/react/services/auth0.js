@@ -54,10 +54,6 @@ function getUserProfile() {
   return decoded;
 }
 
-function getUserId() {
-  return getUserProfile().sub.split("|")[1];
-}
-
 function logout() {
   localStorage.removeItem("accessToken");
   localStorage.removeItem("profile");

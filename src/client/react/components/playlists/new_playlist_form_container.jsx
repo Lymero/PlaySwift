@@ -1,6 +1,7 @@
 import React from "react";
-import NewPlaylistComponent from "react/components/playlists/new_playlist_component";
-import UsersUtils from "react/utils/users.js";
+import NewPlaylistComponent from "./new_playlist_component";
+import Api from "react/utils/api";
+import { connect } from "react-redux";
 
 class NewPlaylistContainer extends React.Component {
   constructor(props) {
@@ -22,26 +23,19 @@ class NewPlaylistContainer extends React.Component {
 
   addPlaylist(event) {
     event.preventDefault();
-    let userID = UsersUtils.getUserProfile().sub;
+    let userID = this.props.usersSession.userId;
 
-    fetch("/playlists", {
+    Api({
+      url: "/playlists",
       method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
+      param: {
         name: this.state.name,
         id_tag: this.state.tag,
         visible: 1,
         id_user: userID,
         description: this.state.description
-      })
-    }).then(function(response) {
-      console.log(response.text());
+      }
     });
-
-    // THIS PART SHOULD BE IN A REDUX ACTION
   }
 
   render() {
@@ -57,4 +51,8 @@ class NewPlaylistContainer extends React.Component {
   }
 }
 
-export default NewPlaylistContainer;
+const mapStateToProps = state => {
+  return {profile: state.usersSession.profile}
+}; 
+
+export default connect(mapStateToProps)(NewPlaylistContainer);

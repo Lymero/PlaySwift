@@ -19,12 +19,14 @@ const usersSessions = (
       })
     case SET_USER_PROFILE:
       return Object.assign({}, state, {
-        profile: action.userProfile
+        profile: action.userProfile,
+        userId: action.userProfile.sub.split("|")[1]
       })
     case UNSET_USER_PROFILE:
       // eslint-disable-next-line no-case-declarations
       let noProfileState = Object.assign({}, state, {});
       delete noProfileState.profile;
+      delete noProfileState.userId;
       return noProfileState;
     default:
       return state;
