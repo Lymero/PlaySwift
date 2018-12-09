@@ -33,8 +33,8 @@ function verify() {
       { authenticated: true }
     ));
     store.dispatch(
-      setUserProfile(getUserProfile()
-    ));
+      setUserProfile(getUserProfile(), getJWT())
+    );
     return true;
   }
   return false;
@@ -78,7 +78,6 @@ export default {
   logout: logout,
   verify: verify,
   getUserProfile: getUserProfile,
-  getUserId: getUserId,
   isAuthenticated: isAuthenticated,
   getJWT: getJWT
 };

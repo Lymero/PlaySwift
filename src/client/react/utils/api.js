@@ -1,11 +1,11 @@
-import Auth from "react/services/auth0.js";
+import rootStore from "react/reducers/root";
 
 function sendApiRequest({ url, method = "GET", params = null }) {
-  const jwt = Auth.getJWT();
+  const reduxJWT = rootStore.getState().usersSession.jwt;
   const headers = new Headers();
   headers.append("Accept", "application/json");
   headers.append("Content-Type", "application/json");
-  headers.append("Authorization", "Bearer " + jwt);
+  headers.append("Authorization", "Bearer " + reduxJWT);
 
   function handleResponse(response) {
     if (!response.ok) {
