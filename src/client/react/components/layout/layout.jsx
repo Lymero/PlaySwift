@@ -1,7 +1,6 @@
 import React, { Component } from "react";
-import { Container, Row } from "react-bootstrap";
-import RouterOutlet from "../routes/router_outlet";
-import NavigationContainer from "../../containers/navigations/navigation_container";
+import RouterOutlet from "react/components/routes/router_outlet";
+import NavigationContainer from "react/components/navigation/navigation_container";
 
 export class Layout extends Component {
   render() {
@@ -9,11 +8,7 @@ export class Layout extends Component {
       <div>
         <React.Fragment>
           <NavigationContainer />
-          <Container>
-            <Row>
-              <RouterOutlet />
-            </Row>
-          </Container>
+          <RouterOutlet />
         </React.Fragment>
       </div>
     );

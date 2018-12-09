@@ -1,9 +1,5 @@
-import {
-  SET_CURRENT_USER
-} from "../actions/actions";
-import {
-  SET_AUTH_STATE
-} from "../actions/actions";
+import { SET_CURRENT_USER } from "react/actions/actions";
+import { SET_AUTH_STATE } from "react/actions/actions";
 
 const usersSessions = (
   state = {

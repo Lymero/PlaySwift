@@ -1,6 +1,5 @@
 import React from "react";
 import NewVideoComponent from "react/components/videos/new_video_component";
-import UsersUtils from "react/utils/users.js";
 
 class NewVideoContainer extends React.Component {
   constructor(props) {

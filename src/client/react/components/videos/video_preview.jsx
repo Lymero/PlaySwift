@@ -1,5 +1,5 @@
 import React from "react";
-import PlayerContainer from "../../containers/player/player_container";
+import PlayerContainer from "react/components/player/player_container";
 
 class VideoPreview extends React.Component {
   constructor(props) {
