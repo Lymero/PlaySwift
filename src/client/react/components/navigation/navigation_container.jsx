@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import Navigation from "../../components/navigations/navigation";
+import Navigation from "./navigation";
 
 class NavigationContainer extends React.Component {
   constructor(props) {

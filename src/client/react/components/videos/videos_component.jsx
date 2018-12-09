@@ -1,7 +1,7 @@
 import React from "react";
 import { Container, Row, Col, ListGroup } from "react-bootstrap";
-import VideoPreview from "react/components/videos/video_preview";
-import NewVideoForm from "react/containers/videos/new_video_form_container";
+import VideoPreview from "./video_preview";
+import NewVideoForm from "./new_video_form_container";
 
 const VideosComponent = ({ videos }) => {
   return (

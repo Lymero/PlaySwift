@@ -1,10 +1,10 @@
 import React from "react";
 import { Route, withRouter, Redirect } from "react-router-dom";
-import AllPlaylistsContainer from "../../containers/playlists/all_playlists_container";
-import MyPlaylistsContainer from "../../containers/playlists/my_playlists_container";
-import MyVideosContainer from "../../containers/videos/my_videos_container";
-import LoginPrompt from "../auth/login_prompt";
-import CallbackContainer from "../auth/callback_container";
+import AllPlaylistsContainer from "react/components/playlists/all_playlists_container";
+import MyPlaylistsContainer from "react/components/playlists/my_playlists_container";
+import MyVideosContainer from "react/components/videos/my_videos_container";
+import LoginPrompt from "react/components/auth/login_prompt";
+import CallbackContainer from "react/components/auth/callback_container";
 import { connect } from "react-redux";
 
 function RouterOutlet({ authState, location: { pathname } }) {
@@ -22,7 +22,7 @@ function RouterOutlet({ authState, location: { pathname } }) {
         <Route exact path="/" component={AllPlaylistsContainer} />
         <Route path="/login" component={LoginPrompt} />
         <Route path="/authCallback" component={CallbackContainer} />
-        <Route path="/playlists" component={MyPlaylistsContainer} />
+        <Route exact path="/playlists" component={MyPlaylistsContainer} />
         <Route path="/playlists/:idPlaylist" component={MyVideosContainer} />
       </React.Fragment>
     );

@@ -1,6 +1,7 @@
 import React from "react";
-import NewPlaylistComponent from "react/components/playlists/new_playlist_component";
-import UsersUtils from "react/utils/users.js";
+import NewPlaylistComponent from "./new_playlist_component";
+import UsersUtils from "react/utils/users";
+import Api from "react/utils/api";
 
 class NewPlaylistContainer extends React.Component {
   constructor(props) {
@@ -24,24 +25,17 @@ class NewPlaylistContainer extends React.Component {
     event.preventDefault();
     let userID = UsersUtils.getUserProfile().sub;
 
-    fetch("/playlists", {
+    Api({
+      url: "/playlists",
       method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
+      param: {
         name: this.state.name,
         id_tag: this.state.tag,
         visible: 1,
         id_user: userID,
         description: this.state.description
-      })
-    }).then(function(response) {
-      console.log(response.text());
+      }
     });
-
-    // THIS PART SHOULD BE IN A REDUX ACTION
   }
 
   render() {

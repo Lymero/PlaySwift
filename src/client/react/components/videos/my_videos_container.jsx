@@ -1,5 +1,6 @@
 import React from "react";
-import VideosComponent from "../../components/videos/videos_component";
+import VideosComponent from "./videos_component";
+import Api from "react/utils/api";
 
 class MyVideosContainer extends React.Component {
   constructor(props) {
@@ -8,24 +9,22 @@ class MyVideosContainer extends React.Component {
     this.displayNumberVideos = this.displayNumberVideos.bind(this);
   }
 
-  //TODO fix infinite loop (setState - DidUpdate - setState - DidUpdate - ...)
   componentDidMount() {
     this.fetchVideos();
   }
+
   componentDidUpdate() {
-    this.fetchVideos();
+    // this.fetchVideos();
   }
 
   fetchVideos() {
-    fetch(`/playlists/${parseInt(location.href.split("/").pop())}/videos`, {
-      method: "GET"
-    })
-      .then(resp => {
-        return resp.json();
-      })
-      .then(videos => {
-        this.setState(Object.assign({}, this.state, { videos: videos }));
-      });
+    Api({
+      url: `/playlists/${parseInt(location.href.split("/").pop())}/videos`,
+      method: "GET",
+      param: null
+    }).then(videos => {
+      this.setState(Object.assign({}, this.state, { videos: videos }));
+    });
   }
 
   displayNumberVideos() {
