@@ -33,8 +33,8 @@ function verify() {
       { authenticated: true }
     ));
     store.dispatch(
-      setUserProfile(getUserProfile()
-    ));
+      setUserProfile(getUserProfile(), getJWT())
+    );
     return true;
   }
   return false;
