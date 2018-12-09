@@ -67,11 +67,19 @@ function logout() {
   );
 }
 
+function getJWT() {
+  let accessToken = localStorage.getItem("accessToken");
+  if (accessToken === null)
+    throw "AccessToken not found in LocalStorage";
+  return accessToken;
+}
+
 export default {
   show: show,
   logout: logout,
   verify: verify,
   getUserProfile: getUserProfile,
   getUserId: getUserId,
-  isAuthenticated: isAuthenticated
+  isAuthenticated: isAuthenticated,
+  getJWT: getJWT
 };
