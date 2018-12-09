@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const projectRoot = path.join(__dirname, '../..');
+const projectRoot = path.join(__dirname, '../../..');
 const manifestPath = path.join(projectRoot, 'dist/manifest.json');
 
 function assetPath(assetName) {

@@ -1,8 +1,6 @@
 const express = require("express");
 const router = express.Router();
 
-const authRouter = require("./auth");
-const indexRouter = require("./index");
 const playlistsRouter = require("./playlists");
 const reactionsRouter = require("./reactions");
 const suggestionsRouter = require("./suggestions");
@@ -14,10 +12,6 @@ const auth = require("../middlewares/auth");
 
 // API status
 router.get("/status", (req, res) => res.send("OK"));
-
-// Doesn't need authentication
-router.use("/", indexRouter);
-router.use("/authCallback", authRouter);
 
 // Authentication needed
 router.use(auth.checkJwt);

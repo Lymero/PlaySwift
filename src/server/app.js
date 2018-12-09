@@ -7,6 +7,8 @@ const error = require("./middlewares/error");
 const assetPath = require("./utils/asset_path");
 const routes = require("./routes/routes");
 const { logs } = require("./config/vars");
+const authRouter = require("./routes/auth");
+const indexRouter = require("./routes/index");
 
 const serverRoot = path.join(__dirname, ".");
 const app = express();
@@ -32,6 +34,9 @@ app.use(
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "../../dist")));
+
+app.use("/", indexRouter);
+app.use("/authCallback", authRouter);
 
 app.use("/api", routes);
 
