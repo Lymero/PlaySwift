@@ -3,10 +3,15 @@ const readline = require("readline");
 const logger = require("../logger").logger;
 const { google } = require("googleapis");
 const googleAuth = require("google-auth-library");
+const {
+  oauth_tdir,
+  oauth_tpath,
+  oauth_secret_fpath,
+  api_key
+} = require("../../config/vars");
 
 const SCOPES = ["https://www.googleapis.com/auth/youtube.force-ssl"];
-const TOKEN_DIR = process.env.OAUTH_TDIR;
-const TOKEN_PATH = TOKEN_DIR + process.env.OAUTH_TPATH;
+const TOKEN_PATH = oauth_tdir + oauth_tpath;
 
 function getYoutubeVideoId(url) {
   return url.split("=")[1];
@@ -15,10 +20,7 @@ function getYoutubeVideoId(url) {
 async function getYoutubeVideo(url, bubbleResponse) {
   logger.info("Fetching url = " + url);
   const _id = getYoutubeVideoId(url);
-  fs.readFile(process.env.OAUTH_SECRET_FPATH, function processClientSecrets(
-    err,
-    content
-  ) {
+  fs.readFile(oauth_secret_fpath, function processClientSecrets(err, content) {
     if (err) {
       logger.error("Error loading client secret file: " + err);
       return;
@@ -101,7 +103,7 @@ function getNewToken(oauth2Client, requestData, callback) {
  */
 function storeToken(token) {
   try {
-    fs.mkdirSync(TOKEN_DIR);
+    fs.mkdirSync(oauth_tdir);
   } catch (err) {
     if (err.code != "EEXIST") {
       throw err;
@@ -130,7 +132,7 @@ function removeEmptyParameters(params) {
 async function videosListById(auth, requestData, bubbleResponse) {
   const service = google.youtube({
     version: "v3",
-    auth: process.env.API_KEY
+    auth: api_key
   });
   let parameters = removeEmptyParameters(requestData["params"]);
   parameters["auth"] = auth;

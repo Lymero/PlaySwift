@@ -60,7 +60,6 @@ router.get("/:id_video/reactions", async (req, res) => {
   const values = [req.params.id_video];
   try {
     const result = await client.query(query, values);
-    console.log(result)
     res.send(result.rows);
   } catch (err) {
     logger.info(err.stack);

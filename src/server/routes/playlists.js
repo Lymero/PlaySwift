@@ -1,13 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const logger = require("../modules/logger").logger;
-const {
-  pool
-} = require("../modules/db");
-const {
-  getYoutubeVideo
-} = require("../modules/google/youtube");
-
+const { pool } = require("../modules/db");
+const { getYoutubeVideo } = require("../modules/google/youtube");
 
 router.get("/", async (req, res) => {
   const client = await pool.connect();
@@ -110,13 +105,8 @@ router.get("/:id_playlist/videos", async (req, res) => {
 });
 
 router.post("/:id_playlist/videos", async (req, res) => {
-  const {
-    id_playlist
-  } = req.params;
-  const {
-    url_video,
-    description
-  } = req.body;
+  const { id_playlist } = req.params;
+  const { url_video, description } = req.body;
 
   const client = await pool.connect();
   const queryDoesVideoExist = `select count(id_video) from playswift.videos where url_video = $1`;
@@ -134,23 +124,21 @@ router.post("/:id_playlist/videos", async (req, res) => {
 
     values = [id_playlist];
     logger.info("QUERY queryVideoPosition : " + queryVideoPosition);
-    const position = (await client.query(queryVideoPosition, values)).rows[0].max + 1;
+    const position =
+      (await client.query(queryVideoPosition, values)).rows[0].max + 1;
 
     // if it doesn't, add it to db
     if (result.rows[0].count == 0) {
       getYoutubeVideo(url_video, async resp => {
-        const {
-          title
-        } = resp[0].snippet;
-        const {
-          url
-        } = resp[0].snippet.thumbnails.high;
+        const { title } = resp[0].snippet;
+        const { url } = resp[0].snippet.thumbnails.high;
         values = [url_video, title, url];
         logger.info("QUERY queryInsertVideo : " + queryInsertVideo);
         const new_video = (await client.query(queryInsertVideo, values)).rows[0];
-        console.log(new_video)
         values = [id_playlist, new_video.id_video, description, position];
-        logger.info("QUERY queryInsertVideoPlaylist : " + queryInsertVideoPlaylist);
+        logger.info(
+          "QUERY queryInsertVideoPlaylist : " + queryInsertVideoPlaylist
+        );
         await client.query(queryInsertVideoPlaylist, values);
         res.send(new_video);
       });
@@ -160,7 +148,9 @@ router.post("/:id_playlist/videos", async (req, res) => {
       logger.info("QUERY queryExistingVideo : " + queryExistingVideo);
       const new_video = (await client.query(queryExistingVideo, values)).rows[0];
       values = [id_playlist, new_video.id_video, description, position];
-      logger.info("QUERY queryInsertVideoPlaylist : " + queryInsertVideoPlaylist);
+      logger.info(
+        "QUERY queryInsertVideoPlaylist : " + queryInsertVideoPlaylist
+      );
       await client.query(queryInsertVideoPlaylist, values);
       res.send(new_video);
     }
