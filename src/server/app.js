@@ -1,11 +1,13 @@
 // imports
 const express = require("express");
 const path = require("path");
+const fs = require("fs");
 const createError = require("http-errors");
 const cookieParser = require("cookie-parser");
 const sassMiddleware = require("node-sass-middleware");
 const logger = require("morgan");
-var fs = require("fs");
+const jwt = require("express-jwt");
+const jwksRsa = require("jwks-rsa");
 // application.js mapping
 const assetPath = require("./asset_path.js");
 //winston logger setup
@@ -23,12 +25,23 @@ const videosRouter = require("./routes/videos");
 const serverRoot = path.join(__dirname, ".");
 // express
 const app = express();
-// Connect to DB
 
-// auth0 jwtCheck middleware
-// TODO
+const checkJwt = jwt({
+  // Dynamically provide a signing key
+  // based on the kid in the header and
+  // the signing keys provided by the JWKS endpoint.
+  secret: jwksRsa.expressJwtSecret({
+    cache: true,
+    rateLimit: true,
+    jwksRequestsPerMinute: 5,
+    jwksUri: `https://web3.eu.auth0.com/.well-known/jwks.json`
+  }),
+  // Validate the audience and the issuer.
+  audience: "http://localhost:3030",
+  issuer: `https://web3.eu.auth0.com/`,
+  algorithms: ["RS256"]
+});
 
-// application.js
 app.locals.assetPath = assetPath;
 
 app.set("views", path.join(__dirname, "views"));
@@ -79,6 +92,11 @@ app.use(express.static(path.join(__dirname, "../../dist")));
 
 app.use("/", indexRouter);
 app.use("/authCallback", authRouter);
+app.use(checkJwt);
+app.use((req, res, next) => {
+  req.id_user = req.user.sub.split("|")[1];
+  next();
+});
 
 // API
 app.use("/playlists", playlistsRouter);
