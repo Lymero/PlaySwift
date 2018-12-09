@@ -78,7 +78,6 @@ export default {
   logout: logout,
   verify: verify,
   getUserProfile: getUserProfile,
-  getUserId: getUserId,
   isAuthenticated: isAuthenticated,
   getJWT: getJWT
 };
