@@ -1,6 +1,6 @@
 import AuthModule from "auth0-lock";
 import JWT from "jsonwebtoken";
-import { setAuthState } from "react/actions/actions";
+import { setAuthState, setUserProfile, unsetUserProfile } from "react/actions/actions";
 import store from "react/reducers/root";
 
 // https://auth0.com/docs/libraries/lock/v11/configuration#database-options
@@ -29,11 +29,12 @@ function show() {
 
 function verify() {
   if (isAuthenticated()) {
+    store.dispatch(setAuthState(
+      { authenticated: true }
+    ));
     store.dispatch(
-      setAuthState({
-        authenticated: true
-      })
-    );
+      setUserProfile(getUserProfile()
+    ));
     return true;
   }
   return false;
@@ -63,7 +64,9 @@ function logout() {
   store.dispatch(
     setAuthState({
       authenticated: false
-    })
+  }));
+  store.dispatch(
+    unsetUserProfile()
   );
 }
 

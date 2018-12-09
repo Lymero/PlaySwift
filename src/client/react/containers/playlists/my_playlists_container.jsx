@@ -39,4 +39,10 @@ class MyPlaylistsContainer extends React.Component {
   }
 }
 
-export default connect()(MyPlaylistsContainer);
+const mapStateToProps = state => {
+  console.log(state);
+  return {profile: state.usersSession.profile}
+};
+
+
+export default connect(mapStateToProps)(MyPlaylistsContainer);
