@@ -1,5 +1,5 @@
 import React from "react";
-import SearchForm from "search_form";
+import SearchForm from "./search_form";
 
 class SearchFormContainer extends React.Component {
   constructor(props) {
@@ -19,7 +19,7 @@ class SearchFormContainer extends React.Component {
 
   search(event) {
     event.preventDefault();
-    console.log("Search with filter : " + filter);
+    console.log("Search with filter : " + this.state.filter);
   }
 
   render() {

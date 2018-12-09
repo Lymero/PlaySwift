@@ -6,7 +6,6 @@ class MyVideosContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = { videos: [] };
-    this.displayNumberVideos = this.displayNumberVideos.bind(this);
   }
 
   componentDidMount() {
@@ -27,23 +26,9 @@ class MyVideosContainer extends React.Component {
     });
   }
 
-  displayNumberVideos() {
-    return this.state.videos.length;
-  }
-
   render() {
     console.log(this.state.videos);
-    return (
-      <div>
-        <h1>
-          My videos
-          <span className="badge badge-secondary">
-            {this.displayNumberVideos()}
-          </span>
-        </h1>
-        <VideosComponent videos={this.state.videos} {...this.props} />
-      </div>
-    );
+    return <VideosComponent videos={this.state.videos} {...this.props} />;
   }
 }
 

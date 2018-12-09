@@ -6,7 +6,7 @@ import Api from "react/utils/api";
 class AllPlaylistsContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { title: "Playlists", playlists: [] };
+    this.state = { title: "All playlist", playlists: [] };
   }
 
   componentDidMount() {

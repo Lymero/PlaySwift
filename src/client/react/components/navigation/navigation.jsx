@@ -1,7 +1,7 @@
 import React from "react";
 import { Nav, Navbar, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import SearchForm from "./search_form";
+import SearchFormContainer from "./search_form_container";
 import Auth from "react/services/auth0";
 
 const Navigation = ({ authState, currentUser }) => {
@@ -11,7 +11,7 @@ const Navigation = ({ authState, currentUser }) => {
         Home
       </Navbar.Brand>
       <Nav className="mr-auto" />
-      <SearchForm />
+      <SearchFormContainer />
       <Nav className="mr-auto">
         <Nav.Link as={Link} to="/playlists">
           My playlists - Current user =
