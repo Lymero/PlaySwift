@@ -18,7 +18,7 @@ class MyVideosContainer extends React.Component {
 
   fetchVideos() {
     Api({
-      url: `/playlists/${parseInt(location.href.split("/").pop())}/videos`,
+      url: `/api/playlists/${parseInt(location.href.split("/").pop())}/videos`,
       method: "GET",
       params: null
     }).then(videos => {

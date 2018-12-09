@@ -35,7 +35,7 @@ class NewPlaylistContainer extends React.Component {
     console.log(body);
 
     Api({
-      url: "/playlists",
+      url: "/api/playlists",
       method: "POST",
       params: body
     });
