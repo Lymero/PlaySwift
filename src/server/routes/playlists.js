@@ -181,8 +181,6 @@ router.get("/:id_playlist/suggestions", async (req, res) => {
   }
 });
 
-// TODO Verifier id_user = celui de la playlist
-// TODO Créer la video proposée si elle n'existe pas
 router.post("/:id_playlist/suggestions", async (req, res) => {
   const { id_playlist } = req.params;
   const { url_video, id_user } = req.body;
