@@ -1,13 +1,21 @@
 const express = require("express");
 const router = express.Router();
 const logger = require("../modules/logger").logger;
-const { pool } = require("../modules/db");
-const { getYoutubeVideo } = require("../modules/google/youtube");
-const { validatePlaylist } = require("../models/playlist");
-const { validateVideo } = require("../models/video");
-const { validateSuggestion } = require("../models/video");
-const httpStatus = require("http-status");
-const createError = require("http-errors");
+const {
+  pool
+} = require("../modules/db");
+const {
+  getYoutubeVideo
+} = require("../modules/google/youtube");
+const {
+  validatePlaylist
+} = require("../models/playlist");
+const {
+  validateVideo
+} = require("../models/video");
+const {
+  validateSuggestion
+} = require("../models/video");
 
 router.get("/", async (req, res, next) => {
   const client = await pool.connect();
@@ -23,11 +31,11 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.post("/", async (req, res, next) => {
-  const { error } = validatePlaylist(req.body);
-  if (error) {
-    return next(createError(httpStatus.BAD_REQUEST, error.details[0].message));
-  }
+router.post("/", async (req, res) => {
+  const {
+    error
+  } = validatePlaylist(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
   const client = await pool.connect();
   const query = `insert into playswift.playlists
     values(default, $1, $2, $3, $4, default, default, $5, default, default)
@@ -51,7 +59,9 @@ router.post("/", async (req, res, next) => {
 });
 
 router.put("/:id_playlist", async (req, res, next) => {
-  const { error } = validatePlaylist(req.body);
+  const {
+    error
+  } = validatePlaylist(req.body);
   if (error) return res.status(400).send(error.details[0].message);
   const client = await pool.connect();
   const query = `update playswift.playlists
@@ -117,10 +127,18 @@ router.get("/:id_playlist/videos", async (req, res) => {
 });
 
 router.post("/:id_playlist/videos", async (req, res) => {
-  const { error } = validateVideo(req.body, req.params);
+  const {
+    error
+  } = validateVideo(req.body, req.params);
   if (error) return res.status(400).send(error.details[0].message);
-  const { id_playlist } = req.params;
-  const { url_video, description, id_user } = req.body;
+  const {
+    id_playlist
+  } = req.params;
+  const {
+    url_video,
+    description,
+    id_user
+  } = req.body;
 
   const client = await pool.connect();
   const queryOwnerOfPlaylist = `select count(*) from playswift.playlists where id_user=$1 and id_playlist=$2`;
@@ -149,8 +167,12 @@ router.post("/:id_playlist/videos", async (req, res) => {
     // if it doesn't, add it to db
     if (result.rows[0].count == 0) {
       getYoutubeVideo(url_video, async resp => {
-        const { title } = resp[0].snippet;
-        const { url } = resp[0].snippet.thumbnails.high;
+        const {
+          title
+        } = resp[0].snippet;
+        const {
+          url
+        } = resp[0].snippet.thumbnails.high;
         values = [url_video, title, url];
         logger.info("QUERY queryInsertVideo : " + queryInsertVideo);
         const new_video = (await client.query(queryInsertVideo, values))
@@ -200,11 +222,18 @@ router.get("/:id_playlist/suggestions", async (req, res) => {
 });
 
 router.post("/:id_playlist/suggestions", async (req, res) => {
-  const { error } = validateSuggestion(req.body, req.params);
+  const {
+    error
+  } = validateSuggestion(req.body, req.params);
   if (error) return res.status(400).send(error.details[0].message);
 
-  const { id_playlist } = req.params;
-  const { url_video, id_user } = req.body;
+  const {
+    id_playlist
+  } = req.params;
+  const {
+    url_video,
+    id_user
+  } = req.body;
 
   const client = await pool.connect();
   const queryInsertSuggestion = `insert into playswift.suggestions values(default, $1, $2, 'pending', $3)`;
@@ -216,8 +245,12 @@ router.post("/:id_playlist/suggestions", async (req, res) => {
     let video = await client.query(queryExistingVideo, values);
     if (video.rowCount === 0) {
       getYoutubeVideo(url_video, async resp => {
-        const { title } = resp[0].snippet;
-        const { url } = resp[0].snippet.thumbnails.high;
+        const {
+          title
+        } = resp[0].snippet;
+        const {
+          url
+        } = resp[0].snippet.thumbnails.high;
         values = [url_video, title, url];
         const newVideo = (await client.query(queryInsertVideo, values)).rows;
         values = [id_playlist, newVideo.rows[0].id_video, id_user];
