@@ -1,11 +1,13 @@
 import React from "react";
 import { Container, Row, Col, Button, ListGroup } from "react-bootstrap";
 import VideoPlayer from "./video_player_container";
+import NewVideo from "react/components/playlists/new_video/new_video_container";
 
 class PlayerComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      playlistId: parseInt(location.href.split("/").pop()),
       videos: [
         "https://www.youtube.com/watch?v=NA1LM2ucrDc",
         "https://www.youtube.com/watch?v=XdCOymlUxBc",
@@ -34,6 +36,7 @@ class PlayerComponent extends React.Component {
     return (
       <Container>
         <VideoPlayer video={this.state.selectedVideo} />
+        <NewVideo id={this.state.playlistId} />
         <ListGroup onClick={this.changeVideo}>
           <Row>
             {this.state.videos.map((video, i) => (
