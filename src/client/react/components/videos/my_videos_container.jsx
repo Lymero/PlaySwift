@@ -5,7 +5,10 @@ import Api from "react/utils/api";
 class MyVideosContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { videos: [] };
+    this.state = {
+      videos: [],
+      id_playlist: parseInt(location.href.split("/").pop())
+    };
   }
 
   componentDidMount() {
@@ -18,7 +21,7 @@ class MyVideosContainer extends React.Component {
 
   fetchVideos() {
     Api({
-      url: `/api/playlists/${parseInt(location.href.split("/").pop())}/videos`,
+      url: `/api/playlists/${this.state.id_playlist}/videos`,
       method: "GET",
       params: null
     }).then(videos => {
@@ -27,8 +30,14 @@ class MyVideosContainer extends React.Component {
   }
 
   render() {
-    console.log(this.state.videos);
-    return <VideosComponent videos={this.state.videos} {...this.props} />;
+    console.log(this.state);
+    return (
+      <VideosComponent
+        id_playlist={this.state.id_playlist}
+        videos={this.state.videos}
+        {...this.props}
+      />
+    );
   }
 }
 

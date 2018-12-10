@@ -3,6 +3,9 @@ const router = express.Router();
 const logger = require("../modules/logger").logger;
 const { pool } = require("../modules/db");
 const { getYoutubeVideo } = require("../modules/google/youtube");
+const { validatePlaylist } = require("../models/playlist");
+const { validateVideo } = require("../models/video");
+const { validateSuggestion } = require("../models/video");
 
 router.get("/", async (req, res) => {
   const client = await pool.connect();
@@ -19,6 +22,8 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
+  const { error } = validatePlaylist(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
   const client = await pool.connect();
   const query = `insert into playswift.playlists
     values(default, $1, $2, $3, $4, default, default, $5, default, default)
@@ -42,6 +47,8 @@ router.post("/", async (req, res) => {
 });
 
 router.put("/:id_playlist", async (req, res) => {
+  const { error } = validatePlaylist(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
   const client = await pool.connect();
   const query = `update playswift.playlists
     set name=$1, visible=$2, description=$3
@@ -65,7 +72,6 @@ router.put("/:id_playlist", async (req, res) => {
   }
 });
 
-// TODO - Gérer les deletes en cascade (ex: supprimer une playlist ayant des videos ayant des reactions)
 router.delete("/:id_playlist", async (req, res) => {
   const client = await pool.connect();
   const query = `delete from playswift.playlists 
@@ -73,17 +79,19 @@ router.delete("/:id_playlist", async (req, res) => {
   returning id_playlist,name,id_tag,visible,id_user,creation_date,last_update_date,description,likes_number,dislikes_number`;
   const values = [req.params.id_playlist, req.body.id_user];
   try {
+    await client.query("BEGIN");
     const result = await client.query(query, values);
     res.send(result.rows[0]);
     logger.info("DELETE:" + values);
+    await client.query("COMMIT");
   } catch (err) {
+    await client.query("ROLLBACK");
     logger.info(err.stack);
   } finally {
     client.release();
   }
 });
 
-// J'ai adapté un peu la query car c'était nécessaire, monsieur.
 router.get("/:id_playlist/videos", async (req, res) => {
   const client = await pool.connect();
   const query = `select vp.id_video_playlist, vp.id_playlist, vp.id_video, vp.description, vp.position, v.id_video, v.url_video, v.video_length, v.title, v.url_thumbnail
@@ -103,8 +111,10 @@ router.get("/:id_playlist/videos", async (req, res) => {
     client.release();
   }
 });
-
+//TODO vérifier que la playlist lui appartient avant d'ajouter la vidéo
 router.post("/:id_playlist/videos", async (req, res) => {
+  const { error } = validateVideo(req.body, req.params);
+  if (error) return res.status(400).send(error.details[0].message);
   const { id_playlist } = req.params;
   const { url_video, description } = req.body;
 
@@ -182,6 +192,9 @@ router.get("/:id_playlist/suggestions", async (req, res) => {
 });
 
 router.post("/:id_playlist/suggestions", async (req, res) => {
+  const { error } = validateSuggestion(req.body, req.params);
+  if (error) return res.status(400).send(error.details[0].message);
+
   const { id_playlist } = req.params;
   const { url_video, id_user } = req.body;
 

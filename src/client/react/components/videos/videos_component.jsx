@@ -3,7 +3,7 @@ import { Container, Row, Col, ListGroup } from "react-bootstrap";
 import VideoPreview from "./video_preview";
 import NewVideoForm from "./new_video_form_container";
 
-const VideosComponent = ({ videos }) => {
+const VideosComponent = ({ videos, id_playlist }) => {
   return (
     <Container>
       <h3>
@@ -19,7 +19,7 @@ const VideosComponent = ({ videos }) => {
             </Col>
           ))}
           <Col xs={12} sm={12} md={6} lg={6}>
-            <NewVideoForm />
+            <NewVideoForm id_playlist={id_playlist} />
           </Col>
         </Row>
       </ListGroup>
