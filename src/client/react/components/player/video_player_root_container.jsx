@@ -1,53 +1,45 @@
 import React from "react";
-import { Container, Row, Col, ListGroup } from "react-bootstrap";
+import { Container, Row, Col, Button, ListGroup } from "react-bootstrap";
 import VideoPlayer from "./video_player_container";
 
 class PlayerComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      id_playlist: parseInt(location.href.split("/").pop()),
       videos: [
-        "https://www.youtube.com/watch?v=NA1LM2ucrDc"
+        "https://www.youtube.com/watch?v=NA1LM2ucrDc",
+        "https://www.youtube.com/watch?v=XdCOymlUxBc",
+        "https://www.youtube.com/watch?v=fQU0MBft1lY"
       ],
-      sources: []
+      selectedVideo: "https://www.youtube.com/watch?v=NA1LM2ucrDc"
     };
+    this.changeVideo = this.changeVideo.bind(this);
   }
 
-  // "https://www.youtube.com/watch?v=NA1LM2ucrDc",
-  // "https://www.youtube.com/watch?v=XdCOymlUxBc",
-  // "https://www.youtube.com/watch?v=fQU0MBft1lY"
+  componentDidMount() {}
 
-  populateSources() {
-    let videoUrls = [];
-    this.state.videos.forEach(video => {
-      videoUrls.push({
-        type: "video/youtube",
-        src: video
-      });
-    });
-    this.setState({
-      sources: videoUrls
-    });
-  }
-
-  componentDidMount() {
-    this.populateSources();
+  changeVideo(event) {
+    console.log("Root");
+    // console.log(event.target.tagName);
+    if (event.target.tagName === "BUTTON") {
+      let url = event.target.dataset.url;
+      console.log(url);
+      this.setState((state, props) => ({
+        selectedVideo: url
+      }));
+    }
   }
 
   render() {
-    console.log("Root : ");
-    console.log(this.state);
     return (
       <Container>
-        <h1>Player</h1>
-        <VideoPlayer sources={this.state.sources} />
-        <ListGroup>
+        <VideoPlayer video={this.state.selectedVideo} />
+        <ListGroup onClick={this.changeVideo}>
           <Row>
-            {this.state.sources.map((source, i) => (
+            {this.state.videos.map((video, i) => (
               <Col xs={12} key={i}>
                 <ListGroup.Item key={i}>
-                  <p>{source.src}</p>
+                  <Button data-url={video}>{video}</Button>
                 </ListGroup.Item>
               </Col>
             ))}
