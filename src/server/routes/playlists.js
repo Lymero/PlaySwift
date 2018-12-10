@@ -3,6 +3,9 @@ const router = express.Router();
 const logger = require("../modules/logger").logger;
 const { pool } = require("../modules/db");
 const { getYoutubeVideo } = require("../modules/google/youtube");
+const { validatePlaylist } = require("../models/playlist");
+const { validateVideo } = require("../models/video");
+const { validateSuggestion } = require("../models/video");
 
 router.get("/", async (req, res) => {
   const client = await pool.connect();
@@ -19,6 +22,8 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
+  const { error } = validatePlaylist(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
   const client = await pool.connect();
   const query = `insert into playswift.playlists
     values(default, $1, $2, $3, $4, default, default, $5, default, default)
@@ -42,6 +47,8 @@ router.post("/", async (req, res) => {
 });
 
 router.put("/:id_playlist", async (req, res) => {
+  const { error } = validatePlaylist(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
   const client = await pool.connect();
   const query = `update playswift.playlists
     set name=$1, visible=$2, description=$3
@@ -103,8 +110,10 @@ router.get("/:id_playlist/videos", async (req, res) => {
     client.release();
   }
 });
-
+//TODO vérifier que la playlist lui appartient avant d'ajouter la vidéo
 router.post("/:id_playlist/videos", async (req, res) => {
+  const { error } = validateVideo(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
   const { id_playlist } = req.params;
   const { url_video, description } = req.body;
 
@@ -134,7 +143,8 @@ router.post("/:id_playlist/videos", async (req, res) => {
         const { url } = resp[0].snippet.thumbnails.high;
         values = [url_video, title, url];
         logger.info("QUERY queryInsertVideo : " + queryInsertVideo);
-        const new_video = (await client.query(queryInsertVideo, values)).rows[0];
+        const new_video = (await client.query(queryInsertVideo, values))
+          .rows[0];
         values = [id_playlist, new_video.id_video, description, position];
         logger.info(
           "QUERY queryInsertVideoPlaylist : " + queryInsertVideoPlaylist
@@ -146,7 +156,8 @@ router.post("/:id_playlist/videos", async (req, res) => {
       // else we can directly create the videos_playlists entity
       values = [url_video];
       logger.info("QUERY queryExistingVideo : " + queryExistingVideo);
-      const new_video = (await client.query(queryExistingVideo, values)).rows[0];
+      const new_video = (await client.query(queryExistingVideo, values))
+        .rows[0];
       values = [id_playlist, new_video.id_video, description, position];
       logger.info(
         "QUERY queryInsertVideoPlaylist : " + queryInsertVideoPlaylist
@@ -181,6 +192,8 @@ router.get("/:id_playlist/suggestions", async (req, res) => {
 // TODO Verifier id_user = celui de la playlist
 // TODO Créer la video proposée si elle n'existe pas
 router.post("/:id_playlist/suggestions", async (req, res) => {
+  const { error } = validateSuggestion(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
   const client = await pool.connect();
   const text = `insert into playswift.suggestions values(default, $1, $2, 'pending', $3)`;
   try {

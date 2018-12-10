@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const logger = require("../modules/logger").logger;
 const { pool } = require("../modules/db");
+const { validateTag } = require("../models/tag");
 
 router.get("/", async (req, res) => {
   const client = await pool.connect();
@@ -18,10 +19,12 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
+  const { error } = validateTag(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
   const client = await pool.connect();
   const query = `insert into playswift.tags
     values(default, $1)
-    returning id_tag,name,tag_name`;
+    returning id_tag,tag_name`;
   const values = [req.body.tag_name];
   try {
     const result = await client.query(query, values);

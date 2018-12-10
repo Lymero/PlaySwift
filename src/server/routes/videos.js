@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const logger = require("../modules/logger").logger;
 const { pool } = require("../modules/db");
+const { validateVideo } = require("../models/video");
 
 router.get("/:id_video", async (req, res) => {
   const client = await pool.connect();
@@ -22,6 +23,8 @@ router.get("/:id_video", async (req, res) => {
 
 // TODO - Swap les positions
 router.put("/:id_video", async (req, res) => {
+  const { error } = validateVideo(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
   const client = await pool.connect();
   const query = `update playswift.videos_playlists
     set description=$1, position=$2
