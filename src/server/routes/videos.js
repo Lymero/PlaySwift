@@ -4,8 +4,10 @@ const logger = require("../modules/logger").logger;
 const { pool } = require("../modules/db");
 const { validateVideo } = require("../models/video");
 const { validateReaction } = require("../models/reaction");
+const httpStatus = require("http-status");
+const createError = require("http-errors");
 
-router.get("/:id_video", async (req, res) => {
+router.get("/:id_video", async (req, res, next) => {
   const client = await pool.connect();
   const query = `select * 
   from playswift.videos_playlists
@@ -16,16 +18,18 @@ router.get("/:id_video", async (req, res) => {
     res.send(result.rows[0]);
     logger.info("SELECT:videos/" + values);
   } catch (err) {
-    logger.info(err.stack);
+    return next(err);
   } finally {
     client.release();
   }
 });
 
 // TODO - Swap les positions
-router.put("/:id_video", async (req, res) => {
-  const { error } = validateVideo(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+router.put("/:id_video", async (req, res, next) => {
+  const { error } = validateVideo(req.body, req.params);
+  if (error) {
+    return next(createError(httpStatus.BAD_REQUEST, error.details[0].message));
+  }
   const client = await pool.connect();
   const query = `update playswift.videos_playlists
     set description=$1, position=$2
@@ -36,13 +40,13 @@ router.put("/:id_video", async (req, res) => {
     const result = await client.query(query, values);
     res.send(result.rows[0]);
   } catch (err) {
-    logger.info(err.stack);
+    return next(err);
   } finally {
     client.release();
   }
 });
 
-router.delete("/:id_video", async (req, res) => {
+router.delete("/:id_video", async (req, res, next) => {
   const client = await pool.connect();
   const query = `delete from playswift.videos_playlists where id_video_playlist=$1`;
   const values = [req.params.id_video];
@@ -50,13 +54,13 @@ router.delete("/:id_video", async (req, res) => {
     const result = await client.query(query, values);
     res.send(result);
   } catch (err) {
-    logger.info(err.stack);
+    return next(err);
   } finally {
     client.release();
   }
 });
 
-router.get("/:id_video/reactions", async (req, res) => {
+router.get("/:id_video/reactions", async (req, res, next) => {
   const client = await pool.connect();
   const query = `select *
   from playswift.reactions 
@@ -66,15 +70,17 @@ router.get("/:id_video/reactions", async (req, res) => {
     const result = await client.query(query, values);
     res.send(result.rows);
   } catch (err) {
-    logger.info(err.stack);
+    return next(err);
   } finally {
     client.release();
   }
 });
 
-router.post("/:id_video/reactions", async (req, res) => {
+router.post("/:id_video/reactions", async (req, res, next) => {
   const { error } = validateReaction(req.body, req.params);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) {
+    return next(createError(httpStatus.BAD_REQUEST, error.details[0].message));
+  }
   const client = await pool.connect();
   const queryInsertReaction = `insert into playswift.reactions
   values (default,$1,$2,$3,default,$4) returning id_reaction, id_video_playlist, vote, comment,id_user`;
@@ -98,7 +104,7 @@ router.post("/:id_video/reactions", async (req, res) => {
     await client.query("COMMIT");
   } catch (err) {
     await client.query("ROLLBACK");
-    logger.info(err.stack);
+    return next(err);
   } finally {
     client.release();
   }

@@ -11,7 +11,7 @@ const videosRouter = require("./videos");
 const auth = require("../middlewares/auth");
 
 // API status
-router.get("/status", (req, res) => res.send("OK"));
+router.use("/status", (req, res) => res.send("OK"));
 
 // Authentication needed
 router.use(auth.checkJwt);
