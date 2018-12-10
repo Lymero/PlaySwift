@@ -27,7 +27,7 @@ class NewPlaylistContainer extends React.Component {
     let body = {
       name: this.state.name,
       id_tag: this.state.tag,
-      visible: 1,
+      visible: true,
       id_user: userID,
       description: this.state.description
     };
