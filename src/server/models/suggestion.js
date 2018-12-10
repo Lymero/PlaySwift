@@ -1,13 +1,14 @@
 const Joi = require("joi");
 
-function validate(suggestion) {
+function validate(suggestion, params) {
+  suggestion.id_playlist = params.id_playlist;
   const schema = {
     id_playlist: Joi.number()
       .integer()
       .required(),
-    id_video: Joi.number()
-      .integer()
-      .required(),
+    url_video: Joi.string()
+      .min(1)
+      .max(255).required,
     id_user: Joi.string()
       .min(1)
       .max(255)

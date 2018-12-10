@@ -72,7 +72,6 @@ router.put("/:id_playlist", async (req, res) => {
   }
 });
 
-// TODO - Gérer les deletes en cascade (ex: supprimer une playlist ayant des videos ayant des reactions)
 router.delete("/:id_playlist", async (req, res) => {
   const client = await pool.connect();
   const query = `delete from playswift.playlists 
@@ -80,17 +79,19 @@ router.delete("/:id_playlist", async (req, res) => {
   returning id_playlist,name,id_tag,visible,id_user,creation_date,last_update_date,description,likes_number,dislikes_number`;
   const values = [req.params.id_playlist, req.body.id_user];
   try {
+    await client.query("BEGIN");
     const result = await client.query(query, values);
     res.send(result.rows[0]);
     logger.info("DELETE:" + values);
+    await client.query("COMMIT");
   } catch (err) {
+    await client.query("ROLLBACK");
     logger.info(err.stack);
   } finally {
     client.release();
   }
 });
 
-// J'ai adapté un peu la query car c'était nécessaire, monsieur.
 router.get("/:id_playlist/videos", async (req, res) => {
   const client = await pool.connect();
   const query = `select vp.id_video_playlist, vp.id_playlist, vp.id_video, vp.description, vp.position, v.id_video, v.url_video, v.video_length, v.title, v.url_thumbnail
@@ -112,7 +113,7 @@ router.get("/:id_playlist/videos", async (req, res) => {
 });
 //TODO vérifier que la playlist lui appartient avant d'ajouter la vidéo
 router.post("/:id_playlist/videos", async (req, res) => {
-  const { error } = validateVideo(req.body);
+  const { error } = validateVideo(req.body, req.params);
   if (error) return res.status(400).send(error.details[0].message);
   const { id_playlist } = req.params;
   const { url_video, description } = req.body;
@@ -167,9 +168,10 @@ router.post("/:id_playlist/videos", async (req, res) => {
     }
     await client.query("COMMIT");
   } catch (err) {
+    console.log(err);
     await client.query("ROLLBACK");
-    res.status(400);
     logger.warn("POST /playlists/:id_playlist/videos : " + err);
+    res.status("500").send();
   } finally {
     client.release();
   }
@@ -189,19 +191,46 @@ router.get("/:id_playlist/suggestions", async (req, res) => {
   }
 });
 
-// TODO Verifier id_user = celui de la playlist
-// TODO Créer la video proposée si elle n'existe pas
 router.post("/:id_playlist/suggestions", async (req, res) => {
-  const { error } = validateSuggestion(req.body);
+  const { error } = validateSuggestion(req.body, req.params);
   if (error) return res.status(400).send(error.details[0].message);
+
+  const { id_playlist } = req.params;
+  const { url_video, id_user } = req.body;
+
   const client = await pool.connect();
-  const text = `insert into playswift.suggestions values(default, $1, $2, 'pending', $3)`;
+  const queryInsertSuggestion = `insert into playswift.suggestions values(default, $1, $2, 'pending', $3)`;
+  const queryExistingVideo = `select id_video, url_video from playswift.videos where url_video = $1`;
+  const queryInsertVideo = `insert into playswift.videos values(default, $1, 0, $2, $3) returning id_video, url_video`;
   try {
-    // TODO : Récupérer l'id vidéo sur base de l'url (req.body.url_video)
-    const values = [req.params.id_playlist, id_video, req.body.id_user];
-    const result = await client.query(text, values);
-    res.send(result.rows[0]);
+    await client.query("BEGIN");
+    let values = [url_video];
+    let video = await client.query(queryExistingVideo, values);
+    if (video.rowCount === 0) {
+      getYoutubeVideo(url_video, async resp => {
+        const { title } = resp[0].snippet;
+        const { url } = resp[0].snippet.thumbnails.high;
+        values = [url_video, title, url];
+        const newVideo = (await client.query(queryInsertVideo, values)).rows;
+        values = [id_playlist, newVideo.rows[0].id_video, id_user];
+        const insertedSuggestion = await client.query(
+          queryInsertSuggestion,
+          values
+        );
+        res.send(insertedSuggestion.rows[0]);
+      });
+    } else {
+      values = [id_playlist, video.rows[0].id_video, id_user];
+      const insertedSuggestion = await client.query(
+        queryInsertSuggestion,
+        values
+      );
+      res.send(insertedSuggestion.rows[0]);
+    }
+    await client.query("COMMIT");
   } catch (err) {
+    await client.query("ROLLBACK");
+    res.status(500).send();
     logger.info(err.stack);
   } finally {
     client.release();

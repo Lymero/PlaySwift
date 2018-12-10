@@ -58,7 +58,7 @@ const mapStateToProps = state => {
   return {
     profile: state.usersSession.profile,
     userId: state.usersSession.userId
-  }
-}; 
+  };
+};
 
 export default connect(mapStateToProps)(NewPlaylistContainer);

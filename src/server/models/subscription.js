@@ -2,8 +2,9 @@ const Joi = require("joi");
 
 function validate(subscription) {
   const schema = {
-    id_tag: Joi.number()
-      .integer()
+    tag_name: Joi.string()
+      .min(1)
+      .max(255)
       .required(),
     id_user: Joi.string()
       .min(1)

@@ -5,7 +5,7 @@ const { pool } = require("../modules/db");
 const { validateReaction } = require("../models/reaction");
 
 router.put("/:id_reaction", async (req, res) => {
-  const { error } = validateReaction(req.body);
+  const { error } = validateReaction(req.body, req.params);
   if (error) return res.status(400).send(error.details[0].message);
   const client = await pool.connect();
   const query = `update playswift.reactions 
@@ -20,7 +20,6 @@ router.put("/:id_reaction", async (req, res) => {
   ];
   try {
     const result = await client.query(query, values);
-    console.log(result);
     res.send(result.rows[0]);
   } catch (err) {
     logger.info(err.stack);
