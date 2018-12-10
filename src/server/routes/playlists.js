@@ -72,7 +72,6 @@ router.put("/:id_playlist", async (req, res) => {
   }
 });
 
-// TODO - Gérer les deletes en cascade (ex: supprimer une playlist ayant des videos ayant des reactions)
 router.delete("/:id_playlist", async (req, res) => {
   const client = await pool.connect();
   const query = `delete from playswift.playlists 
@@ -80,17 +79,19 @@ router.delete("/:id_playlist", async (req, res) => {
   returning id_playlist,name,id_tag,visible,id_user,creation_date,last_update_date,description,likes_number,dislikes_number`;
   const values = [req.params.id_playlist, req.body.id_user];
   try {
+    await client.query("BEGIN");
     const result = await client.query(query, values);
     res.send(result.rows[0]);
     logger.info("DELETE:" + values);
+    await client.query("COMMIT");
   } catch (err) {
+    await client.query("ROLLBACK");
     logger.info(err.stack);
   } finally {
     client.release();
   }
 });
 
-// J'ai adapté un peu la query car c'était nécessaire, monsieur.
 router.get("/:id_playlist/videos", async (req, res) => {
   const client = await pool.connect();
   const query = `select vp.id_video_playlist, vp.id_playlist, vp.id_video, vp.description, vp.position, v.id_video, v.url_video, v.video_length, v.title, v.url_thumbnail
