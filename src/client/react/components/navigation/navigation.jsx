@@ -15,9 +15,7 @@ const Navigation = ({ authState, profile }) => {
       <Nav className="mr-auto">
         <Nav.Link as={Link} to="/playlists">
           My playlists - Current user =
-          {authState.authenticated
-            ? profile.name
-            : "not logged in"}
+          {authState.authenticated ? profile.name : "not logged in"}
         </Nav.Link>
       </Nav>
       <Button variant="outline-warning" onClick={Auth.logout}>

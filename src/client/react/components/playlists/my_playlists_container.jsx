@@ -12,7 +12,7 @@ class MyPlaylistsContainer extends React.Component {
 
   componentDidMount() {
     Api({
-      url: "/api/laylists",
+      url: "/api/playlists",
       method: "GET",
       params: null
     }).then(playlists => {
@@ -36,8 +36,7 @@ class MyPlaylistsContainer extends React.Component {
 }
 
 const mapStateToProps = state => {
-  return {profile: state.usersSession.profile}
+  return { profile: state.usersSession.profile };
 };
-
 
 export default connect(mapStateToProps)(MyPlaylistsContainer);
