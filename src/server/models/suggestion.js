@@ -8,7 +8,8 @@ function validate(suggestion, params) {
       .required(),
     url_video: Joi.string()
       .min(1)
-      .max(255).required,
+      .max(255)
+      .required(),
     id_user: Joi.string()
       .min(1)
       .max(255)
