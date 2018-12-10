@@ -20,7 +20,9 @@ const PlaylistsComponent = ({ title, playlists }) => {
             </Col>
           ))}
           <Col xs={12} sm={6} md={3}>
-            <NewPlaylistForm />
+            {location.href.split("/")[
+              location.href.split("/").indexOf("#") + 1
+            ] && <NewPlaylistForm />}
           </Col>
         </Row>
       </ListGroup>
