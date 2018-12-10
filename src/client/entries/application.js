@@ -4,6 +4,7 @@ import ReactMain from "../react/main"
 
 import 'bootstrap/dist/css/bootstrap.css';
 import "../style/application.scss";
+import "../../../node_modules/video.js/dist/video-js.min.css";
 
 import auth from "react/services/auth0";
 auth.verify();
