@@ -115,14 +115,15 @@ router.get("/:id_playlist/videos", async (req, res) => {
     client.release();
   }
 });
-//TODO vérifier que la playlist lui appartient avant d'ajouter la vidéo
+
 router.post("/:id_playlist/videos", async (req, res) => {
   const { error } = validateVideo(req.body, req.params);
   if (error) return res.status(400).send(error.details[0].message);
   const { id_playlist } = req.params;
-  const { url_video, description } = req.body;
+  const { url_video, description, id_user } = req.body;
 
   const client = await pool.connect();
+  const queryOwnerOfPlaylist = `select count(*) from playswift.playlists where id_user=$1 and id_playlist=$2`;
   const queryDoesVideoExist = `select count(id_video) from playswift.videos where url_video = $1`;
   const queryVideoPosition = `select max(position) from playswift.videos_playlists where id_playlist = $1`;
   const queryInsertVideo = `insert into playswift.videos values(default, $1, 0, $2, $3) returning id_video, url_video`;
@@ -131,13 +132,17 @@ router.post("/:id_playlist/videos", async (req, res) => {
 
   try {
     await client.query("BEGIN");
-
-    let values = [url_video];
+    let values = [id_user, id_playlist];
+    logger.info("QUERY queryOwnerOfPlaylist : " + queryOwnerOfPlaylist);
+    let result = await client.query(queryOwnerOfPlaylist, values);
+    if (result.rows[0].count) {
+      return res.status(400).send("User does not own this playlist");
+    }
     logger.info("QUERY queryDoesVideoExist : " + queryDoesVideoExist);
-    let result = await client.query(queryDoesVideoExist, values);
-
     values = [id_playlist];
     logger.info("QUERY queryVideoPosition : " + queryVideoPosition);
+    result = await client.query(queryDoesVideoExist, values);
+
     const position =
       (await client.query(queryVideoPosition, values)).rows[0].max + 1;
 
