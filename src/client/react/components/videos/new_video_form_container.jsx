@@ -6,8 +6,8 @@ class NewVideoContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      url_video: "https://www.youtube.com/watch?v=zGW7TRtcDeQ",
-      description: "issou"
+      url_video: "",
+      description: ""
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -15,7 +15,7 @@ class NewVideoContainer extends React.Component {
   }
 
   handleChange(event) {
-    this.setState({ [event.target.url]: event.target.value });
+    this.setState({ [event.target.name]: event.target.value });
   }
 
   addVideo(event) {
@@ -25,8 +25,11 @@ class NewVideoContainer extends React.Component {
     let body = {
       url_video: this.state.url_video,
       description: this.state.description,
-      id_playlist: this.props.id_playlist
+      id_playlist: this.props.id_playlist // TODO retirer qd Robin OK
     };
+    console.log(id_playlist);
+    console.log(body);
+
     Api({
       url: `/api/playlists/${id_playlist}/videos`,
       method: "POST",
@@ -37,7 +40,7 @@ class NewVideoContainer extends React.Component {
   render() {
     return (
       <NewVideoComponent
-        url={this.state.url_video}
+        url_video={this.state.url_video}
         description={this.state.description}
         handleChange={this.handleChange}
         addVideo={this.addVideo}
