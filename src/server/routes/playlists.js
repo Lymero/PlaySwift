@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const logger = require("../modules/logger").logger;
 const { pool } = require("../modules/db");
 const { getYoutubeVideo } = require("../modules/google/youtube");
 const { validatePlaylist } = require("../models/playlist");
