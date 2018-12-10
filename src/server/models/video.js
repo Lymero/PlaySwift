@@ -1,6 +1,7 @@
 const Joi = require("joi");
 
-function validate(video) {
+function validate(video, params) {
+  video.id_playlist = params.id_playlist;
   const schema = {
     id_playlist: Joi.number()
       .integer()

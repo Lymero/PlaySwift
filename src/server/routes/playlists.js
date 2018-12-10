@@ -113,7 +113,7 @@ router.get("/:id_playlist/videos", async (req, res) => {
 });
 //TODO vérifier que la playlist lui appartient avant d'ajouter la vidéo
 router.post("/:id_playlist/videos", async (req, res) => {
-  const { error } = validateVideo(req.body);
+  const { error } = validateVideo(req.body, req.params);
   if (error) return res.status(400).send(error.details[0].message);
   const { id_playlist } = req.params;
   const { url_video, description } = req.body;
@@ -193,7 +193,7 @@ router.get("/:id_playlist/suggestions", async (req, res) => {
 // TODO Verifier id_user = celui de la playlist
 // TODO Créer la video proposée si elle n'existe pas
 router.post("/:id_playlist/suggestions", async (req, res) => {
-  const { error } = validateSuggestion(req.body);
+  const { error } = validateSuggestion(req.body, req.params);
   if (error) return res.status(400).send(error.details[0].message);
   const client = await pool.connect();
   const text = `insert into playswift.suggestions values(default, $1, $2, 'pending', $3)`;

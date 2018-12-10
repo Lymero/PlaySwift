@@ -5,10 +5,6 @@ function validate(tag) {
     tag_name: Joi.string()
       .min(1)
       .max(255)
-      .required(),
-    id_user: Joi.string()
-      .min(1)
-      .max(255)
       .required()
   };
 
