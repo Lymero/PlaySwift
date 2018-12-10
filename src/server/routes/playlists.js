@@ -22,9 +22,11 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", async (req, res, next) => {
   const { error } = validatePlaylist(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) {
+    return next(createError(httpStatus.BAD_REQUEST, error.details[0].message));
+  }
   const client = await pool.connect();
   const query = `insert into playswift.playlists
     values(default, $1, $2, $3, $4, default, default, $5, default, default)
