@@ -1,9 +1,12 @@
 const Joi = require("joi");
 
 function validate(reaction, params) {
-  reaction.id_video_playlist = params.id_video_playlist;
+  reaction.id_video_playlist = params.id_video;
   const schema = {
     id_video_playlist: Joi.number()
+      .integer()
+      .required(),
+    id_playlist: Joi.number()
       .integer()
       .required(),
     id_user: Joi.string()
