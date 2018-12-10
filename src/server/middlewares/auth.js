@@ -1,15 +1,16 @@
 const jwt = require("express-jwt");
 const jwksRsa = require("jwks-rsa");
+const { jwks_uri, auth0_audience, auth0_issuer } = require("../config/vars");
 
 const checkJwt = jwt({
   secret: jwksRsa.expressJwtSecret({
     cache: true,
     rateLimit: true,
     jwksRequestsPerMinute: 5,
-    jwksUri: `https://web3.eu.auth0.com/.well-known/jwks.json`
+    jwksUri: jwks_uri
   }),
-  audience: "http://localhost:3030",
-  issuer: `https://web3.eu.auth0.com/`,
+  audience: auth0_audience,
+  issuer: auth0_issuer,
   algorithms: ["RS256"]
 });
 

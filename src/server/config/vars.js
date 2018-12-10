@@ -16,6 +16,9 @@ module.exports = {
   oauth_secret_fpath: process.env.OAUTH_SECRET_FPATH,
   oauth_tpath: process.env.OAUTH_TPATH,
   oauth_tdir: process.env.OAUTH_TDIR,
+  jwks_uri: process.env.JWKS_URI,
+  auth0_issuer: process.env.AUTH0_ISSUER,
+  auth0_audience: process.env.AUTH0_AUDIENCE,
   logs:
     process.env.NODE_ENV === "production"
       ? path.join(__dirname, "../logs/combined")
