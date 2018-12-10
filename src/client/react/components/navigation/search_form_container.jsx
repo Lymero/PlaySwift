@@ -38,12 +38,17 @@ class SearchFormContainer extends React.Component {
     });
   }
 
+  onSubmit(event) {
+    this.search(event);
+  }
+
   render() {
     return (
       <SearchForm
         filter={this.state.filter}
         handleChange={this.handleChange}
         search={this.search}
+        onSubmit={this.onSubmit}
       />
     );
   }

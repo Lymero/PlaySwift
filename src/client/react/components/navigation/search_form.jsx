@@ -4,7 +4,7 @@ import Form from "react-bootstrap/lib/Form";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
 
-const SearchForm = ({ filter, handleChange, search }) => {
+const SearchForm = ({ filter, handleChange, search, onSubmit }) => {
   return (
     <Form inline>
       <FormControl
@@ -15,7 +15,7 @@ const SearchForm = ({ filter, handleChange, search }) => {
         className="mr-sm-2"
         onChange={handleChange}
       />
-      <Button variant="outline-info" onClick={search}>
+      <Button variant="outline-info" onClick={search} onSubmit={onSubmit}>
         Search
       </Button>
     </Form>
