@@ -1,17 +1,32 @@
 const express = require("express");
 const router = express.Router();
-const logger = require("../modules/logger").logger;
+const httpStatus = require("http-status");
+const createError = require("http-errors");
 const { pool } = require("../modules/db");
 
-router.delete("/:id_suggestion", async (req, res) => {
+router.put("/:id_suggestion", async (req, res, next) => {
   const client = await pool.connect();
-  const query = `delete from playswift.suggestions where id_suggestion = $1 and id_user = $2`;
-  const values = [req.params.id_suggestion, req.body.id_user];
+  const queryOwnership = `select * from playswift.playlists pl, playswift.playlists su where pl.id_playlist = su.id_playlist and pl.id_user = $1`;
+  const valuesOwnership = [req.body.id_user];
+  const updateSuggestion = `update playswift.suggestions where id_suggestion = $1 set state = $2`;
+  const valuesSuggestion = [req.params.id_suggestion, req.body.state];
   try {
-    const result = await client.query(query, values);
-    res.send(result.rows[0]);
+    const ownership = await client.query(queryOwnership, valuesOwnership);
+    if (ownership.rowCount <= 0) {
+      return next(
+        createError(
+          httpStatus.FORBIDDEN,
+          "Forbidden update - Not the owner of the playlist"
+        )
+      );
+    }
+    const updatedSuggestion = await client.query(
+      updateSuggestion,
+      valuesSuggestion
+    );
+    res.send(updatedSuggestion.rows);
   } catch (err) {
-    logger.info(err.stack);
+    return next(err);
   } finally {
     client.release();
   }

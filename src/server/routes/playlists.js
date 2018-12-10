@@ -6,24 +6,28 @@ const { getYoutubeVideo } = require("../modules/google/youtube");
 const { validatePlaylist } = require("../models/playlist");
 const { validateVideo } = require("../models/video");
 const { validateSuggestion } = require("../models/video");
+const httpStatus = require("http-status");
+const createError = require("http-errors");
 
-router.get("/", async (req, res) => {
+router.get("/", async (req, res, next) => {
   const client = await pool.connect();
   const query = `select * from playswift.playlists where visible=true`;
   try {
     const result = await client.query(query);
-    res.send(result.rows);
     logger.info("SELECT:playlists");
+    res.send(result.rows);
   } catch (err) {
-    logger.info(err.stack);
+    return next(err);
   } finally {
     client.release();
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", async (req, res, next) => {
   const { error } = validatePlaylist(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) {
+    return next(createError(httpStatus.BAD_REQUEST, error.details[0].message));
+  }
   const client = await pool.connect();
   const query = `insert into playswift.playlists
     values(default, $1, $2, $3, $4, default, default, $5, default, default)
@@ -40,13 +44,13 @@ router.post("/", async (req, res) => {
     res.send(result.rows[0]);
     logger.info("INSERT:" + values);
   } catch (err) {
-    logger.info(err.stack);
+    next(err);
   } finally {
     client.release();
   }
 });
 
-router.put("/:id_playlist", async (req, res) => {
+router.put("/:id_playlist", async (req, res, next) => {
   const { error } = validatePlaylist(req.body);
   if (error) return res.status(400).send(error.details[0].message);
   const client = await pool.connect();
@@ -66,7 +70,7 @@ router.put("/:id_playlist", async (req, res) => {
     res.send(result.rows[0]);
     logger.info("UPDATE:" + values);
   } catch (err) {
-    logger.info(err.stack);
+    next(err);
   } finally {
     client.release();
   }
@@ -168,7 +172,6 @@ router.post("/:id_playlist/videos", async (req, res) => {
     }
     await client.query("COMMIT");
   } catch (err) {
-    console.log(err);
     await client.query("ROLLBACK");
     logger.warn("POST /playlists/:id_playlist/videos : " + err);
     res.status("500").send();
