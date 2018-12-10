@@ -12,7 +12,7 @@ class MyPlaylistsContainer extends React.Component {
 
   componentDidMount() {
     Api({
-      url: "/api/playlists",
+      url: "/api/users/me/playlists",
       method: "GET",
       params: null
     }).then(playlists => {

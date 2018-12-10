@@ -28,10 +28,12 @@ class SearchFormContainer extends React.Component {
       url: "/api/playlists",
       method: "GET"
     }).then(playlists => {
+      console.log("ALL");
       console.log(playlists);
       const filteredPlaylists = playlists.filter(playlist =>
         playlist["name"].toUpperCase().includes(this.state.filter.toUpperCase())
       );
+      console.log("FILTERED");
       console.log(filteredPlaylists);
     });
   }
