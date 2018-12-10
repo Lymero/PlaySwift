@@ -14,7 +14,7 @@ const SCOPES = ["https://www.googleapis.com/auth/youtube.force-ssl"];
 const TOKEN_PATH = oauth_tdir + oauth_tpath;
 
 function getYoutubeVideoId(url) {
-  return url.split("=")[1];
+  return url.split("?v=")[1];
 }
 
 async function getYoutubeVideo(url, bubbleResponse) {
