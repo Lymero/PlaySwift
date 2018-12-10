@@ -19,8 +19,5 @@ module.exports = {
   jwks_uri: process.env.JWKS_URI,
   auth0_issuer: process.env.AUTH0_ISSUER,
   auth0_audience: process.env.AUTH0_AUDIENCE,
-  logs:
-    process.env.NODE_ENV === "production"
-      ? path.join(__dirname, "../logs/combined")
-      : path.join(__dirname, "../logs/dev")
+  logs: process.env.NODE_ENV === "production" ? "combined" : "dev"
 };

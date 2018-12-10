@@ -3,10 +3,11 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const sassMiddleware = require("node-sass-middleware");
 const morgan = require("morgan");
+const fs = require("fs");
 const error = require("./middlewares/error");
 const assetPath = require("./utils/asset_path");
 const routes = require("./routes/routes");
-const { logs } = require("./config/vars");
+const { logs, env } = require("./config/vars");
 const authRouter = require("./routes/auth");
 const indexRouter = require("./routes/index");
 
@@ -18,7 +19,17 @@ app.locals.assetPath = assetPath;
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
-app.use(morgan(logs));
+if (env === "production") {
+  app.use(
+    morgan(logs, {
+      stream: fs.createWriteStream(path.join(__dirname, "./logs/access.log"), {
+        flags: "a"
+      })
+    })
+  );
+} else {
+  app.use(morgan(logs));
+}
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
