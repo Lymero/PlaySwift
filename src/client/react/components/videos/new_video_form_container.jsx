@@ -24,8 +24,7 @@ class NewVideoContainer extends React.Component {
     let id_playlist = this.props.id_playlist;
     let body = {
       url_video: this.state.url_video,
-      description: this.state.description,
-      id_playlist: this.props.id_playlist // TODO retirer qd Robin OK
+      description: this.state.description
     };
     console.log(id_playlist);
     console.log(body);
