@@ -39,7 +39,8 @@ class PlaylistsProvider extends React.Component {
     this.removeVideoCurrentPlaylist = this.removeVideoCurrentPlaylist.bind(
       this
     );
-    this.displayFilteredPlaylists = this.removeVideoCurrentPlaylist.bind(this);
+    this.displayFilteredPlaylists = this.displayFilteredPlaylists.bind(this);
+    this.loadInitialPlaylists = this.loadInitialPlaylists.bind(this);
   }
 
   loadTags() {
@@ -122,7 +123,7 @@ class PlaylistsProvider extends React.Component {
       method: "GET",
       params: null
     }).then(playlistsFetched => {
-      console.log(playlistsFetched)
+      console.log(playlistsFetched);
       this.setState({
         myPlaylists: playlistsFetched
       });
@@ -145,12 +146,33 @@ class PlaylistsProvider extends React.Component {
 
   /**
    * Display only the filtered videos (search form)
-   * @param {filtered_playlists} playlistToRemove
+   * @param {filtered_playlists} playlists to display
    */
   displayFilteredPlaylists(filtered_playlists) {
-    this.setState({
-      playlists: [...this.state.playlists, filtered_playlists]
-    });
+    Api({
+      url: "/api/playlists",
+      method: "GET",
+      params: null
+    })
+      .then(playlistsFetched => {
+        this.setState({
+          playlists: playlistsFetched
+        });
+        console.log("HERE ARE THE TOTAL PLAYLISTS");
+        console.log(playlistsFetched);
+      })
+      .then(() => {
+        this.setState(() => ({
+          playlists: filtered_playlists
+        }));
+        console.log("AND THE FILTERED");
+        console.log(filtered_playlists);
+      });
+    /*
+    console.log("MNTN LES PLAYLISTS DISPLAYED SERONT:");
+    console.log(this.state.playlists);
+    console.log("===");
+    console.log(filtered_playlists);*/
   }
 
   removePlaylist(playlistToRemove) {
@@ -182,7 +204,8 @@ class PlaylistsProvider extends React.Component {
       setCurrentPlaylist,
       addVideoCurrentPlaylist,
       removeVideoCurrentPlaylist,
-      displayFilteredPlaylists
+      displayFilteredPlaylists,
+      loadInitialPlaylists
     } = this;
 
     const {
@@ -205,7 +228,8 @@ class PlaylistsProvider extends React.Component {
       setCurrentPlaylist,
       addVideoCurrentPlaylist,
       removeVideoCurrentPlaylist,
-      displayFilteredPlaylists
+      displayFilteredPlaylists,
+      loadInitialPlaylists
     };
     return (
       <PlaylistsContext.Provider value={providerValues}>

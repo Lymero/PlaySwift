@@ -48,8 +48,10 @@ class PlayerComponent extends React.Component {
   }
 
   isMyPlaylist() {
+    /*
     console.log("isMy")
     console.log(this.props);
+    */
     return (
       this.props.myPlaylists.filter(
         p => p.id_playlist === this.state.playlistId
@@ -79,7 +81,7 @@ class PlayerComponent extends React.Component {
                         <span>{video.description}</span>
                         <br />
                         <Button data-videoid={i}>Play</Button>
-                      <RemoveVideoContainer video={video}/>
+                        <RemoveVideoContainer video={video} />
                       </Col>
                     </Row>
                   </ListGroup.Item>

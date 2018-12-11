@@ -13,6 +13,7 @@ class SearchFormContainer extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.search = this.search.bind(this);
     this.ctxFilter = this.props.displayFilteredPlaylists;
+    this.ctxIntitialPlaylists = this.props.loadInitialPlaylists;
   }
 
   handleChange(event) {
@@ -23,12 +24,12 @@ class SearchFormContainer extends React.Component {
    * Search by playlists.name, case-insensitive
    */
   search(event) {
-    console.log(this.props);
     event.preventDefault();
+    console.log("KEYWORD:");
+    console.log(this.state.filter);
     const filteredPlaylists = this.props.playlists.filter(playlist =>
       playlist["name"].toUpperCase().includes(this.state.filter.toUpperCase())
     );
-    console.log(this.props);
     this.ctxFilter(filteredPlaylists);
   }
 
