@@ -84,7 +84,9 @@ class PlayerComponent extends React.Component {
                         <span>{video.description}</span>
                         <br />
                         <Button data-videoid={i}>Play</Button>
-                        <RemoveVideoContainer video={video} />
+                        {this.isMyPlaylist() == true && (
+                          <RemoveVideoContainer video={video} />
+                        )}
                       </Col>
                     </Row>
                   </ListGroup.Item>
