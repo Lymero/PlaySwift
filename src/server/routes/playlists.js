@@ -123,7 +123,7 @@ router.post("/:id_playlist/videos", async (req, res, next) => {
   const client = await pool.connect();
   const queryOwnership = `select * from playswift.playlists where id_user=$1 and id_playlist=$2`;
   const queryVideoPosition = `select max(position) from playswift.videos_playlists where id_playlist = $1`;
-  const queryInsertVideo = `insert into playswift.videos values(default, $1, 0, $2, $3) returning id_video, url_video`;
+  const queryInsertVideo = `insert into playswift.videos values(default, $1, $2, $3) returning id_video, url_video`;
   const queryInsertVideoPlaylist = `insert into playswift.videos_playlists values(default, $1, $2, $3, $4, default, default)`;
   const queryExistingVideo = `select * from playswift.videos where url_video = $1`;
 
