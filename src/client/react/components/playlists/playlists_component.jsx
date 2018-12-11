@@ -12,7 +12,7 @@ const PlaylistsComponent = ({ title, playlists }) => {
       </h3>
         <Row>
           {playlists.map((playlist, i) => (
-            <Col xs={12} sm={6} md={3} key={i}>
+            <Col className="mb-5" xs={12} sm={6} md={3} key={i}>
               <PlaylistPreview playlist={playlist} key={i}/>
             </Col>
           ))}

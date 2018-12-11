@@ -3,9 +3,24 @@
 }
 
 div.card.floatHover {
-  transition: box-shadow 0.1s linear;
+  transition: box-shadow 0.2s linear;
+  cursor: pointer;
 }
 
 div.card.floatHover:hover {
-  box-shadow: 0px 0px 20px rgba(0,0,0,0.2);
+  box-shadow: 0px 0px 25px rgba(0,0,0,0.4);
+}
+
+.joinedBadges .badge:first-child {
+  border-radius: 0.25rem 0px 0px 0.25rem;
+}
+
+.joinedBadges .badge:last-child {
+  border-radius: 0px 0.25rem 0.25rem 0px;
+}
+
+.bottomRightCardBody {
+  position: relative;
+  bottom: 0px;
+  right: 0px;
 }

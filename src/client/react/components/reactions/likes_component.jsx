@@ -5,7 +5,7 @@ import { faThumbsUp } from "@fortawesome/free-solid-svg-icons";
 
 const Likes = ({ likes_number }) => {
   return (
-    <Button variant="primary">
+    <Button variant="outline-primary">
       {likes_number} <FontAwesomeIcon icon={faThumbsUp} />
     </Button>
   );
