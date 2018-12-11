@@ -1,15 +1,15 @@
 import React from "react";
-import NewVideoComponent from "react/components/videos/new_video_component";
+import NewVideoComponent from "./new_video";
 import Api from "react/utils/api";
+import { connect } from "react-redux";
 
 class NewVideoContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      url_video: "",
+      url: "",
       description: ""
     };
-
     this.handleChange = this.handleChange.bind(this);
     this.addVideo = this.addVideo.bind(this);
   }
@@ -20,17 +20,12 @@ class NewVideoContainer extends React.Component {
 
   addVideo(event) {
     event.preventDefault();
-    console.log("<<<addVideo>>>");
-    let id_playlist = this.props.id_playlist;
     let body = {
-      url_video: this.state.url_video,
+      url_video: this.state.url,
       description: this.state.description
     };
-    console.log(id_playlist);
-    console.log(body);
-
     Api({
-      url: `/api/playlists/${id_playlist}/videos`,
+      url: "/api/playlists/" + this.props.id + "/videos",
       method: "POST",
       params: body
     });
@@ -39,7 +34,7 @@ class NewVideoContainer extends React.Component {
   render() {
     return (
       <NewVideoComponent
-        url_video={this.state.url_video}
+        url={this.state.url}
         description={this.state.description}
         handleChange={this.handleChange}
         addVideo={this.addVideo}
@@ -48,4 +43,11 @@ class NewVideoContainer extends React.Component {
   }
 }
 
-export default NewVideoContainer;
+const mapStateToProps = state => {
+  return {
+    profile: state.usersSession.profile,
+    userId: state.usersSession.userId
+  };
+};
+
+export default connect(mapStateToProps)(NewVideoContainer);

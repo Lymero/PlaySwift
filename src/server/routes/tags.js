@@ -3,8 +3,10 @@ const router = express.Router();
 const logger = require("../modules/logger").logger;
 const { pool } = require("../modules/db");
 const { validateTag } = require("../models/tag");
+const httpStatus = require("http-status");
+const createError = require("http-errors");
 
-router.get("/", async (req, res) => {
+router.get("/", async (req, res, next) => {
   const client = await pool.connect();
   const query = `select * from playswift.tags order by tag_name, id_tag`;
   try {
@@ -12,15 +14,17 @@ router.get("/", async (req, res) => {
     res.send(result.rows);
     logger.info("SELECT:tags");
   } catch (err) {
-    logger.info(err.stack);
+    return next(err);
   } finally {
     client.release();
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", async (req, res, next) => {
   const { error } = validateTag(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) {
+    return next(createError(httpStatus.BAD_REQUEST, error.details[0].message));
+  }
   const client = await pool.connect();
   const query = `insert into playswift.tags
     values(default, $1)
@@ -31,7 +35,7 @@ router.post("/", async (req, res) => {
     res.send(result.rows[0]);
     logger.info("INSERT:" + values);
   } catch (err) {
-    logger.info(err.stack);
+    return next(err);
   } finally {
     client.release();
   }

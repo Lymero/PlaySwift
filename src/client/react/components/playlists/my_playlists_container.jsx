@@ -37,7 +37,7 @@ class MyPlaylistsContainer extends React.Component {
 }
 
 const mapStateToProps = state => {
-  return {profile: state.usersSession.profile}
+  return { profile: state.usersSession.profile };
 };
 
 

@@ -2,7 +2,7 @@ import React from "react";
 import { Route, withRouter, Redirect } from "react-router-dom";
 import AllPlaylistsContainer from "react/components/playlists/all_playlists_container";
 import MyPlaylistsContainer from "react/components/playlists/my_playlists_container";
-import MyVideosContainer from "react/components/videos/my_videos_container";
+import VideoPlayerContainer from "react/components/player/video_player_root_container";
 import LoginPrompt from "react/components/auth/login_prompt";
 import CallbackContainer from "react/components/auth/callback_container";
 import { connect } from "react-redux";
@@ -23,7 +23,7 @@ function RouterOutlet({ authState, location: { pathname } }) {
         <Route path="/login" component={LoginPrompt} />
         <Route path="/authCallback" component={CallbackContainer} />
         <Route exact path="/playlists" component={MyPlaylistsContainer} />
-        <Route path="/playlists/:idPlaylist" component={MyVideosContainer} />
+        <Route path="/playlists/:idPlaylist" component={VideoPlayerContainer} />
       </React.Fragment>
     );
   }

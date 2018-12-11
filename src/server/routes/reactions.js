@@ -1,12 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const logger = require("../modules/logger").logger;
 const { pool } = require("../modules/db");
 const { validateReaction } = require("../models/reaction");
+const httpStatus = require("http-status");
+const createError = require("http-errors");
 
-router.put("/:id_reaction", async (req, res) => {
+router.put("/:id_reaction", async (req, res, next) => {
   const { error } = validateReaction(req.body, req.params);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) {
+    return next(createError(httpStatus.BAD_REQUEST, error.details[0].message));
+  }
   const client = await pool.connect();
   const query = `update playswift.reactions 
         set vote = $1, comment = $2 
@@ -22,7 +25,7 @@ router.put("/:id_reaction", async (req, res) => {
     const result = await client.query(query, values);
     res.send(result.rows[0]);
   } catch (err) {
-    logger.info(err.stack);
+    return next(err);
   } finally {
     client.release();
   }
