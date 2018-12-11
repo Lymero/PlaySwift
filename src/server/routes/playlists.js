@@ -11,33 +11,33 @@ const createError = require("http-errors");
 
 router.get("/", async (req, res, next) => {
   const client = await pool.connect();
-  const query = `select * from playswift.playlists where visible=true`;
+  const query = `select pl1.id_playlist,
+	pl1.name,
+	pl1.id_tag,
+	pl1.visible,
+	pl1.id_user,
+	pl1.creation_date,
+	pl1.last_update_date,
+	pl1.description,
+	pl1.likes_number,
+	pl1.dislikes_number, 
+	v.url_thumbnail
+  from playswift.playlists pl1
+  right outer join playswift.videos_playlists vp on vp.id_playlist=pl1.id_playlist
+  right outer join playswift.videos v on vp.id_video=v.id_video
+  where pl1.visible=true
+  group by pl1.id_playlist, v.url_thumbnail, vp.position
+  having vp.position=(
+    select min(position)
+    from playswift.videos_playlists pl2
+	where pl1.id_playlist=pl2.id_playlist
+  ) 
+  union select *, null 
+  from playswift.playlists 
+  where id_playlist not in(select id_playlist from playswift.videos_playlists )`;
   try {
     const result = await client.query(query);
     res.send(result.rows);
-  } catch (err) {
-    return next(err);
-  } finally {
-    client.release();
-  }
-});
-
-router.get("/:id_playlist/thumbnail", async (req, res, next) => {
-  const client = await pool.connect();
-  const query = `select v.url_thumbnail
-  from playswift.videos v, playswift.videos_playlists vp,playswift.playlists pl
-  where v.id_video=vp.id_video 
-  and pl.id_playlist=vp.id_playlist 
-  and pl.id_playlist=$1
-  and vp.position=(
-    select min(position)
-    from playswift.videos_playlists
-    where id_playlist=$1
-  )`;
-  const values = [req.params.id_playlist];
-  try {
-    const result = await client.query(query, values);
-    res.send(result.rows[0]);
   } catch (err) {
     return next(err);
   } finally {
