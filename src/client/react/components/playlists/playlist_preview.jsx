@@ -16,7 +16,11 @@ import { Nav } from "react-bootstrap";
 import { withRouter } from "react-router-dom";
 import { withPlaylists } from "react/context/playlists";
 import DateUtils from "react/utils/date";
-import { faThumbsDown, faThumbsUp } from "@fortawesome/free-solid-svg-icons";
+import {
+  faThumbsDown,
+  faThumbsUp,
+  faTrashAlt
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 class PlaylistPreview extends React.Component {
@@ -44,21 +48,25 @@ class PlaylistPreview extends React.Component {
 
   render() {
     const playlist = this.playlist;
+    console.log(playlist);
     if (playlist["url_thumbnail"] === null)
       playlist["url_thumbnail"] = "https://place-hold.it/16x9/212425";
     return (
       <div>
-        {playlist.id_user === this.props.userId && (
-          <Button onClick={this.removePlaylist}>X</Button>
-        )}
-        <Card className="floatHover h-100" onClick={this.goToPlaylist}>
+        <Card className="floatHover h-100">
+          {playlist.id_user === this.props.userId && (
+            <Button variant="danger" onClick={this.removePlaylist}>
+              <FontAwesomeIcon icon={faTrashAlt} />
+            </Button>
+          )}
           <CardImg
             variant="top"
             width="100%"
             src={playlist["url_thumbnail"]}
-            alt="Card image cap"
+            alt="Playlist preview thumbnail"
+            onClick={this.goToPlaylist}
           />
-          <Card.Body>
+          <Card.Body onClick={this.goToPlaylist}>
             <Card.Title>
               <h3>{playlist["name"]}</h3>
             </Card.Title>
