@@ -8,10 +8,8 @@ import Api from "react/utils/api";
 
 const PlaylistsContext = React.createContext({
   playlists: [],
-  currentPlaylist: {
-    playlist: undefined,
-    videos: []
-  }
+  currentPlaylistId: undefined,
+  currentPlaylistVideos: []
 });
 
 const PlaylistsConsumer = PlaylistsContext.Consumer;
@@ -22,10 +20,8 @@ class PlaylistsProvider extends React.Component {
 
     this.state = {
       playlists: [],
-      currentPlaylist: {
-        playlist: undefined,
-        videos: []
-      }
+      currentPlaylistId: undefined,
+      currentPlaylistVideos: []
     };
 
     this.loadInitialPlaylists();
@@ -50,23 +46,23 @@ class PlaylistsProvider extends React.Component {
   }
 
   setCurrentPlaylist(playlist) {
-    console.log(playlist);
-    this.setState({ currentPlaylist: playlist });
-    this.loadInitialVideosOfPlaylist();
+    console.log("SETTED CURRENT PLAYLIST");
+    this.setState({ currentPlaylistId: playlist }, () => {
+      console.log(this.state);
+      this.loadInitialVideosOfPlaylist();
+    });
   }
 
   loadInitialVideosOfPlaylist() {
     // CHECK API RESPONSE
-    let playlistID = this.state.currentPlaylist.id_playlist;
+    let playlistID = this.state.currentPlaylistId;
     Api({
       url: "/api/playlists/" + playlistID + "/videos",
       method: "GET"
     }).then(fetchedVideos => {
-      this.setState({
-        currentPlaylist: {
-          videos: fetchedVideos
-        }
-      });
+      this.setState({ currentPlaylistVideos: fetchedVideos });
+      console.log("LOADER VIDEOS OF PLAYLIST");
+      console.log(this.state);
     });
   }
 
@@ -76,10 +72,9 @@ class PlaylistsProvider extends React.Component {
       url: "/api/playlists",
       method: "GET",
       params: null
-    })
-      .then(playlistsFetched => {
-        this.setState({ playlists: playlistsFetched });
-      });
+    }).then(playlistsFetched => {
+      this.setState({ playlists: playlistsFetched });
+    });
   }
 
   addPlaylist(playlistToAdd) {
@@ -107,11 +102,13 @@ class PlaylistsProvider extends React.Component {
       removeVideoCurrentPlaylist
     } = this;
 
-    const { playlists } = this.state;
+    const { playlists, currentPlaylistId, currentPlaylistVideos } = this.state;
     const { children } = this.props;
 
     const providerValues = {
       playlists,
+      currentPlaylistId,
+      currentPlaylistVideos,
       addPlaylist,
       removePlaylist,
       setCurrentPlaylist,
