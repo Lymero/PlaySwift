@@ -1,7 +1,7 @@
 import React from "react";
 import { Container, Row, Col, Button, ListGroup } from "react-bootstrap";
-import VideoPlayer from "./video_player_container";
-import NewVideo from "react/components/playlists/new_video/new_video_container";
+import VideoPlayerContainer from "./video_player_container";
+import NewVideoContainer from "react/components/playlists/new_video/new_video_container";
 import SuggestVideoContainer from "react/components/player/suggest_video/suggest_video_container";
 import { withPlaylists } from "react/context/playlists";
 
@@ -43,11 +43,16 @@ class PlayerComponent extends React.Component {
     }
   }
 
+  //TODO
+  isMyPlaylist() {
+    return false;
+  }
+
   render() {
+    console.log(this.isMyPlaylist());
     return (
       <Container>
-        <VideoPlayer video={this.state.selectedVideo} />
-        <NewVideo id={this.state.playlistId} />
+        <VideoPlayerContainer video={this.state.selectedVideo} />
         <ListGroup onClick={this.changeVideo}>
           <Row>
             {this.props.currentPlaylistVideos !== undefined &&
@@ -61,8 +66,12 @@ class PlayerComponent extends React.Component {
               ))}
           </Row>
         </ListGroup>
-        {/* if i'm not the owner of the playlist */}
-        <SuggestVideoContainer />
+        {this.isMyPlaylist() == false && (
+          <SuggestVideoContainer id_playlist={this.state.playlistId} />
+        )}
+        {this.isMyPlaylist() == true && (
+          <NewVideoContainer id={this.state.playlistId} />
+        )}
       </Container>
     );
   }

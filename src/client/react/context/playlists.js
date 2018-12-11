@@ -9,7 +9,8 @@ import Api from "react/utils/api";
 const PlaylistsContext = React.createContext({
   playlists: [],
   currentPlaylistId: undefined,
-  currentPlaylistVideos: []
+  currentPlaylistVideos: [],
+  tags: []
 });
 
 const PlaylistsConsumer = PlaylistsContext.Consumer;
@@ -21,16 +22,28 @@ class PlaylistsProvider extends React.Component {
     this.state = {
       playlists: [],
       currentPlaylistId: undefined,
-      currentPlaylistVideos: []
+      currentPlaylistVideos: [],
+      tags: []
     };
 
     this.loadInitialPlaylists();
+
+    this.loadTags();
 
     this.addPlaylist = this.addPlaylist.bind(this);
     this.removePlaylist = this.removePlaylist.bind(this);
     this.setCurrentPlaylist = this.setCurrentPlaylist.bind(this);
     this.addVideoCurrentPlaylist = this.addVideoCurrentPlaylist.bind(this);
     this.removeVideoCurrentPlaylist = this.removeVideoCurrentPlaylist.bind(this);
+  }
+
+  loadTags() {
+    Api({
+      url: "/api/tags",
+      method: "GET"
+    }).then(fetchedTags => {
+      this.setState({ tags: fetchedTags });
+    });
   }
 
   addVideoCurrentPlaylist() {
@@ -100,11 +113,12 @@ class PlaylistsProvider extends React.Component {
       removeVideoCurrentPlaylist
     } = this;
 
-    const { playlists, currentPlaylistId, currentPlaylistVideos } = this.state;
+    const { playlists, currentPlaylistId, currentPlaylistVideos, tags} = this.state;
     const { children } = this.props;
 
     const providerValues = {
       playlists,
+      tags,
       currentPlaylistId,
       currentPlaylistVideos,
       addPlaylist,
