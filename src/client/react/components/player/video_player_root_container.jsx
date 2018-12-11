@@ -14,6 +14,7 @@ class PlayerComponent extends React.Component {
     this.state = {
       playlistId: parseInt(location.href.split("/").pop()),
       selectedVideo: this.props.currentPlaylistVideos[0],
+      selectedVideoDom: undefined,
       updated: false
     };
     this.changeVideo = this.changeVideo.bind(this);
@@ -28,9 +29,7 @@ class PlayerComponent extends React.Component {
     if (!this.state.updated) {
       if (this.props.currentPlaylistVideos[0] !== undefined) {
         this.setState((state, props) => ({
-          selectedVideo: this.props.currentPlaylistVideos[0]
-        }));
-        this.setState((state, props) => ({
+          selectedVideo: this.props.currentPlaylistVideos[0],
           updated: true
         }));
       }
@@ -38,20 +37,24 @@ class PlayerComponent extends React.Component {
   }
 
   changeVideo(event) {
-    // SET ListGroupItem as ACTIVE
     if (event.target.tagName === "BUTTON") {
       let id = event.target.dataset.videoid;
-      this.setState((state, props) => ({
-        selectedVideo: this.props.currentPlaylistVideos[id]
-      }));
+      let dom = event.target.closest(".list-group-item");
+      if (this.state.selectedVideoDom !== undefined)
+        this.state.selectedVideoDom.classList.remove("active");
+      this.setState(
+        (state, props) => ({
+          selectedVideoDom: dom,
+          selectedVideo: this.props.currentPlaylistVideos[id]
+        }),
+        () => {
+          this.state.selectedVideoDom.classList.add("active");
+        }
+      );
     }
   }
 
   isMyPlaylist() {
-    /*
-    console.log("isMy")
-    console.log(this.props);
-    */
     return (
       this.props.myPlaylists.filter(
         p => p.id_playlist === this.state.playlistId
