@@ -37,6 +37,7 @@ class PlayerComponent extends React.Component {
   }
 
   changeVideo(event) {
+    // SET ListGroupItem as ACTIVE
     if (event.target.tagName === "BUTTON") {
       let id = event.target.dataset.videoid;
       this.setState((state, props) => ({
@@ -61,27 +62,38 @@ class PlayerComponent extends React.Component {
   render() {
     return (
       <Container>
-        <VideoPlayerContainer video={this.state.selectedVideo} />
-        <ListGroup onClick={this.changeVideo}>
-          <Row>
-            {this.props.currentPlaylistVideos !== undefined &&
-              this.props.currentPlaylistVideos.map((video, i) => (
-                <Col xs={12} key={i}>
-                  <ListGroup.Item key={i}>
-                    <span>{video.description}</span>
-                    <Button data-videoid={i}>Play</Button>
-                    <ReactionsContainer video={video} />
+        <Row>
+          <Col xl={7} l={7} md={7} sm={12} xs={12}>
+            <VideoPlayerContainer video={this.state.selectedVideo} />
+          </Col>
+          <Col xl={5} l={5} md={5} sm={12} xs={12}>
+            <ListGroup onClick={this.changeVideo}>
+                {this.props.currentPlaylistVideos !== undefined &&
+                  this.props.currentPlaylistVideos.map((video, i) => (
+                  <ListGroup.Item key={i} data-videoid={i}>
+                    <Row>
+                      <Col className="thumbnail-container" xl={4} sm={12}>
+                      <img className="thumbnail" src={video.url_thumbnail}/>
+                      <ReactionsContainer video={video} />
+                      </Col>
+                      <Col xl={8}  sm={12}>
+                      <h5>{video.title}</h5>
+                      <span>{video.description}</span><br/>
+                      <Button data-videoid={i}>Play</Button>
+                      
+                      </Col>
+                    </Row>
                   </ListGroup.Item>
-                </Col>
-              ))}
-          </Row>
-        </ListGroup>
-        {this.isMyPlaylist() == false && (
-          <SuggestVideoContainer id_playlist={this.state.playlistId} />
-        )}
-        {this.isMyPlaylist() == true && (
-          <NewVideoContainer id={this.state.playlistId} />
-        )}
+                  ))}
+            </ListGroup>
+            {this.isMyPlaylist() == false && (
+              <SuggestVideoContainer id_playlist={this.state.playlistId} />
+            )}
+            {this.isMyPlaylist() == true && (
+              <NewVideoContainer id={this.state.playlistId} />
+            )}
+          </Col>
+        </Row>
       </Container>
     );
   }
