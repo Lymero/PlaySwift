@@ -1,7 +1,8 @@
 import React from "react";
 import NewPlaylistComponent from "./new_playlist_component";
-import Api from "react/utils/api";
 import { connect } from "react-redux";
+import {withPlaylists} from 'react/context/playlists';
+
 
 class NewPlaylistContainer extends React.Component {
   constructor(props) {
@@ -13,6 +14,7 @@ class NewPlaylistContainer extends React.Component {
       tag: 1
     };
 
+    this.ctxAddPlaylist = this.props.addPlaylist;
     this.handleChange = this.handleChange.bind(this);
     this.addPlaylist = this.addPlaylist.bind(this);
   }
@@ -31,14 +33,7 @@ class NewPlaylistContainer extends React.Component {
       id_user: userID,
       description: this.state.description
     };
-
-    console.log(body);
-
-    Api({
-      url: "/api/playlists",
-      method: "POST",
-      params: body
-    });
+    this.ctxAddPlaylist(body);
   }
 
   render() {
@@ -61,4 +56,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(NewPlaylistContainer);
+export default connect(mapStateToProps)(withPlaylists(NewPlaylistContainer));

@@ -1,6 +1,7 @@
 import React from "react";
 import VideosComponent from "./videos_component";
 import Api from "react/utils/api";
+import {withPlaylists} from 'react/context/playlists';
 
 class MyVideosContainer extends React.Component {
   constructor(props) {
@@ -30,7 +31,6 @@ class MyVideosContainer extends React.Component {
   }
 
   render() {
-    console.log(this.state);
     return (
       <VideosComponent
         id_playlist={this.state.id_playlist}
@@ -41,4 +41,4 @@ class MyVideosContainer extends React.Component {
   }
 }
 
-export default MyVideosContainer;
+export default withPlaylists(MyVideosContainer);

@@ -1,23 +1,15 @@
 import React from "react";
 import PlaylistsComponent from "./playlists_component";
 import { connect } from "react-redux";
-import Api from "react/utils/api";
+import {withPlaylists} from 'react/context/playlists';
 
 class AllPlaylistsContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { title: "All playlist", playlists: [] };
+    this.state = { title: "All playlist", playlists: props.playlists }
   }
 
-  componentDidMount() {
-    Api({
-      url: "/api/playlists",
-      method: "GET",
-      params: null
-    }).then(playlists => {
-      this.setState(Object.assign({}, this.state, { playlists: playlists }));
-    });
-  }
+  componentDidMount() {}
 
   render() {
     return (
@@ -30,4 +22,4 @@ class AllPlaylistsContainer extends React.Component {
   }
 }
 
-export default connect()(AllPlaylistsContainer);
+export default connect()(withPlaylists(AllPlaylistsContainer));

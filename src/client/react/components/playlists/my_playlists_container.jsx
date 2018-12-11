@@ -1,24 +1,25 @@
 import React from "react";
 import PlaylistsComponent from "./playlists_component";
 import { connect } from "react-redux";
-import Api from "react/utils/api";
+import {withPlaylists} from 'react/context/playlists';
 
 class MyPlaylistsContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { title: "My Playlists", playlists: [] };
+    this.state = {
+      title: "My Playlists",
+      playlists: this.props.playlists,
+      myPlaylists: this.filterMyPlaylists
+    };
     this.displayNumberPlaylists = this.displayNumberPlaylists.bind(this);
   }
 
-  componentDidMount() {
-    Api({
-      url: "/api/laylists",
-      method: "GET",
-      params: null
-    }).then(playlists => {
-      this.setState(Object.assign({}, this.state, { playlists: playlists }));
-    });
+  filterMyPlaylists() {
+    // HERE WE SHOULD ONLY SELECT OWNERS PLAYLISTS
+    return this.state.playlists;
   }
+
+  componentDidMount() {}
 
   displayNumberPlaylists() {
     return this.state.playlists.length;
@@ -28,7 +29,7 @@ class MyPlaylistsContainer extends React.Component {
     return (
       <PlaylistsComponent
         title={this.state.title}
-        playlists={this.state.playlists}
+        playlists={this.state.myPlaylists}
         {...this.props}
       />
     );
@@ -40,4 +41,4 @@ const mapStateToProps = state => {
 };
 
 
-export default connect(mapStateToProps)(MyPlaylistsContainer);
+export default connect(mapStateToProps)(withPlaylists(MyPlaylistsContainer));
