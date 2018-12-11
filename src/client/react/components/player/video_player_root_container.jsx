@@ -68,23 +68,23 @@ class PlayerComponent extends React.Component {
           </Col>
           <Col xl={5} l={5} md={5} sm={12} xs={12}>
             <ListGroup onClick={this.changeVideo}>
-                {this.props.currentPlaylistVideos !== undefined &&
-                  this.props.currentPlaylistVideos.map((video, i) => (
+              {this.props.currentPlaylistVideos !== undefined &&
+                this.props.currentPlaylistVideos.map((video, i) => (
                   <ListGroup.Item key={i} data-videoid={i}>
                     <Row>
                       <Col className="thumbnail-container" xl={4} sm={12}>
-                      <img className="thumbnail" src={video.url_thumbnail}/>
-                      <ReactionsContainer video={video} />
+                        <img className="thumbnail" src={video.url_thumbnail} />
+                        <ReactionsContainer video={video} />
                       </Col>
-                      <Col xl={8}  sm={12}>
-                      <h5>{video.title}</h5>
-                      <span>{video.description}</span><br/>
-                      <Button data-videoid={i}>Play</Button>
-                      
+                      <Col xl={8} sm={12}>
+                        <h5>{video.title}</h5>
+                        <span>{video.description}</span>
+                        <br />
+                        <Button data-videoid={i}>Play</Button>
                       </Col>
                     </Row>
                   </ListGroup.Item>
-                  ))}
+                ))}
             </ListGroup>
             {this.isMyPlaylist() == false && (
               <SuggestVideoContainer id_playlist={this.state.playlistId} />
