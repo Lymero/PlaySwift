@@ -84,12 +84,21 @@ router.post("/:id_video/reactions", async (req, res, next) => {
   const client = await pool.connect();
   const queryInsertReaction = `insert into playswift.reactions
   values (default,$1,$2,$3,default,$4) returning id_reaction, id_video_playlist, vote, comment,id_user`;
-  const queryUpdateNbLikes = `update playswift.playlists 
+
+  const queryUpdateNbLikesPlaylist = `update playswift.playlists 
   set dislikes_number=${
     req.body.vote === "dislike" ? "dislikes_number+1" : "dislikes_number"
   }, likes_number=${
     req.body.vote === "like" ? "likes_number+1" : "likes_number"
   } where id_playlist=${req.body.id_playlist}`;
+
+  const queryUpdateNbLikesVideo = `update playswift.videos_playlists 
+  set dislikes_number=${
+    req.body.vote === "dislike" ? "dislikes_number+1" : "dislikes_number"
+  }, likes_number=${
+    req.body.vote === "like" ? "likes_number+1" : "likes_number"
+  } where id_video_playlist=${req.body.id_video_playlist}`;
+
   const values = [
     req.params.id_video,
     req.body.vote,
@@ -99,7 +108,8 @@ router.post("/:id_video/reactions", async (req, res, next) => {
   try {
     await client.query("BEGIN");
     const result = await client.query(queryInsertReaction, values);
-    await client.query(queryUpdateNbLikes);
+    await client.query(queryUpdateNbLikesPlaylist);
+    await client.query(queryUpdateNbLikesVideo);
     res.send(result.rows);
     await client.query("COMMIT");
   } catch (err) {
