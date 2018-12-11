@@ -46,6 +46,8 @@ class PlaylistPreview extends React.Component {
     if (playlist["url_thumbnail"] === null)
       playlist["url_thumbnail"] = "https://place-hold.it/16x9/212425";
     return (
+      <div>
+      <Button onClick={this.removePlaylist}>X</Button>
       <Card className="floatHover h-100" onClick={this.goToPlaylist}>
         <CardImg
           variant="top"
@@ -83,6 +85,7 @@ class PlaylistPreview extends React.Component {
           </ListGroupItem>
         </ListGroup>
       </Card>
+      </div>
     );
   }
 }
