@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Dislikes = ({ dislikes_number }) => {
   return (
-    <Button>
+    <Button variant="danger">
       {dislikes_number} <FontAwesomeIcon icon={faThumbsDown} />
     </Button>
   );

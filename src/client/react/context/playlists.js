@@ -30,9 +30,7 @@ class PlaylistsProvider extends React.Component {
     this.removePlaylist = this.removePlaylist.bind(this);
     this.setCurrentPlaylist = this.setCurrentPlaylist.bind(this);
     this.addVideoCurrentPlaylist = this.addVideoCurrentPlaylist.bind(this);
-    this.removeVideoCurrentPlaylist = this.removeVideoCurrentPlaylist.bind(
-      this
-    );
+    this.removeVideoCurrentPlaylist = this.removeVideoCurrentPlaylist.bind(this);
   }
 
   addVideoCurrentPlaylist() {
