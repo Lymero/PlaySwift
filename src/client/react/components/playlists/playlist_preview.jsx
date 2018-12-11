@@ -79,11 +79,11 @@ class PlaylistPreview extends React.Component {
               <span>{playlist["tag_name"]}</span>
             </ListGroupItem>
             <ListGroupItem>
-              <strong>Créé le </strong>
+              <strong>Created on </strong>
               <span>{DateUtils.toReadable(playlist["creation_date"])}</span>
             </ListGroupItem>
             <ListGroupItem>
-              <strong>Modifié le </strong>
+              <strong>Modified on </strong>
               <span>{DateUtils.toReadable(playlist["last_update_date"])}</span>
             </ListGroupItem>
           </ListGroup>

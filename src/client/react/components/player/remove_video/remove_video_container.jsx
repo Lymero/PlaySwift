@@ -15,7 +15,15 @@ class RemoveVideoContainer extends React.Component {
   }
 
   render() {
-    return <Button onClick={this.deleteVideo}>X SUPPRIMER VIDEO</Button>;
+    return (
+      <Button
+        className="btn btn-secondary"
+        data-dismiss="modal"
+        onClick={this.deleteVideo}
+      >
+        Delete
+      </Button>
+    );
   }
 }
 

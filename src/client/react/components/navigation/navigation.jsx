@@ -14,7 +14,7 @@ const Navigation = ({ authState, profile }) => {
       <SearchFormContainer />
       <Nav className="mr-auto">
         <Nav.Link as={Link} to="/playlists">
-          My playlists - Current user =
+          My playlists -{" "}
           {authState.authenticated ? profile.name : "not logged in"}
         </Nav.Link>
       </Nav>
