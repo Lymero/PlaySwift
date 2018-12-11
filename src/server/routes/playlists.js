@@ -1,21 +1,11 @@
 const express = require("express");
 const router = express.Router();
 
-const {
-  pool
-} = require("../modules/db");
-const {
-  getYoutubeVideo
-} = require("../modules/google/youtube");
-const {
-  validatePlaylist
-} = require("../models/playlist");
-const {
-  validateVideo
-} = require("../models/video");
-const {
-  validateSuggestion
-} = require("../models/suggestion");
+const { pool } = require("../modules/db");
+const { getYoutubeVideo } = require("../modules/google/youtube");
+const { validatePlaylist } = require("../models/playlist");
+const { validateVideo } = require("../models/video");
+const { validateSuggestion } = require("../models/suggestion");
 const httpStatus = require("http-status");
 const createError = require("http-errors");
 
@@ -23,7 +13,7 @@ router.get("/", async (req, res, next) => {
   const client = await pool.connect();
   const query = `select pl1.id_playlist,
 	pl1.name,
-	pl1.id_tag,
+	ta.tag_name,
 	pl1.visible,
 	pl1.id_user,
 	pl1.creation_date,
@@ -33,17 +23,29 @@ router.get("/", async (req, res, next) => {
 	pl1.dislikes_number, 
 	v.url_thumbnail
   from playswift.playlists pl1
-  right outer join playswift.videos_playlists vp on vp.id_playlist=pl1.id_playlist
-  right outer join playswift.videos v on vp.id_video=v.id_video
+  join playswift.videos_playlists vp on vp.id_playlist=pl1.id_playlist
+  join playswift.videos v on vp.id_video=v.id_video
+  join playswift.tags ta on pl1.id_tag=ta.id_tag 
   where pl1.visible=true
-  group by pl1.id_playlist, v.url_thumbnail, vp.position
+  group by pl1.id_playlist, v.url_thumbnail, vp.position, ta.tag_name
   having vp.position=(
     select min(position)
     from playswift.videos_playlists pl2
 	where pl1.id_playlist=pl2.id_playlist
   ) 
-  union select *, null 
-  from playswift.playlists 
+  union select pl3.id_playlist,
+	pl3.name,
+	ta.tag_name,
+	pl3.visible,
+	pl3.id_user,
+	pl3.creation_date,
+	pl3.last_update_date,
+	pl3.description,
+	pl3.likes_number,
+	pl3.dislikes_number,
+	null 
+  from playswift.playlists pl3
+  join playswift.tags ta on pl3.id_tag=ta.id_tag 
   where id_playlist not in(select id_playlist from playswift.videos_playlists )`;
   try {
     const result = await client.query(query);
@@ -56,9 +58,7 @@ router.get("/", async (req, res, next) => {
 });
 
 router.post("/", async (req, res, next) => {
-  const {
-    error
-  } = validatePlaylist(req.body);
+  const { error } = validatePlaylist(req.body);
   if (error) {
     return next(createError(httpStatus.BAD_REQUEST, error.details[0].message));
   }
@@ -84,9 +84,7 @@ router.post("/", async (req, res, next) => {
 });
 
 router.put("/:id_playlist", async (req, res, next) => {
-  const {
-    error
-  } = validatePlaylist(req.body);
+  const { error } = validatePlaylist(req.body);
   if (error) {
     return next(createError(httpStatus.BAD_REQUEST, error.details[0].message));
   }
@@ -150,20 +148,12 @@ router.get("/:id_playlist/videos", async (req, res, next) => {
 });
 
 router.post("/:id_playlist/videos", async (req, res, next) => {
-  const {
-    error
-  } = validateVideo(req.body, req.params);
+  const { error } = validateVideo(req.body, req.params);
   if (error) {
     return next(createError(httpStatus.BAD_REQUEST, error.details[0].message));
   }
-  const {
-    id_playlist
-  } = req.params;
-  const {
-    url_video,
-    description,
-    id_user
-  } = req.body;
+  const { id_playlist } = req.params;
+  const { url_video, description, id_user } = req.body;
 
   const client = await pool.connect();
   const queryOwnership = `select * from playswift.playlists where id_user=$1 and id_playlist=$2`;
@@ -193,12 +183,8 @@ router.post("/:id_playlist/videos", async (req, res, next) => {
 
     if (video.rowCount <= 0) {
       getYoutubeVideo(url_video, async resp => {
-        const {
-          title
-        } = resp[0].snippet;
-        const {
-          url
-        } = resp[0].snippet.thumbnails.high;
+        const { title } = resp[0].snippet;
+        const { url } = resp[0].snippet.thumbnails.high;
         values = [url_video, title, url];
         try {
           const video = (await client.query(queryInsertVideo, values)).rows[0];
@@ -240,20 +226,13 @@ router.get("/:id_playlist/suggestions", async (req, res, next) => {
 });
 
 router.post("/:id_playlist/suggestions", async (req, res, next) => {
-  const {
-    error
-  } = validateSuggestion(req.body, req.params);
+  const { error } = validateSuggestion(req.body, req.params);
   if (error) {
     return next(createError(httpStatus.BAD_REQUEST, error.details[0].message));
   }
 
-  const {
-    id_playlist
-  } = req.params;
-  const {
-    url_video,
-    id_user
-  } = req.body;
+  const { id_playlist } = req.params;
+  const { url_video, id_user } = req.body;
 
   const client = await pool.connect();
   const queryInsertSuggestion = `insert into playswift.suggestions values(default, $1, $2, 'pending', $3)`;
@@ -265,15 +244,11 @@ router.post("/:id_playlist/suggestions", async (req, res, next) => {
     const video = await client.query(queryExistingVideo, values);
     if (video.rowCount <= 0) {
       getYoutubeVideo(url_video, async resp => {
-        const {
-          title
-        } = resp[0].snippet;
-        const {
-          url
-        } = resp[0].snippet.thumbnails.high;
+        const { title } = resp[0].snippet;
+        const { url } = resp[0].snippet.thumbnails.high;
         values = [url_video, title, url];
         try {
-          const video = (await client.query(queryInsertVideo, values));
+          const video = await client.query(queryInsertVideo, values);
           values = [id_playlist, video.rows[0].id_video, id_user];
           const insertedSuggestion = await client.query(
             queryInsertSuggestion,
