@@ -51,10 +51,8 @@ class PlayerComponent extends React.Component {
    */
   isMyPlaylist() {
     return (
-      this.props.playlists.filter(
-        p =>
-          p.id_playlist === this.state.playlistId &&
-          p.id_user === this.props.userId
+      this.props.myPlaylists.filter(
+        p => p.id_playlist === this.state.playlistId
       ).length === 1
     );
   }

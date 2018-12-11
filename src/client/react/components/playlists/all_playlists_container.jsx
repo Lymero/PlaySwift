@@ -6,7 +6,7 @@ import { withPlaylists } from "react/context/playlists";
 class AllPlaylistsContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { title: "All playlist", playlists: props.playlists };
+    this.state = { title: "All playlist" };
   }
 
   componentDidMount() {}
@@ -15,7 +15,7 @@ class AllPlaylistsContainer extends React.Component {
     return (
       <PlaylistsComponent
         title={this.state.title}
-        playlists={this.state.playlists}
+        playlistsToShow={this.props.playlists}
         {...this.props}
       />
     );

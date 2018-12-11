@@ -8,6 +8,7 @@ import Api from "react/utils/api";
 
 const PlaylistsContext = React.createContext({
   playlists: [],
+  myPlaylists: [],
   currentPlaylistId: undefined,
   currentPlaylistVideos: [],
   tags: []
@@ -21,13 +22,14 @@ class PlaylistsProvider extends React.Component {
 
     this.state = {
       playlists: [],
+      myPlaylists: [],
       currentPlaylistId: undefined,
       currentPlaylistVideos: [],
       tags: []
     };
 
     this.loadInitialPlaylists();
-
+    this.loadMyPlaylists();
     this.loadTags();
 
     this.addPlaylist = this.addPlaylist.bind(this);
@@ -81,6 +83,7 @@ class PlaylistsProvider extends React.Component {
       url: "/api/playlists/" + playlistID + "/videos",
       method: "GET"
     }).then(fetchedVideos => {
+      console.log("??")
       this.setState({
         currentPlaylistVideos: fetchedVideos
       });
@@ -100,6 +103,19 @@ class PlaylistsProvider extends React.Component {
     });
   }
 
+  loadMyPlaylists() {
+    // CHECK API RESPONSE
+    Api({
+      url: "/api/users/me/playlists",
+      method: "GET",
+      params: null
+    }).then(playlistsFetched => {
+      this.setState({
+        myPlaylists: playlistsFetched
+      });
+    });
+  }
+
   addPlaylist(playlistToAdd) {
     // CHECK API RESPONSE
     Api({
@@ -108,7 +124,8 @@ class PlaylistsProvider extends React.Component {
       params: playlistToAdd
     }).then(resp => {
       this.setState({
-        playlists: [...this.state.playlists, resp]
+        playlists: [...this.state.playlists, resp],
+        myPlaylists: [...this.state.myPlaylists, resp]
       });
     });
   }
@@ -125,7 +142,7 @@ class PlaylistsProvider extends React.Component {
 
   removePlaylist(playlistToRemove) {
     const { id_playlist } = playlistToRemove;
-    const { playlists } = this.state;
+    const { playlists, myPlaylists } = this.state;
     Api({
       url: `/api/playlists/${playlistToRemove.id_playlist}`,
       method: "DELETE"
@@ -134,8 +151,13 @@ class PlaylistsProvider extends React.Component {
         playlists.findIndex(e => e.id_playlist === id_playlist),
         1
       );
+      myPlaylists.splice(
+        myPlaylists.findIndex(e => e.id_playlist === id_playlist),
+        1
+      );
       this.setState({
-        playlists: playlists
+        playlists: playlists,
+        myPlaylists: myPlaylists
       });
     });
   }
@@ -152,6 +174,7 @@ class PlaylistsProvider extends React.Component {
 
     const {
       playlists,
+      myPlaylists,
       currentPlaylistId,
       currentPlaylistVideos,
       tags
@@ -160,6 +183,7 @@ class PlaylistsProvider extends React.Component {
 
     const providerValues = {
       playlists,
+      myPlaylists,
       tags,
       currentPlaylistId,
       currentPlaylistVideos,
