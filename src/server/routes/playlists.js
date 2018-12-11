@@ -96,7 +96,7 @@ router.delete("/:id_playlist", async (req, res, next) => {
 
 router.get("/:id_playlist/videos", async (req, res, next) => {
   const client = await pool.connect();
-  const query = `select vp.id_video_playlist, vp.id_playlist, vp.id_video, vp.description, vp.position, v.id_video, v.url_video, v.video_length, v.title, v.url_thumbnail
+  const query = `select vp.id_video_playlist, vp.id_playlist, vp.id_video, vp.description, vp.position, v.id_video, v.url_video, v.title, v.url_thumbnail
   from playswift.videos_playlists vp
   inner join playswift.videos v
   on vp.id_video = v.id_video
