@@ -4,6 +4,7 @@ import VideoPlayerContainer from "./video_player_container";
 import NewVideoContainer from "react/components/playlists/new_video/new_video_container";
 import SuggestVideoContainer from "react/components/player/suggest_video/suggest_video_container";
 import { withPlaylists } from "react/context/playlists";
+import { connect } from "react-redux";
 
 class PlayerComponent extends React.Component {
   constructor(props) {
@@ -43,13 +44,20 @@ class PlayerComponent extends React.Component {
     }
   }
 
-  //TODO
+  /**
+   * return true if this playlist belongs to the owner
+   */
   isMyPlaylist() {
-    return false;
+    return (
+      this.props.playlists.filter(
+        p =>
+          p.id_playlist === this.state.playlistId &&
+          p.id_user === this.props.userId
+      ).length === 1
+    );
   }
 
   render() {
-    console.log(this.isMyPlaylist());
     return (
       <Container>
         <VideoPlayerContainer video={this.state.selectedVideo} />
@@ -66,6 +74,7 @@ class PlayerComponent extends React.Component {
               ))}
           </Row>
         </ListGroup>
+        {console.log("??")}
         {this.isMyPlaylist() == false && (
           <SuggestVideoContainer id_playlist={this.state.playlistId} />
         )}
@@ -77,4 +86,11 @@ class PlayerComponent extends React.Component {
   }
 }
 
-export default withPlaylists(PlayerComponent);
+const mapStateToProps = state => {
+  return {
+    profile: state.usersSession.profile,
+    userId: state.usersSession.userId
+  };
+};
+
+export default connect(mapStateToProps)(withPlaylists(PlayerComponent));
