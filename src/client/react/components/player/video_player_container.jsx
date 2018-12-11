@@ -1,6 +1,6 @@
 import React from "react";
 import videojs from "video.js";
-import youtube from "../../../../../node_modules/videojs-youtube/dist/Youtube";
+import youtube from "videojs-youtube";
 
 export default class VideoPlayer extends React.Component {
   constructor(props) {
@@ -15,7 +15,7 @@ export default class VideoPlayer extends React.Component {
         sources: [
           {
             type: "video/youtube",
-            src: this.props.video
+            src: "https://youtube.com/"
           }
         ]
       }
@@ -37,17 +37,15 @@ export default class VideoPlayer extends React.Component {
     this.player = videojs(
       this.videoNode,
       this.state.options,
-      function onPlayerReady() {
-        console.log("onPlayerReady", this);
-      }
+      function onPlayerReady() {}
     );
   }
 
   componentDidUpdate() {
-    console.log("Component : ");
-    console.log(this.props.video);
-    let src = this.wrapSource(this.props.video);
+    if (this.props.video === undefined) return;
+    let src = this.wrapSource(this.props.video.url_video);
     this.player.src(src);
+    this.player.poster(this.props.video.url_thumbnail);
     this.player.load();
     this.player.play();
   }
