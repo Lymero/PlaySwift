@@ -3,12 +3,15 @@ import { Row, Col, ButtonToolbar, Button } from "react-bootstrap";
 import Reactions from "react/components/reactions/reactions_component";
 import { Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import {withPlaylists} from 'react/context/playlists';
 class PlaylistPreview extends React.Component {
   constructor(props) {
     super(props);
+    this.playlist = this.props.playlist;
   }
+  
   render() {
-    const { playlist } = this.props;
+    const playlist = this.playlist;
     const toUrl = "/playlists/" + playlist["id_playlist"];
     return (
       <div>
@@ -31,4 +34,4 @@ class PlaylistPreview extends React.Component {
   }
 }
 
-export default PlaylistPreview;
+export default withPlaylists(PlaylistPreview);
