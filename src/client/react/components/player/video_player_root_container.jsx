@@ -48,10 +48,6 @@ class PlayerComponent extends React.Component {
     return (
       <Container>
         <VideoPlayer video={this.state.selectedVideo} />
-        <ReactionsContainer
-          idPlaylist={this.state.playlistId}
-          video={this.state.selectedVideo}
-        />
         <NewVideo id={this.state.playlistId} />
         <ListGroup onClick={this.changeVideo}>
           <Row>
@@ -59,8 +55,9 @@ class PlayerComponent extends React.Component {
               this.props.currentPlaylistVideos.map((video, i) => (
                 <Col xs={12} key={i}>
                   <ListGroup.Item key={i}>
-                    <Button data-videoid={i}>Play</Button>
                     <span>{video.description}</span>
+                    <Button data-videoid={i}>Play</Button>
+                    <ReactionsContainer video={video} />
                   </ListGroup.Item>
                 </Col>
               ))}

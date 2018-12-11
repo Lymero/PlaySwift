@@ -61,8 +61,6 @@ class PlaylistsProvider extends React.Component {
       method: "GET"
     }).then(fetchedVideos => {
       this.setState({ currentPlaylistVideos: fetchedVideos });
-      console.log("LOADER VIDEOS OF PLAYLIST");
-      console.log(this.state);
     });
   }
 
@@ -100,17 +98,6 @@ class PlaylistsProvider extends React.Component {
         1
       );
       this.setState({ playlists: playlists });
-    });
-  }
-
-  addReaction(reactionToAdd) {
-    const id_video = { reactionToAdd };
-    Api({
-      url: `/api/videos/${id_video}/reactions`,
-      method: "POST",
-      params: reactionToAdd
-    }).then(resp => {
-      console.log(resp);
     });
   }
 
