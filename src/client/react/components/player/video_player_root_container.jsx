@@ -10,7 +10,8 @@ class PlayerComponent extends React.Component {
     super(props);
     this.state = {
       playlistId: parseInt(location.href.split("/").pop()),
-      selectedVideo: ""
+      selectedVideo: this.props.currentPlaylistVideos[0],
+      updated: false
     };
     this.changeVideo = this.changeVideo.bind(this);
     this.ctxSetCurrentPlaylist = this.props.setCurrentPlaylist;
@@ -18,10 +19,19 @@ class PlayerComponent extends React.Component {
 
   componentDidMount() {
     this.ctxSetCurrentPlaylist(this.state.playlistId);
-    
-    this.setState((state, props) => ({
-      selectedVideo: this.props.currentPlaylistVideos[0]
-    }));
+  }
+
+  componentDidUpdate() {
+    if (!this.state.updated) {
+      if (this.props.currentPlaylistVideos[0] !== undefined) {
+        this.setState((state, props) => ({
+          selectedVideo: this.props.currentPlaylistVideos[0]
+        }));
+        this.setState((state, props) => ({
+          updated: true
+        }));
+      }
+    }
   }
 
   changeVideo(event) {
