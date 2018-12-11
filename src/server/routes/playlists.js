@@ -22,6 +22,29 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+router.get("/:id_playlist/thumbnail", async (req, res, next) => {
+  const client = await pool.connect();
+  const query = `select v.url_thumbnail
+  from playswift.videos v, playswift.videos_playlists vp,playswift.playlists pl
+  where v.id_video=vp.id_video 
+  and pl.id_playlist=vp.id_playlist 
+  and pl.id_playlist=$1
+  and vp.position=(
+    select min(position)
+    from playswift.videos_playlists
+    where id_playlist=$1
+  )`;
+  const values = [req.params.id_playlist];
+  try {
+    const result = await client.query(query, values);
+    res.send(result.rows[0]);
+  } catch (err) {
+    return next(err);
+  } finally {
+    client.release();
+  }
+});
+
 router.post("/", async (req, res, next) => {
   const { error } = validatePlaylist(req.body);
   if (error) {
