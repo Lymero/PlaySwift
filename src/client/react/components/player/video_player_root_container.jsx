@@ -2,6 +2,7 @@ import React from "react";
 import { Container, Row, Col, Button, ListGroup } from "react-bootstrap";
 import VideoPlayerContainer from "./video_player_container";
 import NewVideoContainer from "react/components/playlists/new_video/new_video_container";
+import ReactionsContainer from "react/components/reactions/reactions_container";
 import SuggestVideoContainer from "react/components/player/suggest_video/suggest_video_container";
 import { withPlaylists } from "react/context/playlists";
 
@@ -59,8 +60,9 @@ class PlayerComponent extends React.Component {
               this.props.currentPlaylistVideos.map((video, i) => (
                 <Col xs={12} key={i}>
                   <ListGroup.Item key={i}>
-                    <Button data-videoid={i}>Play</Button>
                     <span>{video.description}</span>
+                    <Button data-videoid={i}>Play</Button>
+                    <ReactionsContainer video={video} />
                   </ListGroup.Item>
                 </Col>
               ))}

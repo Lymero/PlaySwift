@@ -72,8 +72,6 @@ class PlaylistsProvider extends React.Component {
       method: "GET"
     }).then(fetchedVideos => {
       this.setState({ currentPlaylistVideos: fetchedVideos });
-      console.log("LOADER VIDEOS OF PLAYLIST");
-      console.log(this.state);
     });
   }
 
@@ -94,14 +92,24 @@ class PlaylistsProvider extends React.Component {
       url: "/api/playlists",
       method: "POST",
       params: playlistToAdd
+    }).then(resp => {
+      this.setState({ playlists: [...this.state.playlists, resp] });
     });
-    this.setState({ playlists: [...this.state.playlists, playlistToAdd] });
   }
 
-  removePlaylist() {
-    // SHOULD CALL API
-    // SHOULD REMOVE FROM PLAYLISTS
-    console.log("NOT YET IMPLEMENTED");
+  removePlaylist(playlistToRemove) {
+    const { id_playlist } = playlistToRemove;
+    const { playlists } = this.state;
+    Api({
+      url: `/api/playlists/${playlistToRemove.id_playlist}`,
+      method: "DELETE"
+    }).then(() => {
+      playlists.splice(
+        playlists.findIndex(e => e.id_playlist === id_playlist),
+        1
+      );
+      this.setState({ playlists: playlists });
+    });
   }
 
   render() {
