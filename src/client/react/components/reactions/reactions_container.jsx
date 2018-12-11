@@ -6,7 +6,6 @@ import ReactionsComponent from "./reactions_component";
 class ReactionsContainer extends React.Component {
   constructor(props) {
     super(props);
-    console.log(props);
     this.state = {
       likes_number: this.props.video.likes_number,
       dislikes_number: this.props.video.dislikes_number
@@ -18,7 +17,6 @@ class ReactionsContainer extends React.Component {
   }
 
   addReaction(vote) {
-    console.log(this.props.video);
     Api({
       url: `/api/videos/${this.props.video.id_video_playlist}/reactions`,
       method: "POST",
