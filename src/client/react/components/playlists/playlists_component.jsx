@@ -1,9 +1,9 @@
 import React from "react";
-import { Container, Row, Col, ListGroup } from "react-bootstrap";
+import { Container, Row, Col, ListGroup, Button } from "react-bootstrap";
 import PlaylistPreview from "./playlist_preview";
 import NewPlaylistForm from "./new_playlist_form_container";
 
-const PlaylistsComponent = ({ title, playlists }) => {
+const PlaylistsComponent = ({ title, playlists, userId }) => {
   return (
     <Container>
       <h3>
@@ -15,7 +15,7 @@ const PlaylistsComponent = ({ title, playlists }) => {
           {playlists.map((playlist, i) => (
             <Col xs={12} sm={6} md={3} key={i}>
               <ListGroup.Item key={i}>
-                <PlaylistPreview playlist={playlist} />
+                <PlaylistPreview playlist={playlist} userId={userId} />
               </ListGroup.Item>
             </Col>
           ))}

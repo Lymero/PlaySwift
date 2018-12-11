@@ -83,14 +83,35 @@ class PlaylistsProvider extends React.Component {
       url: "/api/playlists",
       method: "POST",
       params: playlistToAdd
+    }).then(resp => {
+      this.setState({ playlists: [...this.state.playlists, resp] });
     });
-    this.setState({ playlists: [...this.state.playlists, playlistToAdd] });
   }
 
-  removePlaylist() {
-    // SHOULD CALL API
-    // SHOULD REMOVE FROM PLAYLISTS
-    console.log("NOT YET IMPLEMENTED");
+  removePlaylist(playlistToRemove) {
+    const { id_playlist } = playlistToRemove;
+    const { playlists } = this.state;
+    Api({
+      url: `/api/playlists/${playlistToRemove.id_playlist}`,
+      method: "DELETE"
+    }).then(() => {
+      playlists.splice(
+        playlists.findIndex(e => e.id_playlist === id_playlist),
+        1
+      );
+      this.setState({ playlists: playlists });
+    });
+  }
+
+  addReaction(reactionToAdd) {
+    const id_video = { reactionToAdd };
+    Api({
+      url: `/api/videos/${id_video}/reactions`,
+      method: "POST",
+      params: reactionToAdd
+    }).then(resp => {
+      console.log(resp);
+    });
   }
 
   render() {

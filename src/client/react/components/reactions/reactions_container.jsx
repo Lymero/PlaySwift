@@ -6,27 +6,16 @@ import ReactionsComponent from "./reactions_component";
 class ReactionsContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      likes_number: this.props.video.likes_number,
-      dislikes_number: this.props.video.dislikes_number
-    };
+    console.log(this.props);
+    this.ctxAddReaction = this.props.addReaction;
+    this.addReaction = this.addReaction.bind(this);
     this.like = this.like.bind(this);
     this.dislike = this.dislike.bind(this);
   }
 
   addReaction(vote) {
     let body = { id_playlist: this.state.idPlaylist, vote, comment: "aucun" };
-    Api({
-      url: `/api/videos/3/reactions`,
-      method: "POST",
-      params: body
-    }).then(() => {
-      if (vote === "like") {
-        this.setState({ likes_number: this.state.likes_number + 1 });
-      } else {
-        this.setState({ dislikes_number: this.state.dislikes_number + 1 });
-      }
-    });
+    this.ctxAddReaction(body);
   }
 
   like(event) {
