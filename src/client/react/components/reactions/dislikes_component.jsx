@@ -3,12 +3,10 @@ import { Button } from "react-bootstrap";
 import { faThumbsDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const Dislikes = ({ dislikes_number }) => {
-  return (
-    <Button>
+const Dislikes = ({ dislikes_number, addReaction }) => {
+  return <Button onClick={addReaction}>
       {dislikes_number} <FontAwesomeIcon icon={faThumbsDown} />
-    </Button>
-  );
+    </Button>;
 };
 
 export default Dislikes;

@@ -2,6 +2,7 @@ import React from "react";
 import { Container, Row, Col, Button, ListGroup } from "react-bootstrap";
 import VideoPlayer from "./video_player_container";
 import NewVideo from "react/components/playlists/new_video/new_video_container";
+import ReactionsContainer from "react/components/reactions/reactions_container";
 
 class PlayerComponent extends React.Component {
   constructor(props) {
@@ -36,6 +37,10 @@ class PlayerComponent extends React.Component {
     return (
       <Container>
         <VideoPlayer video={this.state.selectedVideo} />
+        <ReactionsContainer
+          idPlaylist={this.state.playlistId}
+          video={this.state.selectedVideo}
+        />
         <NewVideo id={this.state.playlistId} />
         <ListGroup onClick={this.changeVideo}>
           <Row>
