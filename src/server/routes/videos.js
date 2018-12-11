@@ -48,12 +48,19 @@ router.put("/:id_video", async (req, res, next) => {
 
 router.delete("/:id_video", async (req, res, next) => {
   const client = await pool.connect();
-  const query = `delete from playswift.videos_playlists where id_video_playlist=$1`;
-  const values = [req.params.id_video];
+  const queryOwnership = `select * from playswift.playlists pl, playswift.videos_playlists vp where vp.id_playlist = pl.id_playlist and vp.id_video_playlist = $1 and pl.id_user = $2`
+  const valuesOwnership = [req.params.id_video, req.body.id_user];
+  const queryDeleteVideo = `delete from playswift.videos_playlists where id_video_playlist = $1`;
+  const valuesDeleteVideo = [req.params.id_video];
   try {
-    const result = await client.query(query, values);
+    const ownership = await client.query(queryOwnership, valuesOwnership);
+    if (ownership.rowCount <= 0) {
+      return next(createError(httpStatus.FORBIDDEN, "Not the owner of the playlist"));
+    }
+    const result = await client.query(queryDeleteVideo, valuesDeleteVideo);
     res.send(result);
   } catch (err) {
+    console.log(err.stack)
     return next(err);
   } finally {
     client.release();

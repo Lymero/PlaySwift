@@ -58,9 +58,22 @@ class PlaylistsProvider extends React.Component {
     // APPEND TO CURRENT PLAYLIST VIDEOS
   }
 
-  removeVideoCurrentPlaylist() {
-    // CALL API
-    // REMOVE FROM CURRENT PLAYLIST VIDEOS
+  removeVideoCurrentPlaylist(idVideoToRemove) {
+    const { currentPlaylistVideos } = this.state;
+    Api({
+      url: "/api/videos/" + idVideoToRemove,
+      method: "DELETE"
+    }).then(() => {
+      currentPlaylistVideos.splice(
+        currentPlaylistVideos.findIndex(
+          e => e.id_video_playlist === idVideoToRemove
+        ),
+        1
+      );
+      this.setState({
+        currentPlaylistVideos: currentPlaylistVideos
+      });
+    });
   }
 
   setCurrentPlaylist(playlist) {
@@ -83,7 +96,6 @@ class PlaylistsProvider extends React.Component {
       url: "/api/playlists/" + playlistID + "/videos",
       method: "GET"
     }).then(fetchedVideos => {
-      console.log("??")
       this.setState({
         currentPlaylistVideos: fetchedVideos
       });
@@ -110,6 +122,7 @@ class PlaylistsProvider extends React.Component {
       method: "GET",
       params: null
     }).then(playlistsFetched => {
+      console.log(playlistsFetched)
       this.setState({
         myPlaylists: playlistsFetched
       });

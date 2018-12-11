@@ -4,6 +4,7 @@ import VideoPlayerContainer from "./video_player_container";
 import NewVideoContainer from "react/components/playlists/new_video/new_video_container";
 import ReactionsContainer from "react/components/reactions/reactions_container";
 import SuggestVideoContainer from "react/components/player/suggest_video/suggest_video_container";
+import RemoveVideoContainer from "react/components/player/remove_video/remove_video_container";
 import { withPlaylists } from "react/context/playlists";
 import { connect } from "react-redux";
 
@@ -46,14 +47,13 @@ class PlayerComponent extends React.Component {
     }
   }
 
-  /**
-   * return true if this playlist belongs to the current user
-   */
   isMyPlaylist() {
+    console.log("isMy")
+    console.log(this.props);
     return (
       this.props.myPlaylists.filter(
         p => p.id_playlist === this.state.playlistId
-      ).length === 1
+      ).length > 0
     );
   }
 
@@ -79,6 +79,7 @@ class PlayerComponent extends React.Component {
                         <span>{video.description}</span>
                         <br />
                         <Button data-videoid={i}>Play</Button>
+                      <RemoveVideoContainer video={video}/>
                       </Col>
                     </Row>
                   </ListGroup.Item>
