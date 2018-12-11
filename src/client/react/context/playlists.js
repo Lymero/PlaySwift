@@ -34,7 +34,10 @@ class PlaylistsProvider extends React.Component {
     this.removePlaylist = this.removePlaylist.bind(this);
     this.setCurrentPlaylist = this.setCurrentPlaylist.bind(this);
     this.addVideoCurrentPlaylist = this.addVideoCurrentPlaylist.bind(this);
-    this.removeVideoCurrentPlaylist = this.removeVideoCurrentPlaylist.bind(this);
+    this.removeVideoCurrentPlaylist = this.removeVideoCurrentPlaylist.bind(
+      this
+    );
+    this.displayFilteredPlaylists = this.removeVideoCurrentPlaylist.bind(this);
   }
 
   loadTags() {
@@ -42,7 +45,9 @@ class PlaylistsProvider extends React.Component {
       url: "/api/tags",
       method: "GET"
     }).then(fetchedTags => {
-      this.setState({ tags: fetchedTags });
+      this.setState({
+        tags: fetchedTags
+      });
     });
   }
 
@@ -58,10 +63,15 @@ class PlaylistsProvider extends React.Component {
 
   setCurrentPlaylist(playlist) {
     console.log("SETTED CURRENT PLAYLIST");
-    this.setState({ currentPlaylistId: playlist }, () => {
-      console.log(this.state);
-      this.loadInitialVideosOfPlaylist();
-    });
+    this.setState(
+      {
+        currentPlaylistId: playlist
+      },
+      () => {
+        console.log(this.state);
+        this.loadInitialVideosOfPlaylist();
+      }
+    );
   }
 
   loadInitialVideosOfPlaylist() {
@@ -71,7 +81,9 @@ class PlaylistsProvider extends React.Component {
       url: "/api/playlists/" + playlistID + "/videos",
       method: "GET"
     }).then(fetchedVideos => {
-      this.setState({ currentPlaylistVideos: fetchedVideos });
+      this.setState({
+        currentPlaylistVideos: fetchedVideos
+      });
     });
   }
 
@@ -82,7 +94,9 @@ class PlaylistsProvider extends React.Component {
       method: "GET",
       params: null
     }).then(playlistsFetched => {
-      this.setState({ playlists: playlistsFetched });
+      this.setState({
+        playlists: playlistsFetched
+      });
     });
   }
 
@@ -93,7 +107,19 @@ class PlaylistsProvider extends React.Component {
       method: "POST",
       params: playlistToAdd
     }).then(resp => {
-      this.setState({ playlists: [...this.state.playlists, resp] });
+      this.setState({
+        playlists: [...this.state.playlists, resp]
+      });
+    });
+  }
+
+  /**
+   * Display only the filtered videos (search form)
+   * @param {filtered_playlists} playlistToRemove
+   */
+  displayFilteredPlaylists(filtered_playlists) {
+    this.setState({
+      playlists: [...this.state.playlists, filtered_playlists]
     });
   }
 
@@ -108,7 +134,9 @@ class PlaylistsProvider extends React.Component {
         playlists.findIndex(e => e.id_playlist === id_playlist),
         1
       );
-      this.setState({ playlists: playlists });
+      this.setState({
+        playlists: playlists
+      });
     });
   }
 
@@ -118,10 +146,16 @@ class PlaylistsProvider extends React.Component {
       removePlaylist,
       setCurrentPlaylist,
       addVideoCurrentPlaylist,
-      removeVideoCurrentPlaylist
+      removeVideoCurrentPlaylist,
+      displayFilteredPlaylists
     } = this;
 
-    const { playlists, currentPlaylistId, currentPlaylistVideos, tags} = this.state;
+    const {
+      playlists,
+      currentPlaylistId,
+      currentPlaylistVideos,
+      tags
+    } = this.state;
     const { children } = this.props;
 
     const providerValues = {
@@ -133,7 +167,8 @@ class PlaylistsProvider extends React.Component {
       removePlaylist,
       setCurrentPlaylist,
       addVideoCurrentPlaylist,
-      removeVideoCurrentPlaylist
+      removeVideoCurrentPlaylist,
+      displayFilteredPlaylists
     };
     return (
       <PlaylistsContext.Provider value={providerValues}>
