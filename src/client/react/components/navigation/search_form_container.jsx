@@ -1,6 +1,7 @@
 import React from "react";
 import SearchForm from "./search_form";
-import Api from "react/utils/api";
+import { withPlaylists } from "react/context/playlists";
+import { connect } from "react-redux";
 class SearchFormContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -11,6 +12,7 @@ class SearchFormContainer extends React.Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.search = this.search.bind(this);
+    this.ctxFilter = this.props.displayFilteredPlaylists;
   }
 
   handleChange(event) {
@@ -18,24 +20,16 @@ class SearchFormContainer extends React.Component {
   }
 
   /**
-   * Currently search by playlists.name
-   * Case-insensitive
+   * Search by playlists.name, case-insensitive
    */
   search(event) {
+    console.log(this.props);
     event.preventDefault();
-    console.log("Search with filter : " + this.state.filter);
-    Api({
-      url: "/api/playlists",
-      method: "GET"
-    }).then(playlists => {
-      console.log("ALL");
-      console.log(playlists);
-      const filteredPlaylists = playlists.filter(playlist =>
-        playlist["name"].toUpperCase().includes(this.state.filter.toUpperCase())
-      );
-      console.log("FILTERED");
-      console.log(filteredPlaylists);
-    });
+    const filteredPlaylists = this.props.playlists.filter(playlist =>
+      playlist["name"].toUpperCase().includes(this.state.filter.toUpperCase())
+    );
+    console.log(this.props);
+    this.ctxFilter(filteredPlaylists);
   }
 
   onSubmit(event) {
@@ -53,4 +47,12 @@ class SearchFormContainer extends React.Component {
     );
   }
 }
-export default SearchFormContainer;
+
+const mapStateToProps = state => {
+  return {
+    profile: state.usersSession.profile,
+    userId: state.usersSession.userId
+  };
+};
+
+export default connect(mapStateToProps)(withPlaylists(SearchFormContainer));
