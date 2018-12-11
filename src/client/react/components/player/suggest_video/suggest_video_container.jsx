@@ -35,8 +35,6 @@ class SuggestVideoContainer extends React.Component {
   }
 
   render() {
-    console.log("MORT0");
-    console.log(this.state);
     return (
       <SuggestVideoComponent
         url={this.state.url}

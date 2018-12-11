@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Row, Col, Card } from "react-bootstrap";
+import { Container, Row, Col, ListGroup, Button } from "react-bootstrap";
 import PlaylistPreview from "./playlist_preview";
 import NewPlaylistForm from "./new_playlist_form_container";
 
@@ -20,8 +20,8 @@ const PlaylistsComponent = ({ title, playlists }) => {
             {location.href.split("/")[
               location.href.split("/").indexOf("#") + 1
             ] && <NewPlaylistForm />}
-          </Col>
-        </Row>
+        </Col>
+      </Row>
     </Container>
   );
 };

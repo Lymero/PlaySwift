@@ -4,30 +4,42 @@ import {
   Col,
   ButtonToolbar,
   Button,
+  Badge,
   Card,
   CardImg,
   ListGroup,
-  ListGroupItem,
-  Badge
+  ListGroupItem
 } from "react-bootstrap";
 import Reactions from "react/components/reactions/reactions_component";
 import { Nav } from "react-bootstrap";
 import { withRouter } from "react-router-dom";
 import { withPlaylists } from "react/context/playlists";
 import DateUtils from "react/utils/date";
+import { faThumbsDown, faThumbsUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faThumbsUp, faThumbsDown } from "@fortawesome/free-solid-svg-icons";
+
 class PlaylistPreview extends React.Component {
   constructor(props) {
     super(props);
     this.playlist = this.props.playlist;
     this.goToPlaylist = this.goToPlaylist.bind(this);
+    this.ctxRemovePlaylist = this.props.removePlaylist;
+    this.removePlaylist = this.removePlaylist.bind(this);
   }
 
   goToPlaylist() {
     const toUrl = "/playlists/" + this.props.playlist["id_playlist"];
     console.log(toUrl);
     this.props.history.push(toUrl);
+  }
+
+
+  removePlaylist(event) {
+    event.preventDefault();
+    const body = {
+      id_playlist: this.playlist.id_playlist
+    };
+    this.ctxRemovePlaylist(body);
   }
 
   render() {

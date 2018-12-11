@@ -2,8 +2,10 @@ import React from "react";
 import { Container, Row, Col, Button, ListGroup } from "react-bootstrap";
 import VideoPlayerContainer from "./video_player_container";
 import NewVideoContainer from "react/components/playlists/new_video/new_video_container";
+import ReactionsContainer from "react/components/reactions/reactions_container";
 import SuggestVideoContainer from "react/components/player/suggest_video/suggest_video_container";
 import { withPlaylists } from "react/context/playlists";
+import { connect } from "react-redux";
 
 class PlayerComponent extends React.Component {
   constructor(props) {
@@ -43,13 +45,20 @@ class PlayerComponent extends React.Component {
     }
   }
 
-  //TODO
+  /**
+   * return true if this playlist belongs to the current user
+   */
   isMyPlaylist() {
-    return false;
+    return (
+      this.props.playlists.filter(
+        p =>
+          p.id_playlist === this.state.playlistId &&
+          p.id_user === this.props.userId
+      ).length === 1
+    );
   }
 
   render() {
-    console.log(this.isMyPlaylist());
     return (
       <Container>
         <VideoPlayerContainer video={this.state.selectedVideo} />
@@ -59,8 +68,9 @@ class PlayerComponent extends React.Component {
               this.props.currentPlaylistVideos.map((video, i) => (
                 <Col xs={12} key={i}>
                   <ListGroup.Item key={i}>
-                    <Button data-videoid={i}>Play</Button>
                     <span>{video.description}</span>
+                    <Button data-videoid={i}>Play</Button>
+                    <ReactionsContainer video={video} />
                   </ListGroup.Item>
                 </Col>
               ))}
@@ -77,4 +87,11 @@ class PlayerComponent extends React.Component {
   }
 }
 
-export default withPlaylists(PlayerComponent);
+const mapStateToProps = state => {
+  return {
+    profile: state.usersSession.profile,
+    userId: state.usersSession.userId
+  };
+};
+
+export default connect(mapStateToProps)(withPlaylists(PlayerComponent));
