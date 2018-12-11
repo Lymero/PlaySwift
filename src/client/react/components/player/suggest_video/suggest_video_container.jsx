@@ -23,10 +23,10 @@ class SuggestVideoContainer extends React.Component {
       url_video: this.state.url,
       id_user: this.props.userId
     };
-    console.log("ID_PLAYLIST");
+    /*console.log("ID_PLAYLIST");
     console.log(id_playlist);
     console.log("BODY");
-    console.log(body);
+    console.log(body);*/
     Api({
       url: `/api/playlists/${id_playlist}/suggestions`,
       method: "POST",
@@ -35,8 +35,6 @@ class SuggestVideoContainer extends React.Component {
   }
 
   render() {
-    console.log("MORT0");
-    console.log(this.state);
     return (
       <SuggestVideoComponent
         url={this.state.url}
