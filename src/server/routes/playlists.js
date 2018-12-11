@@ -1,11 +1,21 @@
 const express = require("express");
 const router = express.Router();
 
-const { pool } = require("../modules/db");
-const { getYoutubeVideo } = require("../modules/google/youtube");
-const { validatePlaylist } = require("../models/playlist");
-const { validateVideo } = require("../models/video");
-const { validateSuggestion } = require("../models/suggestion");
+const {
+  pool
+} = require("../modules/db");
+const {
+  getYoutubeVideo
+} = require("../modules/google/youtube");
+const {
+  validatePlaylist
+} = require("../models/playlist");
+const {
+  validateVideo
+} = require("../models/video");
+const {
+  validateSuggestion
+} = require("../models/suggestion");
 const httpStatus = require("http-status");
 const createError = require("http-errors");
 
@@ -45,7 +55,9 @@ having vp.position=(
 });
 
 router.post("/", async (req, res, next) => {
-  const { error } = validatePlaylist(req.body);
+  const {
+    error
+  } = validatePlaylist(req.body);
   if (error) {
     return next(createError(httpStatus.BAD_REQUEST, error.details[0].message));
   }
@@ -71,7 +83,9 @@ router.post("/", async (req, res, next) => {
 });
 
 router.put("/:id_playlist", async (req, res, next) => {
-  const { error } = validatePlaylist(req.body);
+  const {
+    error
+  } = validatePlaylist(req.body);
   if (error) {
     return next(createError(httpStatus.BAD_REQUEST, error.details[0].message));
   }
@@ -135,12 +149,20 @@ router.get("/:id_playlist/videos", async (req, res, next) => {
 });
 
 router.post("/:id_playlist/videos", async (req, res, next) => {
-  const { error } = validateVideo(req.body, req.params);
+  const {
+    error
+  } = validateVideo(req.body, req.params);
   if (error) {
     return next(createError(httpStatus.BAD_REQUEST, error.details[0].message));
   }
-  const { id_playlist } = req.params;
-  const { url_video, description, id_user } = req.body;
+  const {
+    id_playlist
+  } = req.params;
+  const {
+    url_video,
+    description,
+    id_user
+  } = req.body;
 
   const client = await pool.connect();
   const queryOwnership = `select * from playswift.playlists where id_user=$1 and id_playlist=$2`;
@@ -170,8 +192,12 @@ router.post("/:id_playlist/videos", async (req, res, next) => {
 
     if (video.rowCount <= 0) {
       getYoutubeVideo(url_video, async resp => {
-        const { title } = resp[0].snippet;
-        const { url } = resp[0].snippet.thumbnails.high;
+        const {
+          title
+        } = resp[0].snippet;
+        const {
+          url
+        } = resp[0].snippet.thumbnails.high;
         values = [url_video, title, url];
         try {
           const video = (await client.query(queryInsertVideo, values)).rows[0];
@@ -213,13 +239,20 @@ router.get("/:id_playlist/suggestions", async (req, res, next) => {
 });
 
 router.post("/:id_playlist/suggestions", async (req, res, next) => {
-  const { error } = validateSuggestion(req.body, req.params);
+  const {
+    error
+  } = validateSuggestion(req.body, req.params);
   if (error) {
     return next(createError(httpStatus.BAD_REQUEST, error.details[0].message));
   }
 
-  const { id_playlist } = req.params;
-  const { url_video, id_user } = req.body;
+  const {
+    id_playlist
+  } = req.params;
+  const {
+    url_video,
+    id_user
+  } = req.body;
 
   const client = await pool.connect();
   const queryInsertSuggestion = `insert into playswift.suggestions values(default, $1, $2, 'pending', $3)`;
@@ -231,8 +264,12 @@ router.post("/:id_playlist/suggestions", async (req, res, next) => {
     const video = await client.query(queryExistingVideo, values);
     if (video.rowCount <= 0) {
       getYoutubeVideo(url_video, async resp => {
-        const { title } = resp[0].snippet;
-        const { url } = resp[0].snippet.thumbnails.high;
+        const {
+          title
+        } = resp[0].snippet;
+        const {
+          url
+        } = resp[0].snippet.thumbnails.high;
         values = [url_video, title, url];
         try {
           const video = await client.query(queryInsertVideo, values);
@@ -241,8 +278,10 @@ router.post("/:id_playlist/suggestions", async (req, res, next) => {
             queryInsertSuggestion,
             values
           );
-          return res.send(insertedSuggestion.rows[0]);
+          res.send(insertedSuggestion.rows[0]);
+          await client.query("COMMIT");
         } catch (err) {
+          await client.query("ROLLBACK");
           return next(err);
         }
       });
