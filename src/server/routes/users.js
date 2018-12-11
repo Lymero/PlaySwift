@@ -30,4 +30,19 @@ router.get("/me/subscriptions", async (req, res, next) => {
   }
 });
 
+router.post("/me/subscriptions", async (req, res, next) => {
+  console.log("  eqded");
+  const client = await pool.connect();
+  const query = `insert into playswift.subscriptions values(default, $1,$2) returning *`;
+  const values = [req.body.id_tag, req.body.id_user];
+  try {
+    const result = await client.query(query, values);
+    res.send(result.rows[0]);
+  } catch (err) {
+    return next(err);
+  } finally {
+    client.release();
+  }
+});
+
 module.exports = router;
