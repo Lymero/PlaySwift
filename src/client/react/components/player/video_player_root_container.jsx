@@ -46,7 +46,7 @@ class PlayerComponent extends React.Component {
   }
 
   /**
-   * return true if this playlist belongs to the owner
+   * return true if this playlist belongs to the current user
    */
   isMyPlaylist() {
     return (
@@ -76,7 +76,6 @@ class PlayerComponent extends React.Component {
               ))}
           </Row>
         </ListGroup>
-        {console.log("??")}
         {this.isMyPlaylist() == false && (
           <SuggestVideoContainer id_playlist={this.state.playlistId} />
         )}
