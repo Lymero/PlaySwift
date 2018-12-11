@@ -54,8 +54,8 @@ class PlaylistPreview extends React.Component {
         </Card.Body>
         <ListGroup className="list-group-flush">
           <ListGroupItem>
-            <strong>Catégorie</strong>
-            <span>{playlist["id_tag"]}</span>
+            <strong>Tag </strong>
+            <span>{playlist["tag_name"]}</span>
           </ListGroupItem>
           <ListGroupItem>
             <strong>Créé le </strong>
