@@ -12,16 +12,16 @@ const createError = require("http-errors");
 router.get("/", async (req, res, next) => {
   const client = await pool.connect();
   const query = `select pl1.id_playlist,
-	pl1.name,
-	ta.tag_name,
-	pl1.visible,
-	pl1.id_user,
-	pl1.creation_date,
-	pl1.last_update_date,
-	pl1.description,
-	pl1.likes_number,
-	pl1.dislikes_number, 
-	v.url_thumbnail
+    pl1.name,
+    ta.tag_name,
+    pl1.visible,
+    pl1.id_user,
+    pl1.creation_date,
+    pl1.last_update_date,
+    pl1.description,
+    pl1.likes_number,
+    pl1.dislikes_number, 
+    v.url_thumbnail
   from playswift.playlists pl1
   join playswift.videos_playlists vp on vp.id_playlist=pl1.id_playlist
   join playswift.videos v on vp.id_video=v.id_video
@@ -31,19 +31,19 @@ router.get("/", async (req, res, next) => {
   having vp.position=(
     select min(position)
     from playswift.videos_playlists pl2
-	where pl1.id_playlist=pl2.id_playlist
+	  where pl1.id_playlist=pl2.id_playlist
   ) 
   union select pl3.id_playlist,
-	pl3.name,
-	ta.tag_name,
-	pl3.visible,
-	pl3.id_user,
-	pl3.creation_date,
-	pl3.last_update_date,
-	pl3.description,
-	pl3.likes_number,
-	pl3.dislikes_number,
-	null 
+    pl3.name,
+    ta.tag_name,
+    pl3.visible,
+    pl3.id_user,
+    pl3.creation_date,
+    pl3.last_update_date,
+    pl3.description,
+    pl3.likes_number,
+    pl3.dislikes_number,
+    null 
   from playswift.playlists pl3
   join playswift.tags ta on pl3.id_tag=ta.id_tag 
   where id_playlist not in(select id_playlist from playswift.videos_playlists )`;
