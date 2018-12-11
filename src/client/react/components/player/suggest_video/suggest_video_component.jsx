@@ -1,9 +1,22 @@
 import React from "react";
+import { FormControl, FormGroup, ControlLabel, Button } from "react-bootstrap";
 
-class SuggestVideoComponent extends React.Component {
-  render() {
-    return <p>TODO</p>;
-  }
-}
+const SuggestVideoComponent = ({ url, handleChange, suggestVideo }) => {
+  return (
+    <div>
+      <h3>Suggest a video</h3>
+      <FormControl
+        type="text"
+        name="url"
+        value={url}
+        placeholder="Url"
+        onChange={handleChange}
+      />
+      <Button bsstyle="primary" onClick={suggestVideo}>
+        Suggest
+      </Button>
+    </div>
+  );
+};
 
 export default SuggestVideoComponent;
