@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 import {
   Row,
   Col,
@@ -47,47 +48,57 @@ class PlaylistPreview extends React.Component {
       playlist["url_thumbnail"] = "https://place-hold.it/16x9/212425";
     return (
       <div>
-      <Button onClick={this.removePlaylist}>X</Button>
-      <Card className="floatHover h-100" onClick={this.goToPlaylist}>
-        <CardImg
-          variant="top"
-          width="100%"
-          src={playlist["url_thumbnail"]}
-          alt="Card image cap"
-        />
-        <Card.Body>
-          <Card.Title>
-            <h3>{playlist["name"]}</h3>
-          </Card.Title>
-          <Card.Text>{playlist["description"]}</Card.Text>
-          <h4 className="joinedBadges bottomRightCardBody">
-            <Badge variant="primary">
-              {playlist["likes_number"]} <FontAwesomeIcon icon={faThumbsUp} />
-            </Badge>
-            <Badge variant="danger">
-              {playlist["dislikes_number"]}{" "}
-              <FontAwesomeIcon icon={faThumbsDown} />
-            </Badge>
-          </h4>
-        </Card.Body>
-        <ListGroup className="list-group-flush">
-          <ListGroupItem>
-            <strong>Tag </strong>
-            <span>{playlist["tag_name"]}</span>
-          </ListGroupItem>
-          <ListGroupItem>
-            <strong>Créé le </strong>
-            <span>{DateUtils.toReadable(playlist["creation_date"])}</span>
-          </ListGroupItem>
-          <ListGroupItem>
-            <strong>Modifié le </strong>
-            <span>{DateUtils.toReadable(playlist["last_update_date"])}</span>
-          </ListGroupItem>
-        </ListGroup>
-      </Card>
+        {playlist.id_user === this.props.userId && (
+          <Button onClick={this.removePlaylist}>X</Button>
+        )}
+        <Card className="floatHover h-100" onClick={this.goToPlaylist}>
+          <CardImg
+            variant="top"
+            width="100%"
+            src={playlist["url_thumbnail"]}
+            alt="Card image cap"
+          />
+          <Card.Body>
+            <Card.Title>
+              <h3>{playlist["name"]}</h3>
+            </Card.Title>
+            <Card.Text>{playlist["description"]}</Card.Text>
+            <h4 className="joinedBadges bottomRightCardBody">
+              <Badge variant="primary">
+                {playlist["likes_number"]} <FontAwesomeIcon icon={faThumbsUp} />
+              </Badge>
+              <Badge variant="danger">
+                {playlist["dislikes_number"]}{" "}
+                <FontAwesomeIcon icon={faThumbsDown} />
+              </Badge>
+            </h4>
+          </Card.Body>
+          <ListGroup className="list-group-flush">
+            <ListGroupItem>
+              <strong>Tag </strong>
+              <span>{playlist["tag_name"]}</span>
+            </ListGroupItem>
+            <ListGroupItem>
+              <strong>Créé le </strong>
+              <span>{DateUtils.toReadable(playlist["creation_date"])}</span>
+            </ListGroupItem>
+            <ListGroupItem>
+              <strong>Modifié le </strong>
+              <span>{DateUtils.toReadable(playlist["last_update_date"])}</span>
+            </ListGroupItem>
+          </ListGroup>
+        </Card>
       </div>
     );
   }
 }
 
-export default withPlaylists(withRouter(PlaylistPreview));
+const mapStateToProps = state => {
+  return {
+    userId: state.usersSession.userId
+  };
+};
+
+export default connect(mapStateToProps)(
+  withPlaylists(withRouter(PlaylistPreview))
+);
