@@ -258,7 +258,7 @@ router.post("/:id_playlist/suggestions", async (req, res, next) => {
   const client = await pool.connect();
   const queryInsertSuggestion = `insert into playswift.suggestions values(default, $1, $2, 'pending', $3)`;
   const queryExistingVideo = `select id_video, url_video from playswift.videos where url_video = $1`;
-  const queryInsertVideo = `insert into playswift.videos values(default, $1, 0, $2, $3) returning id_video, url_video`;
+  const queryInsertVideo = `insert into playswift.videos values(default, $1, $2, $3) returning id_video, url_video`;
   try {
     await client.query("BEGIN");
     let values = [url_video];
@@ -273,7 +273,7 @@ router.post("/:id_playlist/suggestions", async (req, res, next) => {
         } = resp[0].snippet.thumbnails.high;
         values = [url_video, title, url];
         try {
-          const video = (await client.query(queryInsertVideo, values)).rows;
+          const video = (await client.query(queryInsertVideo, values));
           values = [id_playlist, video.rows[0].id_video, id_user];
           const insertedSuggestion = await client.query(
             queryInsertSuggestion,
