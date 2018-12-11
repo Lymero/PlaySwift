@@ -65,7 +65,7 @@ router.post("/", async (req, res, next) => {
   const client = await pool.connect();
   const query = `insert into playswift.playlists
     values(default, $1, $2, $3, $4, default, default, $5, default, default)
-    returning id_playlist,name,id_tag,visible,id_user,creation_date,last_update_date,description,likes_number,dislikes_number`;
+    returning *`;
   const values = [
     req.body.name,
     req.body.id_tag,
@@ -131,7 +131,7 @@ router.delete("/:id_playlist", async (req, res, next) => {
 
 router.get("/:id_playlist/videos", async (req, res, next) => {
   const client = await pool.connect();
-  const query = `select vp.id_video_playlist, vp.id_playlist, vp.id_video, vp.description, vp.position, v.id_video, v.url_video, v.title, v.url_thumbnail
+  const query = `select *
   from playswift.videos_playlists vp
   inner join playswift.videos v
   on vp.id_video = v.id_video
