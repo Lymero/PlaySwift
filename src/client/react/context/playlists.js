@@ -34,9 +34,7 @@ class PlaylistsProvider extends React.Component {
     this.removePlaylist = this.removePlaylist.bind(this);
     this.setCurrentPlaylist = this.setCurrentPlaylist.bind(this);
     this.addVideoCurrentPlaylist = this.addVideoCurrentPlaylist.bind(this);
-    this.removeVideoCurrentPlaylist = this.removeVideoCurrentPlaylist.bind(
-      this
-    );
+    this.removeVideoCurrentPlaylist = this.removeVideoCurrentPlaylist.bind(this);
   }
 
   addVideoCurrentPlaylist() {
@@ -76,10 +74,9 @@ class PlaylistsProvider extends React.Component {
       url: "/api/playlists",
       method: "GET",
       params: null
-    })
-      .then(playlistsFetched => {
-        this.setState({ playlists: playlistsFetched });
-      });
+    }).then(playlistsFetched => {
+      this.setState({ playlists: playlistsFetched });
+    });
   }
 
   addPlaylist(playlistToAdd) {

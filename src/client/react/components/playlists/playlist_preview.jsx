@@ -1,9 +1,10 @@
 import React from "react";
-import { Row, Col, ButtonToolbar, Button } from "react-bootstrap";
+import { Row, Col, ButtonToolbar, Button, Card, CardImg, ListGroup, ListGroupItem, Badge} from "react-bootstrap";
 import Reactions from "react/components/reactions/reactions_component";
 import { Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import {withPlaylists} from 'react/context/playlists';
+import { withPlaylists } from 'react/context/playlists';
+import DateUtils from "react/utils/date";
 class PlaylistPreview extends React.Component {
   constructor(props) {
     super(props);
@@ -14,22 +15,38 @@ class PlaylistPreview extends React.Component {
     const playlist = this.playlist;
     const toUrl = "/playlists/" + playlist["id_playlist"];
     return (
-      <div>
-        <h3>{playlist["name"]}</h3>
-        <p>description: {playlist["description"]}</p>
-        <p>creation_date: {playlist["creation_date"]}</p>
-        <p>dislikes_number: {playlist["dislikes_number"]}</p>
-        <p>id_tag: {playlist["id_tag"]}</p>
-        <p>id_user: {playlist["id_user"]}</p>
-        <p>last_update_date: {playlist["last_update_date"]}</p>
-        <Reactions
+      <Card className="floatHover h-100">
+        <CardImg variant="top" width="100%" src={playlist["url_thumbnail"]} alt="Card image cap" />
+        <Card.Body>
+          <Card.Title>
+            <h3>{playlist["name"]}</h3>
+          </Card.Title>
+          <Card.Text>
+            <p>{playlist["description"]}</p>
+          </Card.Text>
+          <Reactions className="float-right"
           likes_number={playlist["likes_number"]}
           dislikes_number={playlist["dislikes_number"]}
-        />
+          />
+        </Card.Body>
+        <ListGroup className="list-group-flush">
+          <ListGroupItem>
+          <strong>Catégorie</strong>
+          <span>{playlist["id_tag"]}</span>
+          </ListGroupItem>
+          <ListGroupItem>
+          <strong>Créé le </strong>
+          <span>{ DateUtils.toReadable(playlist["creation_date"]) }</span>
+          </ListGroupItem>
+          <ListGroupItem>
+          <strong>Modifié le </strong>
+          <span>{ DateUtils.toReadable(playlist["last_update_date"]) }</span>
+          </ListGroupItem>
+        </ListGroup>
         <Nav.Link as={Link} to={toUrl}>
           <Button>Full Playlist!</Button>
         </Nav.Link>
-      </div>
+      </Card>
     );
   }
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Row, Col, ListGroup } from "react-bootstrap";
+import { Container, Row, Col, Card } from "react-bootstrap";
 import PlaylistPreview from "./playlist_preview";
 import NewPlaylistForm from "./new_playlist_form_container";
 
@@ -10,13 +10,10 @@ const PlaylistsComponent = ({ title, playlists }) => {
         {title}
         <span className="badge badge-secondary">{playlists.length}</span>
       </h3>
-      <ListGroup>
         <Row>
           {playlists.map((playlist, i) => (
             <Col xs={12} sm={6} md={3} key={i}>
-              <ListGroup.Item key={i}>
-                <PlaylistPreview playlist={playlist} />
-              </ListGroup.Item>
+              <PlaylistPreview playlist={playlist} key={i}/>
             </Col>
           ))}
           <Col xs={12} sm={6} md={3}>
@@ -25,7 +22,6 @@ const PlaylistsComponent = ({ title, playlists }) => {
             ] && <NewPlaylistForm />}
           </Col>
         </Row>
-      </ListGroup>
     </Container>
   );
 };
