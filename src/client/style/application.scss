@@ -1,3 +1,11 @@
 #root > div > div.container {
   padding: 2em 0;
 }
+
+div.card.floatHover {
+  transition: box-shadow 0.1s linear;
+}
+
+div.card.floatHover:hover {
+  box-shadow: 0px 0px 20px rgba(0,0,0,0.2);
+}
