@@ -1,5 +1,5 @@
 import React from "react";
-import NewPlaylistComponent from "./new_playlist_component";
+import NewPlaylistComponent from "./new_playlist";
 import { connect } from "react-redux";
 import { withPlaylists } from "react/context/playlists";
 
@@ -36,7 +36,6 @@ class NewPlaylistContainer extends React.Component {
   }
 
   handleChange(event) {
-    console.log(event.target.name);
     if (event.target.name === "visible")
       this.setState({ visible: !this.state.visible });
     else if (event.target.name === "tagFilter")
