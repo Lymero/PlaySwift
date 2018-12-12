@@ -75,20 +75,31 @@ class PlaylistsProvider extends React.Component {
   }
 
   addSubscribedTag(tagToAdd) {
-    // TODO
+    const { myTags } = this.state;
     Api({
       url: "/api/users/me/subscriptions",
       method: "POST",
       params: tagToAdd
     }).then(resp => {
       this.setState({
-        myTags: [...this.state.myTags, resp]
+        myTags: [...myTags, resp]
       });
     });
   }
 
   removeSubscribedTag(tagToRemove) {
-    // TODO
+    let { myTags } = this.state;
+    Api({
+      url: `/api/subscriptions/${tagToRemove.id_tag}`,
+      method: "DELETE",
+      params: tagToRemove
+    }).then(() => {
+      const index = myTags.findIndex(e => e.id_tag === tagToRemove.id_tag);
+      myTags.splice(index, 1);
+      if (index >= 0) {
+        this.setState({ myTags: myTags  });
+      }
+    });
   }
 
   addVideoCurrentPlaylist(body) {
