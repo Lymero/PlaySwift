@@ -11,8 +11,7 @@ class AllPlaylistsContainer extends React.Component {
       updated: false,
       title: "All playlist",
       showOnlySubscribed: false,
-      sortByNewests: false,
-      displayedPlaylists: this.props.playlists
+      sortByNewests: false
     };
     this.toggleShowOnlySubscribed = this.toggleShowOnlySubscribed.bind(this);
     this.toggleSortByNewests = this.toggleSortByNewests.bind(this);
@@ -20,34 +19,38 @@ class AllPlaylistsContainer extends React.Component {
 
   toggleShowOnlySubscribed() {
     let toggled = !this.state.showOnlySubscribed;
-    this.setState({ showOnlySubscribed: toggled }, this.applyFilters);
+    this.setState({ showOnlySubscribed: toggled });
   }
 
   toggleSortByNewests() {
     let toggled = !this.state.sortByNewests;
-    this.setState({ sortByNewests: toggled }, this.applyFilters);
+    this.setState({ sortByNewests: toggled });
   }
 
-  componentDidUpdate() {
-  }
+  componentDidUpdate() {}
 
   componentDidMount() {}
 
   render() {
+
     let result =
       this.state.showOnlySubscribed === true
-        ? this.props.playlists.filter(playlist => playlist.id_tag === 51299)
+        ? this.props.playlists.filter(p => {
+            return this.props.myTags.some(t => {
+              return t.id_tag === p.id_tag;
+            });
+          })
         : this.props.playlists;
 
     this.state.sortByNewests === true
-      ? result.sort(function(a,b){
-        let dateA = new Date(a.creation_date);
-        let dateB = new Date(b.creation_date);
-        return dateA.getTime() - dateB.getTime();
-      })
-      : result.sort(function(a,b){
-        return b.likes_number - a.likes_number;
-      });
+      ? result.sort(function(a, b) {
+          let dateA = new Date(a.creation_date);
+          let dateB = new Date(b.creation_date);
+          return dateA.getTime() - dateB.getTime();
+        })
+      : result.sort(function(a, b) {
+          return b.likes_number - a.likes_number;
+        });
 
     return (
       <PlaylistsComponent
