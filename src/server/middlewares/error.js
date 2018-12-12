@@ -7,7 +7,9 @@ const handler = (err, req, res, next) => {
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
   logger.error(err);
-  res.status(err.status || httpStatus.INTERNAL_SERVER_ERROR).send(err.message);
+  res.statusMessage = err.message;
+
+  res.status(err.status || httpStatus.INTERNAL_SERVER_ERROR).send();
 };
 
 const notFound = (req, res, next) => {
