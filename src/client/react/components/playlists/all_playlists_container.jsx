@@ -2,20 +2,61 @@ import React from "react";
 import PlaylistsComponent from "./playlists_component";
 import { connect } from "react-redux";
 import { withPlaylists } from "react/context/playlists";
+import DateUtils from "react/utils/date";
 
 class AllPlaylistsContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { title: "All playlist" };
+    this.state = {
+      updated: false,
+      title: "All playlist",
+      showOnlySubscribed: false,
+      sortByNewests: false,
+      displayedPlaylists: this.props.playlists
+    };
+    this.toggleShowOnlySubscribed = this.toggleShowOnlySubscribed.bind(this);
+    this.toggleSortByNewests = this.toggleSortByNewests.bind(this);
+  }
+
+  toggleShowOnlySubscribed() {
+    let toggled = !this.state.showOnlySubscribed;
+    this.setState({ showOnlySubscribed: toggled }, this.applyFilters);
+  }
+
+  toggleSortByNewests() {
+    let toggled = !this.state.sortByNewests;
+    this.setState({ sortByNewests: toggled }, this.applyFilters);
+  }
+
+  componentDidUpdate() {
   }
 
   componentDidMount() {}
 
   render() {
+    let result =
+      this.state.showOnlySubscribed === true
+        ? this.props.playlists.filter(playlist => playlist.id_tag === 51299)
+        : this.props.playlists;
+
+    this.state.sortByNewests === true
+      ? result.sort(function(a,b){
+        let dateA = new Date(a.creation_date);
+        let dateB = new Date(b.creation_date);
+        return dateA.getTime() - dateB.getTime();
+      })
+      : result.sort(function(a,b){
+        return b.likes_number - a.likes_number;
+      });
+
     return (
       <PlaylistsComponent
+        showOnlySubscribed={this.state.showOnlySubscribed}
+        sortByNewests={this.state.sortByNewests}
+        handleOnlySubscribed={this.toggleShowOnlySubscribed}
+        handleSortByNewests={this.toggleSortByNewests}
         title={this.state.title}
-        playlistsToShow={this.props.playlists}
+        playlistsToShow={result}
         {...this.props}
       />
     );

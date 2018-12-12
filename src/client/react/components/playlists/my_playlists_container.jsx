@@ -7,13 +7,22 @@ class MyPlaylistsContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: "My Playlists"
+      title: "My Playlists",
+      sortByNewests: false,
     };
+    this.toggleSortByNewests = this.toggleSortByNewests.bind(this);
+  }
+
+  toggleSortByNewests() {
+    let toggled = !this.state.sortByNewests;
+    this.setState({ sortByNewests: toggled }, this.applyFilters);
   }
 
   render() {
     return (
       <PlaylistsComponent
+        sortByNewests={this.state.sortByNewests}
+        handleSortByNewests={this.toggleSortByNewests}
         title={this.state.title}
         playlistsToShow={this.props.myPlaylists}
         {...this.props}
