@@ -13,7 +13,7 @@ const PlaylistsContext = React.createContext({
   currentPlaylistVideos: [],
   currentPlaylistSuggestions: [],
   tags: [],
-  myTags: [],
+  myTags: []
 });
 
 const PlaylistsConsumer = PlaylistsContext.Consumer;
@@ -29,7 +29,7 @@ class PlaylistsProvider extends React.Component {
       currentPlaylistVideos: [],
       currentPlaylistSuggestions: [],
       tags: [],
-      myTags: [],
+      myTags: []
     };
 
     this.loadInitialPlaylists();
@@ -82,7 +82,7 @@ class PlaylistsProvider extends React.Component {
       params: tagToAdd
     }).then(resp => {
       this.setState({
-        myTags : [...this.state.myTags , resp]
+        myTags: [...this.state.myTags, resp]
       });
     });
   }
@@ -161,7 +161,6 @@ class PlaylistsProvider extends React.Component {
   }
 
   loadInitialPlaylists() {
-    // CHECK API RESPONSE
     Api({
       url: "/api/playlists",
       method: "GET",
@@ -174,7 +173,6 @@ class PlaylistsProvider extends React.Component {
   }
 
   loadMyPlaylists() {
-    // CHECK API RESPONSE
     Api({
       url: "/api/users/me/playlists",
       method: "GET",
@@ -187,14 +185,17 @@ class PlaylistsProvider extends React.Component {
   }
 
   addPlaylist(playlistToAdd) {
-    // CHECK API RESPONSE
     Api({
       url: "/api/playlists",
       method: "POST",
       params: playlistToAdd
     }).then(resp => {
+      if (playlistToAdd.visible) {
+        this.setState({
+          playlists: [...this.state.playlists, resp]
+        });
+      }
       this.setState({
-        playlists: [...this.state.playlists, resp],
         myPlaylists: [...this.state.myPlaylists, resp]
       });
     });
@@ -287,7 +288,7 @@ class PlaylistsProvider extends React.Component {
       loadInitialPlaylists,
       manageSuggestion,
       addSubscribedTag,
-      removeSubscribedTag,
+      removeSubscribedTag
     } = this;
 
     const {
@@ -297,7 +298,7 @@ class PlaylistsProvider extends React.Component {
       currentPlaylistVideos,
       currentPlaylistSuggestions,
       tags,
-      myTags,
+      myTags
     } = this.state;
     const { children } = this.props;
 
@@ -318,7 +319,7 @@ class PlaylistsProvider extends React.Component {
       loadInitialPlaylists,
       manageSuggestion,
       addSubscribedTag,
-      removeSubscribedTag,
+      removeSubscribedTag
     };
     return (
       <PlaylistsContext.Provider value={providerValues}>
