@@ -25,8 +25,6 @@ class SearchFormContainer extends React.Component {
    */
   search(event) {
     event.preventDefault();
-    console.log("KEYWORD:");
-    console.log(this.state.filter);
     const filteredPlaylists = this.props.playlists.filter(playlist =>
       playlist["name"].toUpperCase().includes(this.state.filter.toUpperCase())
     );

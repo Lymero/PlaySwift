@@ -57,7 +57,6 @@ router.get("/me/subscriptions", async (req, res, next) => {
 });
 
 router.post("/me/subscriptions", async (req, res, next) => {
-  console.log("  eqded");
   const client = await pool.connect();
   const query = `insert into playswift.subscriptions values(default, $1,$2) returning *`;
   const values = [req.body.id_tag, req.body.id_user];
