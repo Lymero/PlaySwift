@@ -25,16 +25,13 @@ class SearchFormContainer extends React.Component {
    */
   search(event) {
     event.preventDefault();
-    console.log("KEYWORD:");
-    console.log(this.state.filter);
-    const filteredPlaylists = this.props.playlists.filter(playlist =>
+    this.ctxFilter(playlist =>
       playlist["name"].toUpperCase().includes(this.state.filter.toUpperCase())
     );
-    this.ctxFilter(filteredPlaylists);
   }
 
   onSubmit(event) {
-    this.search(event);
+    console.log("YOOOO");
   }
 
   render() {

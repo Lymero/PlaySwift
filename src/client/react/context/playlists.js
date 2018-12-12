@@ -78,13 +78,11 @@ class PlaylistsProvider extends React.Component {
   }
 
   setCurrentPlaylist(playlist) {
-    console.log("SETTED CURRENT PLAYLIST");
     this.setState(
       {
         currentPlaylistId: playlist
       },
       () => {
-        console.log(this.state);
         this.loadInitialVideosOfPlaylist();
       }
     );
@@ -123,7 +121,6 @@ class PlaylistsProvider extends React.Component {
       method: "GET",
       params: null
     }).then(playlistsFetched => {
-      console.log(playlistsFetched);
       this.setState({
         myPlaylists: playlistsFetched
       });
@@ -148,31 +145,28 @@ class PlaylistsProvider extends React.Component {
    * Display only the filtered videos (search form)
    * @param {filtered_playlists} playlists to display
    */
-  displayFilteredPlaylists(filtered_playlists) {
+  displayFilteredPlaylists(strategy) {
     Api({
       url: "/api/playlists",
       method: "GET",
       params: null
-    })
-      .then(playlistsFetched => {
-        this.setState({
-          playlists: playlistsFetched
-        });
-        console.log("HERE ARE THE TOTAL PLAYLISTS");
-        console.log(playlistsFetched);
-      })
-      .then(() => {
-        this.setState(() => ({
-          playlists: filtered_playlists
-        }));
-        console.log("AND THE FILTERED");
-        console.log(filtered_playlists);
+    }).then(playlistsFetched => {
+      const filtered_playlists = playlistsFetched.filter(strategy);
+      this.setState({
+        playlists: filtered_playlists
       });
-    /*
-    console.log("MNTN LES PLAYLISTS DISPLAYED SERONT:");
-    console.log(this.state.playlists);
-    console.log("===");
-    console.log(filtered_playlists);*/
+    });
+
+    Api({
+      url: "/api/users/me/playlists",
+      method: "GET",
+      params: null
+    }).then(playlistsFetched => {
+      const filtered_playlists = playlistsFetched.filter(strategy);
+      this.setState({
+        myPlaylists: filtered_playlists
+      });
+    });
   }
 
   removePlaylist(playlistToRemove) {
