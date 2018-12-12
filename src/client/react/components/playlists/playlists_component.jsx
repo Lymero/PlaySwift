@@ -4,8 +4,7 @@ import PlaylistPreview from "./playlist_preview";
 import NewPlaylistForm from "./new_playlist/new_playlist_form_container";
 
 const PlaylistsComponent = ({ title, playlistsToShow, showOnlySubscribed, sortByNewests, handleOnlySubscribed, handleSortByNewests}) => {
-  console.log("PLAY COMP RECEIVED");
-  console.log(playlistsToShow);
+
   return (
     <Container>
       <h3>
