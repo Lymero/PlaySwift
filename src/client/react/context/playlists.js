@@ -111,8 +111,6 @@ class PlaylistsProvider extends React.Component {
       url: "api/playlists/" + playlistID + "/suggestions",
       method: "GET"
     }).then(fetchedSuggestions => {
-      console.log("fetched suggestions");
-      console.log(fetchedSuggestions);
       this.setState({
         currentPlaylistSuggestions: fetchedSuggestions
       });
@@ -221,9 +219,7 @@ class PlaylistsProvider extends React.Component {
         params: { state: this.props.suggestion.state }
       }).then(() => {
         if (state === "accepted") {
-          console.log("yeah!");
         } else if (state === "refused") {
-          console.log("oh no!");
         }
       });
     });
