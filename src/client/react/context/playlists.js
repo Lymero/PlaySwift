@@ -175,6 +175,14 @@ class PlaylistsProvider extends React.Component {
     console.log(filtered_playlists);*/
   }
 
+  utilRemovePlaylistById(array, id) {
+    const indice = array.findIndex(e => e.id_playlist === id);
+    if (indice >= 0) {
+      array.splice(indice, 1);
+    }
+    return array;
+  }
+
   removePlaylist(playlistToRemove) {
     const { id_playlist } = playlistToRemove;
     const { playlists, myPlaylists } = this.state;
@@ -182,17 +190,9 @@ class PlaylistsProvider extends React.Component {
       url: `/api/playlists/${playlistToRemove.id_playlist}`,
       method: "DELETE"
     }).then(() => {
-      playlists.splice(
-        playlists.findIndex(e => e.id_playlist === id_playlist),
-        1
-      );
-      myPlaylists.splice(
-        myPlaylists.findIndex(e => e.id_playlist === id_playlist),
-        1
-      );
       this.setState({
-        playlists: playlists,
-        myPlaylists: myPlaylists
+        playlists: this.utilRemovePlaylistById(playlists, id_playlist),
+        myPlaylists: this.utilRemovePlaylistById(myPlaylists, id_playlist)
       });
     });
   }
