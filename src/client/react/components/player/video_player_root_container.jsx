@@ -37,7 +37,7 @@ class PlayerComponent extends React.Component {
   }
 
   changeVideo(event) {
-    if (event.target.tagName === "BUTTON") {
+    if (event.target.innerHTML === "Play") {
       let id = event.target.dataset.videoid;
       let dom = event.target.closest(".list-group-item");
       if (this.state.selectedVideoDom !== undefined)
