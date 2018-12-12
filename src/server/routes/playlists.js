@@ -178,7 +178,8 @@ router.post("/:id_playlist/videos", async (req, res, next) => {
           const video = (await client.query(queryInsertVideo, values)).rows[0];
           values = [id_playlist, video.id_video, description, position];
           await client.query(queryInsertVideoPlaylist, values);
-          values = [new Date(), id_playlist];
+          const now = new Date();
+          values = [now, id_playlist];
           await client.query(queryUpdateModifyTime, values);
           await client.query("COMMIT");
           res.send(video);
@@ -190,7 +191,8 @@ router.post("/:id_playlist/videos", async (req, res, next) => {
     } else {
       values = [id_playlist, video.rows[0].id_video, description, position];
       await client.query(queryInsertVideoPlaylist, values);
-      values = [Date.now(), id_playlist];
+      const now = new Date();
+      values = [now, id_playlist];
       await client.query(queryUpdateModifyTime, values);
       res.send(video);
       await client.query("COMMIT");
