@@ -101,7 +101,7 @@ router.post("/:id_video/reactions", async (req, res, next) => {
 
   const queryUpdateReaction = `update playswift.reactions 
   set vote=$1 
-  where id_user=$2 and id_video_playlist=$3
+  where id_user=$2 and id_video_playlist=$3 and vote!=$4
   returning *`;
 
   const queryUpdateNbLikesPlaylistExists = `update playswift.playlists 
@@ -148,14 +148,19 @@ router.post("/:id_video/reactions", async (req, res, next) => {
       await client.query(queryUpdateNbLikesVideo);
       res.send(result.rows);
     } else {
-      values = [req.body.vote, req.body.id_user, req.params.id_video];
-      console.log("1");
-      result = await client.query(queryUpdateReaction);
-      console.log("2");
-      await client.query(queryUpdateNbLikesPlaylistExists);
-      console.log("3");
-      await client.query(queryUpdateNbLikesVideoExists);
-      console.log("4");
+      values = [
+        req.body.vote,
+        req.body.id_user,
+        req.params.id_video,
+        req.body.vote
+      ];
+      result = await client.query(queryUpdateReaction, values);
+      if (result.rows.length != 0) {
+        await client.query(queryUpdateNbLikesPlaylistExists);
+        await client.query(queryUpdateNbLikesVideoExists);
+      } else {
+        res.send(false);
+      }
       res.send(result.rows);
     }
     await client.query("COMMIT");
