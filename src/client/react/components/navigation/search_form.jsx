@@ -2,7 +2,7 @@ import React from "react";
 
 import { InputGroup, FormControl, Button } from "react-bootstrap";
 
-const SearchForm = ({ filter, handleChange, search, onSubmit }) => {
+const SearchForm = ({ filter, handleChange, search }) => {
   return (
 
     <InputGroup>
@@ -15,7 +15,7 @@ const SearchForm = ({ filter, handleChange, search, onSubmit }) => {
         onChange={handleChange}
       />
       <InputGroup.Append>
-        <Button variant="outline-info" onClick={search} onSubmit={onSubmit}>
+        <Button variant="outline-info" onClick={search}>
           Search
         </Button>
       </InputGroup.Append>

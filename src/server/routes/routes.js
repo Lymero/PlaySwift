@@ -4,6 +4,7 @@ const router = express.Router();
 const playlistsRouter = require("./playlists");
 const reactionsRouter = require("./reactions");
 const suggestionsRouter = require("./suggestions");
+const subscriptionsRouter = require("./subscriptions");
 const tagsRouter = require("./tags");
 const usersRouter = require("./users");
 const videosRouter = require("./videos");
@@ -21,6 +22,7 @@ router.use(auth.currentUser);
 router.use("/playlists", playlistsRouter);
 router.use("/reactions", reactionsRouter);
 router.use("/suggestions", suggestionsRouter);
+router.use("/subscriptions", subscriptionsRouter)
 router.use("/tags", tagsRouter);
 router.use("/users", usersRouter);
 router.use("/videos", videosRouter);

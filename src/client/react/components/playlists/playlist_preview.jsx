@@ -29,6 +29,9 @@ class PlaylistPreview extends React.Component {
     this.goToPlaylist = this.goToPlaylist.bind(this);
     this.ctxRemovePlaylist = this.props.removePlaylist;
     this.removePlaylist = this.removePlaylist.bind(this);
+    this.subscribe = this.subscribe.bind(this);
+    this.unsubscribe = this.unsubscribe.bind(this);
+    this.amISubscribed = this.amISubscribed.bind(this);
   }
 
   goToPlaylist() {
@@ -44,9 +47,35 @@ class PlaylistPreview extends React.Component {
     this.ctxRemovePlaylist(body);
   }
 
+  subscribe(event) {
+    event.preventDefault();
+    const body = {
+      user_id: this.props.userId,
+      id_playlist: this.props.playlist.id_playlist,
+      id_tag: this.props.playlist.id_tag
+    };
+    this.props.addSubscribedTag(body);
+  }
+
+  unsubscribe(event) {
+    event.preventDefault();
+    const body = {
+      user_id: this.props.userId,
+      id_playlist: this.props.playlist.id_playlist,
+      id_tag: this.props.playlist.id_tag
+    };
+    this.props.removeSubscribedTag(body);
+  }
+
+  amISubscribed(id_tag) {
+    return this.props.myTags.some(t => {
+      return t.id_tag === id_tag;
+    });
+  }
+
   render() {
     const playlist = this.props.playlist;
-    if (playlist["url_thumbnail"] === null)
+    if (!playlist["url_thumbnail"])
       playlist["url_thumbnail"] = "https://place-hold.it/16x9/212425";
     return (
       <div>
@@ -73,7 +102,7 @@ class PlaylistPreview extends React.Component {
                 {playlist["likes_number"]} <FontAwesomeIcon icon={faThumbsUp} />
               </Badge>
               <Badge variant="danger">
-                {playlist["dislikes_number"]}{" "}
+                {playlist["dislikes_number"]}
                 <FontAwesomeIcon icon={faThumbsDown} />
               </Badge>
             </h4>
@@ -82,6 +111,11 @@ class PlaylistPreview extends React.Component {
             <ListGroupItem>
               <strong>Tag </strong>
               <span>{playlist["tag_name"]}</span>
+              {this.amISubscribed(playlist.id_tag) ? (
+                <Button onClick={this.unsubscribe}>UNSUBSCRIBE</Button>
+              ) : (
+                <Button onClick={this.subscribe}>SUBSCRIBE</Button>
+              )}
             </ListGroupItem>
             <ListGroupItem>
               <strong>Created on </strong>

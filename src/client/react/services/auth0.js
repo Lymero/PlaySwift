@@ -1,15 +1,19 @@
 import AuthModule from "auth0-lock";
 import JWT from "jsonwebtoken";
-import { setAuthState, setUserProfile, unsetUserProfile } from "react/actions/actions";
+import {
+  setAuthState,
+  setUserProfile,
+  unsetUserProfile
+} from "react/actions/actions";
 import store from "react/reducers/root";
 
 // https://auth0.com/docs/libraries/lock/v11/configuration#database-options
-const passwordlessOptions = {
+const options = {
   allowedConnections: ["google-oauth2"],
   closable: true,
   auth: {
-    audience: "http://localhost:3030",
-    redirectUrl: "http://localhost:3030/authCallback",
+    audience: process.env.AUTH0_AUDIENCE,
+    redirectUrl: process.env.AUTH0_CALLBACK,
     responseType: "token id_token",
     params: {
       scope: "openid email profile"
@@ -18,9 +22,9 @@ const passwordlessOptions = {
 };
 
 const lock = new AuthModule(
-  "F7e38indc2EkfYA5lH8snHyM9DqP1Hcu",
-  "web3.eu.auth0.com",
-  passwordlessOptions
+  process.env.AUTH0_KEY,
+  process.env.AUTH0_API,
+  options
 );
 
 function show() {
@@ -29,12 +33,8 @@ function show() {
 
 function verify() {
   if (isAuthenticated()) {
-    store.dispatch(setAuthState(
-      { authenticated: true }
-    ));
-    store.dispatch(
-      setUserProfile(getUserProfile(), getJWT())
-    );
+    store.dispatch(setAuthState({ authenticated: true }));
+    store.dispatch(setUserProfile(getUserProfile(), getJWT()));
     return true;
   }
   return false;
@@ -60,16 +60,14 @@ function logout() {
   store.dispatch(
     setAuthState({
       authenticated: false
-  }));
-  store.dispatch(
-    unsetUserProfile()
+    })
   );
+  store.dispatch(unsetUserProfile());
 }
 
 function getJWT() {
   let accessToken = localStorage.getItem("accessToken");
-  if (accessToken === null)
-    throw "AccessToken not found in LocalStorage";
+  if (accessToken === null) throw "AccessToken not found in LocalStorage";
   return accessToken;
 }
 

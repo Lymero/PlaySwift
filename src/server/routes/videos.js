@@ -62,7 +62,6 @@ router.delete("/:id_video", async (req, res, next) => {
     const result = await client.query(queryDeleteVideo, valuesDeleteVideo);
     res.send(result);
   } catch (err) {
-    console.log(err.stack);
     return next(err);
   } finally {
     client.release();
@@ -146,6 +145,7 @@ router.post("/:id_video/reactions", async (req, res, next) => {
       result = await client.query(queryInsertReaction, values);
       await client.query(queryUpdateNbLikesPlaylist);
       await client.query(queryUpdateNbLikesVideo);
+      result.rows[1] = true;
       res.send(result.rows);
     } else {
       values = [

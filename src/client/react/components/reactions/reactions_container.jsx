@@ -2,6 +2,7 @@ import React from "react";
 import Api from "react/utils/api";
 import { connect } from "react-redux";
 import ReactionsComponent from "./reactions_component";
+import { withPlaylists } from "../../context/playlists";
 
 class ReactionsContainer extends React.Component {
   constructor(props) {
@@ -22,14 +23,20 @@ class ReactionsContainer extends React.Component {
       method: "POST",
       params: { id_playlist: this.props.video.id_playlist, vote }
     }).then(response => {
-      const createdOrUpdatedReaction = response;
-      if (vote === "like" && createdOrUpdatedReaction !== false) {
+      const UpdatedReaction = response;
+      const CreatedReaction = response[1];
+      if (vote === "like" && UpdatedReaction !== false) {
         this.setState({ likes_number: this.state.likes_number + 1 });
-        this.setState({ dislikes_number: this.state.dislikes_number - 1 });
-      } else if (vote === "dislike" && createdOrUpdatedReaction !== false) {
+        if (!CreatedReaction) {
+          this.setState({ dislikes_number: this.state.dislikes_number - 1 });
+        }
+      } else if (vote === "dislike" && UpdatedReaction !== false) {
         this.setState({ dislikes_number: this.state.dislikes_number + 1 });
-        this.setState({ likes_number: this.state.likes_number - 1 });
+        if (!CreatedReaction) {
+          this.setState({ likes_number: this.state.likes_number - 1 });
+        }
       }
+      this.props.loadInitialPlaylists();
     });
   }
 
@@ -62,4 +69,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(ReactionsContainer);
+export default connect(mapStateToProps)(withPlaylists(ReactionsContainer));

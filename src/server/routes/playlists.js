@@ -164,7 +164,6 @@ router.post("/:id_playlist/videos", async (req, res, next) => {
     }
     values = [url_video];
     const video = await client.query(queryExistingVideo, values);
-    console.log(video.rows);
 
     values = [id_playlist];
     let position = await client.query(queryVideoPosition, values);
