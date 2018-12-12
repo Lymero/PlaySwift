@@ -97,7 +97,7 @@ class PlaylistsProvider extends React.Component {
       const index = myTags.findIndex(e => e.id_tag === tagToRemove.id_tag);
       myTags.splice(index, 1);
       if (index >= 0) {
-        this.setState({ myTags: myTags  });
+        this.setState({ myTags: myTags });
       }
     });
   }
@@ -217,11 +217,6 @@ class PlaylistsProvider extends React.Component {
       method: "POST",
       params: playlistToAdd
     }).then(resp => {
-      if (playlistToAdd.visible) {
-        this.setState({
-          playlists: [...this.state.playlists, resp]
-        });
-      }
       this.setState({
         myPlaylists: [...this.state.myPlaylists, resp]
       });
