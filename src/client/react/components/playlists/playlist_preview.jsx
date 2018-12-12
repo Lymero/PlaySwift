@@ -46,7 +46,7 @@ class PlaylistPreview extends React.Component {
 
   render() {
     const playlist = this.props.playlist;
-    if (playlist["url_thumbnail"] === null)
+    if (!playlist["url_thumbnail"])
       playlist["url_thumbnail"] = "https://place-hold.it/16x9/212425";
     return (
       <div>

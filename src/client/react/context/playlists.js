@@ -177,7 +177,6 @@ class PlaylistsProvider extends React.Component {
   }
 
   loadInitialPlaylists() {
-    // CHECK API RESPONSE
     Api({
       url: "/api/playlists",
       method: "GET",
@@ -190,7 +189,6 @@ class PlaylistsProvider extends React.Component {
   }
 
   loadMyPlaylists() {
-    // CHECK API RESPONSE
     Api({
       url: "/api/users/me/playlists",
       method: "GET",
@@ -203,12 +201,16 @@ class PlaylistsProvider extends React.Component {
   }
 
   addPlaylist(playlistToAdd) {
-    // CHECK API RESPONSE
     Api({
       url: "/api/playlists",
       method: "POST",
       params: playlistToAdd
     }).then(resp => {
+      if (playlistToAdd.visible) {
+        this.setState({
+          playlists: [...this.state.playlists, resp]
+        });
+      }
       this.setState({
         myPlaylists: [...this.state.myPlaylists, resp]
       });
