@@ -31,7 +31,7 @@ class SearchFormContainer extends React.Component {
   }
 
   onSubmit(event) {
-    console.log("YOOOO");
+    event.preventDefault();
   }
 
   render() {
