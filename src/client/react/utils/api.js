@@ -1,4 +1,5 @@
 import rootStore from "react/reducers/root";
+import { createNotification } from "./notifs";
 
 function sendApiRequest({ url, method = "GET", params = null }) {
   const reduxJWT = rootStore.getState().usersSession.jwt;
@@ -8,10 +9,22 @@ function sendApiRequest({ url, method = "GET", params = null }) {
   headers.append("Authorization", "Bearer " + reduxJWT);
 
   function handleResponse(response) {
-    if (!response.ok) {
-      throw Error(response.statusText);
-    }
+    errorToNotification(response.status, response.statusText);
     return response.json();
+  }
+
+  function errorToNotification(status, message) {
+    switch (status) {
+      case 400:
+        createNotification("info", message);
+        break;
+      case 404:
+        createNotification("warning", message);
+        break;
+      case 500:
+        createNotification("error", message);
+        break;
+    }
   }
 
   return fetch(url, {

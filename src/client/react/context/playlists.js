@@ -11,6 +11,7 @@ const PlaylistsContext = React.createContext({
   myPlaylists: [],
   currentPlaylistId: undefined,
   currentPlaylistVideos: [],
+  currentPlaylistSuggestions: [],
   tags: []
 });
 
@@ -25,6 +26,7 @@ class PlaylistsProvider extends React.Component {
       myPlaylists: [],
       currentPlaylistId: undefined,
       currentPlaylistVideos: [],
+      currentPlaylistSuggestions: [],
       tags: []
     };
 
@@ -41,6 +43,7 @@ class PlaylistsProvider extends React.Component {
     );
     this.displayFilteredPlaylists = this.displayFilteredPlaylists.bind(this);
     this.loadInitialPlaylists = this.loadInitialPlaylists.bind(this);
+    this.manageSuggestion = this.manageSuggestion.bind(this);
   }
 
   loadTags() {
@@ -78,14 +81,13 @@ class PlaylistsProvider extends React.Component {
   }
 
   setCurrentPlaylist(playlist) {
-    console.log("SETTED CURRENT PLAYLIST");
     this.setState(
       {
         currentPlaylistId: playlist
       },
       () => {
-        console.log(this.state);
         this.loadInitialVideosOfPlaylist();
+        this.loadInitialSuggestionsOfPlaylist();
       }
     );
   }
@@ -99,6 +101,18 @@ class PlaylistsProvider extends React.Component {
     }).then(fetchedVideos => {
       this.setState({
         currentPlaylistVideos: fetchedVideos
+      });
+    });
+  }
+
+  loadInitialSuggestionsOfPlaylist() {
+    const playlistID = this.state.currentPlaylistId;
+    Api({
+      url: "api/playlists/" + playlistID + "/suggestions",
+      method: "GET"
+    }).then(fetchedSuggestions => {
+      this.setState({
+        currentPlaylistSuggestions: fetchedSuggestions
       });
     });
   }
@@ -123,7 +137,6 @@ class PlaylistsProvider extends React.Component {
       method: "GET",
       params: null
     }).then(playlistsFetched => {
-      console.log(playlistsFetched);
       this.setState({
         myPlaylists: playlistsFetched
       });
@@ -148,31 +161,36 @@ class PlaylistsProvider extends React.Component {
    * Display only the filtered videos (search form)
    * @param {filtered_playlists} playlists to display
    */
-  displayFilteredPlaylists(filtered_playlists) {
+  displayFilteredPlaylists(strategy) {
     Api({
       url: "/api/playlists",
       method: "GET",
       params: null
-    })
-      .then(playlistsFetched => {
-        this.setState({
-          playlists: playlistsFetched
-        });
-        console.log("HERE ARE THE TOTAL PLAYLISTS");
-        console.log(playlistsFetched);
-      })
-      .then(() => {
-        this.setState(() => ({
-          playlists: filtered_playlists
-        }));
-        console.log("AND THE FILTERED");
-        console.log(filtered_playlists);
+    }).then(playlistsFetched => {
+      const filtered_playlists = playlistsFetched.filter(strategy);
+      this.setState({
+        playlists: filtered_playlists
       });
-    /*
-    console.log("MNTN LES PLAYLISTS DISPLAYED SERONT:");
-    console.log(this.state.playlists);
-    console.log("===");
-    console.log(filtered_playlists);*/
+    });
+
+    Api({
+      url: "/api/users/me/playlists",
+      method: "GET",
+      params: null
+    }).then(playlistsFetched => {
+      const filtered_playlists = playlistsFetched.filter(strategy);
+      this.setState({
+        myPlaylists: filtered_playlists
+      });
+    });
+  }
+
+  utilRemovePlaylistById(array, id) {
+    const indice = array.findIndex(e => e.id_playlist === id);
+    if (indice >= 0) {
+      array.splice(indice, 1);
+    }
+    return array;
   }
 
   removePlaylist(playlistToRemove) {
@@ -182,17 +200,35 @@ class PlaylistsProvider extends React.Component {
       url: `/api/playlists/${playlistToRemove.id_playlist}`,
       method: "DELETE"
     }).then(() => {
-      playlists.splice(
-        playlists.findIndex(e => e.id_playlist === id_playlist),
-        1
-      );
-      myPlaylists.splice(
-        myPlaylists.findIndex(e => e.id_playlist === id_playlist),
-        1
-      );
       this.setState({
-        playlists: playlists,
-        myPlaylists: myPlaylists
+        playlists: this.utilRemovePlaylistById(playlists, id_playlist),
+        myPlaylists: this.utilRemovePlaylistById(myPlaylists, id_playlist)
+      });
+    });
+  }
+
+  manageSuggestion(body) {
+    const { currentPlaylistSuggestions } = this.state;
+    const { id_suggestion, id_playlist, state } = body;
+    Api({
+      url: `/api/playlists/${id_playlist}/videos`,
+      method: "POST",
+      params: { id_playlist: id_playlist }
+    }).then(() => {
+      Api({
+        url: `/api/suggestions/${id_suggestion}/videos`,
+        method: "UPDATE",
+        params: { state: state }
+      }).then(() => {
+        currentPlaylistSuggestions.splice(
+          currentPlaylistSuggestions.findIndex(
+            e => e.id_suggestion === id_suggestion
+          ),
+          1
+        );
+        this.setState({
+          currentPlaylistSuggestions: currentPlaylistSuggestions
+        });
       });
     });
   }
@@ -205,7 +241,8 @@ class PlaylistsProvider extends React.Component {
       addVideoCurrentPlaylist,
       removeVideoCurrentPlaylist,
       displayFilteredPlaylists,
-      loadInitialPlaylists
+      loadInitialPlaylists,
+      manageSuggestion
     } = this;
 
     const {
@@ -213,6 +250,7 @@ class PlaylistsProvider extends React.Component {
       myPlaylists,
       currentPlaylistId,
       currentPlaylistVideos,
+      currentPlaylistSuggestions,
       tags
     } = this.state;
     const { children } = this.props;
@@ -223,13 +261,15 @@ class PlaylistsProvider extends React.Component {
       tags,
       currentPlaylistId,
       currentPlaylistVideos,
+      currentPlaylistSuggestions,
       addPlaylist,
       removePlaylist,
       setCurrentPlaylist,
       addVideoCurrentPlaylist,
       removeVideoCurrentPlaylist,
       displayFilteredPlaylists,
-      loadInitialPlaylists
+      loadInitialPlaylists,
+      manageSuggestion
     };
     return (
       <PlaylistsContext.Provider value={providerValues}>

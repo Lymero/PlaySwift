@@ -26,7 +26,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 class PlaylistPreview extends React.Component {
   constructor(props) {
     super(props);
-    this.playlist = this.props.playlist;
     this.goToPlaylist = this.goToPlaylist.bind(this);
     this.ctxRemovePlaylist = this.props.removePlaylist;
     this.removePlaylist = this.removePlaylist.bind(this);
@@ -40,13 +39,13 @@ class PlaylistPreview extends React.Component {
   removePlaylist(event) {
     event.preventDefault();
     const body = {
-      id_playlist: this.playlist.id_playlist
+      id_playlist: this.props.playlist.id_playlist
     };
     this.ctxRemovePlaylist(body);
   }
 
   render() {
-    const playlist = this.playlist;
+    const playlist = this.props.playlist;
     if (playlist["url_thumbnail"] === null)
       playlist["url_thumbnail"] = "https://place-hold.it/16x9/212425";
     return (

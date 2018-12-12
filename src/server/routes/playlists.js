@@ -1,21 +1,11 @@
 const express = require("express");
 const router = express.Router();
 
-const {
-  pool
-} = require("../modules/db");
-const {
-  getYoutubeVideo
-} = require("../modules/google/youtube");
-const {
-  validatePlaylist
-} = require("../models/playlist");
-const {
-  validateVideo
-} = require("../models/video");
-const {
-  validateSuggestion
-} = require("../models/suggestion");
+const { pool } = require("../modules/db");
+const { getYoutubeVideo } = require("../modules/google/youtube");
+const { validatePlaylist } = require("../models/playlist");
+const { validateVideo } = require("../models/video");
+const { validateSuggestion } = require("../models/suggestion");
 const httpStatus = require("http-status");
 const createError = require("http-errors");
 
@@ -55,9 +45,7 @@ having vp.position=(
 });
 
 router.post("/", async (req, res, next) => {
-  const {
-    error
-  } = validatePlaylist(req.body);
+  const { error } = validatePlaylist(req.body);
   if (error) {
     return next(createError(httpStatus.BAD_REQUEST, error.details[0].message));
   }
@@ -83,9 +71,7 @@ router.post("/", async (req, res, next) => {
 });
 
 router.put("/:id_playlist", async (req, res, next) => {
-  const {
-    error
-  } = validatePlaylist(req.body);
+  const { error } = validatePlaylist(req.body);
   if (error) {
     return next(createError(httpStatus.BAD_REQUEST, error.details[0].message));
   }
@@ -149,20 +135,12 @@ router.get("/:id_playlist/videos", async (req, res, next) => {
 });
 
 router.post("/:id_playlist/videos", async (req, res, next) => {
-  const {
-    error
-  } = validateVideo(req.body, req.params);
+  const { error } = validateVideo(req.body, req.params);
   if (error) {
     return next(createError(httpStatus.BAD_REQUEST, error.details[0].message));
   }
-  const {
-    id_playlist
-  } = req.params;
-  const {
-    url_video,
-    description,
-    id_user
-  } = req.body;
+  const { id_playlist } = req.params;
+  const { url_video, description, id_user } = req.body;
 
   const client = await pool.connect();
   const queryOwnership = `select * from playswift.playlists where id_user=$1 and id_playlist=$2`;
@@ -170,6 +148,7 @@ router.post("/:id_playlist/videos", async (req, res, next) => {
   const queryInsertVideo = `insert into playswift.videos values(default, $1, $2, $3) returning id_video, url_video`;
   const queryInsertVideoPlaylist = `insert into playswift.videos_playlists values(default, $1, $2, $3, $4, default, default)`;
   const queryExistingVideo = `select * from playswift.videos where url_video = $1`;
+  const queryUpdateModifyTime = `update playswift.playlists set last_update_date=$1 where id_playlist=$2`;
 
   try {
     await client.query("BEGIN");
@@ -179,7 +158,7 @@ router.post("/:id_playlist/videos", async (req, res, next) => {
       return next(
         createError(
           httpStatus.FORBIDDEN,
-          "Forbidden - Not the owner of the playlist"
+          "You're not the owner of this playlist"
         )
       );
     }
@@ -192,17 +171,15 @@ router.post("/:id_playlist/videos", async (req, res, next) => {
 
     if (video.rowCount <= 0) {
       getYoutubeVideo(url_video, async resp => {
-        const {
-          title
-        } = resp[0].snippet;
-        const {
-          url
-        } = resp[0].snippet.thumbnails.high;
+        const { title } = resp[0].snippet;
+        const { url } = resp[0].snippet.thumbnails.high;
         values = [url_video, title, url];
         try {
           const video = (await client.query(queryInsertVideo, values)).rows[0];
           values = [id_playlist, video.id_video, description, position];
           await client.query(queryInsertVideoPlaylist, values);
+          values = [new Date(), id_playlist];
+          await client.query(queryUpdateModifyTime, values);
           await client.query("COMMIT");
           res.send(video);
         } catch (err) {
@@ -213,11 +190,21 @@ router.post("/:id_playlist/videos", async (req, res, next) => {
     } else {
       values = [id_playlist, video.rows[0].id_video, description, position];
       await client.query(queryInsertVideoPlaylist, values);
+      values = [Date.now(), id_playlist];
+      await client.query(queryUpdateModifyTime, values);
       res.send(video);
       await client.query("COMMIT");
     }
   } catch (err) {
     await client.query("ROLLBACK");
+    if (err.constraint) {
+      return next(
+        createError(
+          httpStatus.BAD_REQUEST,
+          "This playlist already contains this video"
+        )
+      );
+    }
     return next(err);
   } finally {
     client.release();
@@ -239,20 +226,13 @@ router.get("/:id_playlist/suggestions", async (req, res, next) => {
 });
 
 router.post("/:id_playlist/suggestions", async (req, res, next) => {
-  const {
-    error
-  } = validateSuggestion(req.body, req.params);
+  const { error } = validateSuggestion(req.body, req.params);
   if (error) {
     return next(createError(httpStatus.BAD_REQUEST, error.details[0].message));
   }
 
-  const {
-    id_playlist
-  } = req.params;
-  const {
-    url_video,
-    id_user
-  } = req.body;
+  const { id_playlist } = req.params;
+  const { url_video, id_user } = req.body;
 
   const client = await pool.connect();
   const queryInsertSuggestion = `insert into playswift.suggestions values(default, $1, $2, 'pending', $3)`;
@@ -264,12 +244,8 @@ router.post("/:id_playlist/suggestions", async (req, res, next) => {
     const video = await client.query(queryExistingVideo, values);
     if (video.rowCount <= 0) {
       getYoutubeVideo(url_video, async resp => {
-        const {
-          title
-        } = resp[0].snippet;
-        const {
-          url
-        } = resp[0].snippet.thumbnails.high;
+        const { title } = resp[0].snippet;
+        const { url } = resp[0].snippet.thumbnails.high;
         values = [url_video, title, url];
         try {
           const video = await client.query(queryInsertVideo, values);
@@ -282,6 +258,14 @@ router.post("/:id_playlist/suggestions", async (req, res, next) => {
           await client.query("COMMIT");
         } catch (err) {
           await client.query("ROLLBACK");
+          if (err.constraint) {
+            return next(
+              createError(
+                httpStatus.BAD_REQUEST,
+                "You already suggested this video for this playlist"
+              )
+            );
+          }
           return next(err);
         }
       });
