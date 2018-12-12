@@ -1,5 +1,5 @@
 import React from "react";
-import { Nav, Navbar, Button } from "react-bootstrap";
+import { Nav, Navbar, Button, Image, Dropdown, DropdownButton } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import SearchFormContainer from "./search_form_container";
 import Auth from "react/services/auth0";
@@ -10,17 +10,15 @@ const Navigation = ({ authState, profile }) => {
       <Navbar.Brand as={Link} to="/">
         Home
       </Navbar.Brand>
-      <Nav className="mr-auto" />
-      <SearchFormContainer />
-      <Nav className="mr-auto">
-        <Nav.Link as={Link} to="/playlists">
-          My playlists -{" "}
-          {authState.authenticated ? profile.name : "not logged in"}
-        </Nav.Link>
+      <Nav className="m-auto">
+        <SearchFormContainer />
       </Nav>
-      <Button variant="outline-warning" onClick={Auth.logout}>
-        Logout
-      </Button>
+
+      <span className="userIdentification"><Image src={profile.picture} className="" roundedCircle /></span>
+      <DropdownButton  variant="outline-light" id="dropdown-basic-button" title={authState.authenticated ? profile.name : "not logged in"}>
+        <Dropdown.Item href="#/playlists">My Playlists</Dropdown.Item>
+        <Dropdown.Item onClick={Auth.logout}>Logout</Dropdown.Item>
+      </DropdownButton>;
     </Navbar>
   );
 };
