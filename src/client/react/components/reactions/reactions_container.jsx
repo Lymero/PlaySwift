@@ -23,15 +23,16 @@ class ReactionsContainer extends React.Component {
       method: "POST",
       params: { id_playlist: this.props.video.id_playlist, vote }
     }).then(response => {
-      const createdOrUpdatedReaction = response;
-      if (vote === "like" && createdOrUpdatedReaction !== false) {
+      const UpdatedReaction = response;
+      const CreatedReaction = response[1];
+      if (vote === "like" && UpdatedReaction !== false) {
         this.setState({ likes_number: this.state.likes_number + 1 });
-        if (!response[1]) {
+        if (!CreatedReaction) {
           this.setState({ dislikes_number: this.state.dislikes_number - 1 });
         }
-      } else if (vote === "dislike" && createdOrUpdatedReaction !== false) {
+      } else if (vote === "dislike" && UpdatedReaction !== false) {
         this.setState({ dislikes_number: this.state.dislikes_number + 1 });
-        if (!response[1]) {
+        if (!CreatedReaction) {
           this.setState({ likes_number: this.state.likes_number - 1 });
         }
       }
