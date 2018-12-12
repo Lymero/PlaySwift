@@ -207,20 +207,28 @@ class PlaylistsProvider extends React.Component {
     });
   }
 
-  manageSuggestion(state) {
+  manageSuggestion(body) {
+    const { currentPlaylistSuggestions } = this.state;
+    const { id_suggestion, id_playlist, state } = body;
     Api({
-      url: `/api/playlists/${this.props.suggestion.id_video_playlist}/videos`,
+      url: `/api/playlists/${id_playlist}/videos`,
       method: "POST",
-      params: { id_playlist: this.props.suggestion.id_playlist }
+      params: { id_playlist: id_playlist }
     }).then(() => {
       Api({
-        url: `/api/suggestions/${this.props.suggestion}/videos`,
+        url: `/api/suggestions/${id_suggestion}/videos`,
         method: "UPDATE",
-        params: { state: this.props.suggestion.state }
+        params: { state: state }
       }).then(() => {
-        if (state === "accepted") {
-        } else if (state === "refused") {
-        }
+        currentPlaylistSuggestions.splice(
+          currentPlaylistSuggestions.findIndex(
+            e => e.id_suggestion === id_suggestion
+          ),
+          1
+        );
+        this.setState({
+          currentPlaylistSuggestions: currentPlaylistSuggestions
+        });
       });
     });
   }
