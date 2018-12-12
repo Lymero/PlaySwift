@@ -13,7 +13,7 @@ const PlaylistsContext = React.createContext({
   currentPlaylistVideos: [],
   currentPlaylistSuggestions: [],
   tags: [],
-  myTags: [],
+  myTags: []
 });
 
 const PlaylistsConsumer = PlaylistsContext.Consumer;
@@ -29,7 +29,7 @@ class PlaylistsProvider extends React.Component {
       currentPlaylistVideos: [],
       currentPlaylistSuggestions: [],
       tags: [],
-      myTags: [],
+      myTags: []
     };
 
     this.loadInitialPlaylists();
@@ -82,7 +82,7 @@ class PlaylistsProvider extends React.Component {
       params: tagToAdd
     }).then(resp => {
       this.setState({
-        myTags : [...this.state.myTags , resp]
+        myTags: [...this.state.myTags, resp]
       });
     });
   }
@@ -93,16 +93,32 @@ class PlaylistsProvider extends React.Component {
 
   addVideoCurrentPlaylist(body) {
     const { currentPlaylistVideos } = this.state;
+    let urlThumbnail;
     Api({
       url: "/api/playlists/" + this.state.currentPlaylistId + "/videos",
       method: "POST",
       params: body
-    }).then(resp => {
-      currentPlaylistVideos.push(resp);
-      this.setState({
-        currentPlaylistVideos: currentPlaylistVideos
+    })
+      .then(resp => {
+        urlThumbnail = resp.url_thumbnail;
+        currentPlaylistVideos.push(resp);
+        this.setState({
+          currentPlaylistVideos: currentPlaylistVideos
+        });
+      })
+      .then(() => {
+        if (this.state.currentPlaylistVideos.length === 1) {
+          // retrieve the playlist wich we've added a video to
+          const id = this.state.currentPlaylistVideos[0].id_playlist;
+          const playlist = this.state.myPlaylists.filter(
+            playlist => playlist.id_playlist === id
+          );
+          playlist[0].url_thumbnail = urlThumbnail;
+          this.setState({
+            playlists: [...this.state.playlists, playlist[0]]
+          });
+        }
       });
-    });
   }
 
   removeVideoCurrentPlaylist(idVideoToRemove) {
@@ -194,14 +210,13 @@ class PlaylistsProvider extends React.Component {
       params: playlistToAdd
     }).then(resp => {
       this.setState({
-        playlists: [...this.state.playlists, resp],
         myPlaylists: [...this.state.myPlaylists, resp]
       });
     });
   }
 
   /**
-   * Display only the filtered videos (search form)
+   * Display only the filtered playlists (search form)
    * @param {filtered_playlists} playlists to display
    */
   displayFilteredPlaylists(strategy) {
@@ -287,7 +302,7 @@ class PlaylistsProvider extends React.Component {
       loadInitialPlaylists,
       manageSuggestion,
       addSubscribedTag,
-      removeSubscribedTag,
+      removeSubscribedTag
     } = this;
 
     const {
@@ -297,7 +312,7 @@ class PlaylistsProvider extends React.Component {
       currentPlaylistVideos,
       currentPlaylistSuggestions,
       tags,
-      myTags,
+      myTags
     } = this.state;
     const { children } = this.props;
 
@@ -318,7 +333,7 @@ class PlaylistsProvider extends React.Component {
       loadInitialPlaylists,
       manageSuggestion,
       addSubscribedTag,
-      removeSubscribedTag,
+      removeSubscribedTag
     };
     return (
       <PlaylistsContext.Provider value={providerValues}>
