@@ -1,7 +1,7 @@
 import React from "react";
-import NewVideoComponent from "./new_video";
-import Api from "react/utils/api";
 import { connect } from "react-redux";
+import { withPlaylists } from "react/context/playlists";
+import NewVideoComponent from "./new_video";
 
 class NewVideoContainer extends React.Component {
   constructor(props) {
@@ -12,6 +12,7 @@ class NewVideoContainer extends React.Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.addVideo = this.addVideo.bind(this);
+    this.ctxRemoveVideoCurrentPlaylist = this.props.addVideoCurrentPlaylist;
   }
 
   handleChange(event) {
@@ -20,15 +21,11 @@ class NewVideoContainer extends React.Component {
 
   addVideo(event) {
     event.preventDefault();
-    let body = {
+    const body = {
       url_video: this.state.url,
       description: this.state.description
     };
-    Api({
-      url: "/api/playlists/" + this.props.id + "/videos",
-      method: "POST",
-      params: body
-    });
+    this.ctxRemoveVideoCurrentPlaylist(body);
   }
 
   render() {
@@ -50,4 +47,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(NewVideoContainer);
+export default connect(mapStateToProps)(withPlaylists(NewVideoContainer));

@@ -57,9 +57,19 @@ class PlaylistsProvider extends React.Component {
     });
   }
 
-  addVideoCurrentPlaylist() {
-    // CALL API
-    // APPEND TO CURRENT PLAYLIST VIDEOS
+  addVideoCurrentPlaylist(body) {
+    const { currentPlaylistVideos } = this.state;
+    Api({
+      url: "/api/playlists/" + this.state.currentPlaylistId + "/videos",
+      method: "POST",
+      params: body
+    }).then(resp => {
+      console.log(resp);
+      currentPlaylistVideos.push(resp);
+      this.setState({
+        currentPlaylistVideos: currentPlaylistVideos
+      });
+    });
   }
 
   removeVideoCurrentPlaylist(idVideoToRemove) {
