@@ -148,6 +148,7 @@ router.post("/:id_playlist/videos", async (req, res, next) => {
   const queryInsertVideo = `insert into playswift.videos values(default, $1, $2, $3) returning id_video, url_video`;
   const queryInsertVideoPlaylist = `insert into playswift.videos_playlists values(default, $1, $2, $3, $4, default, default)`;
   const queryExistingVideo = `select * from playswift.videos where url_video = $1`;
+  const queryUpdateModifyTime = `update playswift.playlists set last_update_date=$1 where id_playlist=$2`;
 
   try {
     await client.query("BEGIN");
@@ -177,6 +178,8 @@ router.post("/:id_playlist/videos", async (req, res, next) => {
           const video = (await client.query(queryInsertVideo, values)).rows[0];
           values = [id_playlist, video.id_video, description, position];
           await client.query(queryInsertVideoPlaylist, values);
+          values = [new Date(), id_playlist];
+          await client.query(queryUpdateModifyTime, values);
           await client.query("COMMIT");
           res.send(video);
         } catch (err) {
@@ -187,6 +190,8 @@ router.post("/:id_playlist/videos", async (req, res, next) => {
     } else {
       values = [id_playlist, video.rows[0].id_video, description, position];
       await client.query(queryInsertVideoPlaylist, values);
+      values = [Date.now(), id_playlist];
+      await client.query(queryUpdateModifyTime, values);
       res.send(video);
       await client.query("COMMIT");
     }
