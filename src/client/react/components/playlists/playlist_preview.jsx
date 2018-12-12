@@ -39,7 +39,7 @@ class PlaylistPreview extends React.Component {
   removePlaylist(event) {
     event.preventDefault();
     const body = {
-      id_playlist: this.playlist.id_playlist
+      id_playlist: this.props.playlist.id_playlist
     };
     this.ctxRemovePlaylist(body);
   }
