@@ -51,7 +51,7 @@ class PlaylistPreview extends React.Component {
     return (
       <div>
         <Card className="floatHover h-100">
-          {playlist.id_user === this.props.userId && (
+          {playlist.id_user === this.props.userId && location.hash !== "#/" && (
             <Button variant="danger" onClick={this.removePlaylist}>
               <FontAwesomeIcon icon={faTrashAlt} />
             </Button>

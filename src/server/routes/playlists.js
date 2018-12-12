@@ -145,8 +145,8 @@ router.post("/:id_playlist/videos", async (req, res, next) => {
   const client = await pool.connect();
   const queryOwnership = `select * from playswift.playlists where id_user=$1 and id_playlist=$2`;
   const queryVideoPosition = `select max(position) from playswift.videos_playlists where id_playlist = $1`;
-  const queryInsertVideo = `insert into playswift.videos values(default, $1, $2, $3) returning id_video, url_video`;
-  const queryInsertVideoPlaylist = `insert into playswift.videos_playlists values(default, $1, $2, $3, $4, default, default)`;
+  const queryInsertVideo = `insert into playswift.videos values(default, $1, $2, $3) returning *`;
+  const queryInsertVideoPlaylist = `insert into playswift.videos_playlists values(default, $1, $2, $3, $4, default, default) returning *`;
   const queryExistingVideo = `select * from playswift.videos where url_video = $1`;
   const queryUpdateModifyTime = `update playswift.playlists set last_update_date=$1 where id_playlist=$2`;
 
@@ -164,6 +164,7 @@ router.post("/:id_playlist/videos", async (req, res, next) => {
     }
     values = [url_video];
     const video = await client.query(queryExistingVideo, values);
+    console.log(video.rows);
 
     values = [id_playlist];
     let position = await client.query(queryVideoPosition, values);
@@ -177,11 +178,15 @@ router.post("/:id_playlist/videos", async (req, res, next) => {
         try {
           const video = (await client.query(queryInsertVideo, values)).rows[0];
           values = [id_playlist, video.id_video, description, position];
-          await client.query(queryInsertVideoPlaylist, values);
-          values = [new Date(), id_playlist];
+          const insertedVideo = await client.query(
+            queryInsertVideoPlaylist,
+            values
+          );
+          const now = new Date();
+          values = [now, id_playlist];
           await client.query(queryUpdateModifyTime, values);
           await client.query("COMMIT");
-          res.send(video);
+          res.send(Object.assign(video, insertedVideo.rows[0]));
         } catch (err) {
           await client.query("ROLLBACK");
           return next(err);
@@ -189,10 +194,14 @@ router.post("/:id_playlist/videos", async (req, res, next) => {
       });
     } else {
       values = [id_playlist, video.rows[0].id_video, description, position];
-      await client.query(queryInsertVideoPlaylist, values);
-      values = [Date.now(), id_playlist];
+      const insertedVideo = await client.query(
+        queryInsertVideoPlaylist,
+        values
+      );
+      const now = new Date();
+      values = [now, id_playlist];
       await client.query(queryUpdateModifyTime, values);
-      res.send(video);
+      res.send(Object.assign(video.rows[0], insertedVideo.rows[0]));
       await client.query("COMMIT");
     }
   } catch (err) {

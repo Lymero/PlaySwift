@@ -21,11 +21,14 @@ class ReactionsContainer extends React.Component {
       url: `/api/videos/${this.props.video.id_video_playlist}/reactions`,
       method: "POST",
       params: { id_playlist: this.props.video.id_playlist, vote }
-    }).then(() => {
-      if (vote === "like") {
+    }).then(response => {
+      const createdOrUpdatedReaction = response;
+      if (vote === "like" && createdOrUpdatedReaction !== false) {
         this.setState({ likes_number: this.state.likes_number + 1 });
-      } else {
+        this.setState({ dislikes_number: this.state.dislikes_number - 1 });
+      } else if (vote === "dislike" && createdOrUpdatedReaction !== false) {
         this.setState({ dislikes_number: this.state.dislikes_number + 1 });
+        this.setState({ likes_number: this.state.likes_number - 1 });
       }
     });
   }
