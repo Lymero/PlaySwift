@@ -23,15 +23,11 @@ class SearchFormContainer extends React.Component {
   /**
    * Search by playlists.name, case-insensitive
    */
-  search(event) {
+  search() {
     event.preventDefault();
     this.ctxFilter(playlist =>
       playlist["name"].toUpperCase().includes(this.state.filter.toUpperCase())
     );
-  }
-
-  onSubmit(event) {
-    event.preventDefault();
   }
 
   render() {

@@ -146,6 +146,8 @@ router.post("/:id_video/reactions", async (req, res, next) => {
       result = await client.query(queryInsertReaction, values);
       await client.query(queryUpdateNbLikesPlaylist);
       await client.query(queryUpdateNbLikesVideo);
+      result.rows[1] = true;
+      console.log(result.rows);
       res.send(result.rows);
     } else {
       values = [
