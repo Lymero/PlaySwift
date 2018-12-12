@@ -11,6 +11,7 @@ const PlaylistsContext = React.createContext({
   myPlaylists: [],
   currentPlaylistId: undefined,
   currentPlaylistVideos: [],
+  currentPlaylistSuggestions: [],
   tags: []
 });
 
@@ -25,6 +26,7 @@ class PlaylistsProvider extends React.Component {
       myPlaylists: [],
       currentPlaylistId: undefined,
       currentPlaylistVideos: [],
+      currentPlaylistSuggestions: [],
       tags: []
     };
 
@@ -41,6 +43,7 @@ class PlaylistsProvider extends React.Component {
     );
     this.displayFilteredPlaylists = this.displayFilteredPlaylists.bind(this);
     this.loadInitialPlaylists = this.loadInitialPlaylists.bind(this);
+    this.manageSuggestion = this.manageSuggestion.bind(this);
   }
 
   loadTags() {
@@ -84,6 +87,7 @@ class PlaylistsProvider extends React.Component {
       },
       () => {
         this.loadInitialVideosOfPlaylist();
+        this.loadInitialSuggestionsOfPlaylist();
       }
     );
   }
@@ -97,6 +101,20 @@ class PlaylistsProvider extends React.Component {
     }).then(fetchedVideos => {
       this.setState({
         currentPlaylistVideos: fetchedVideos
+      });
+    });
+  }
+
+  loadInitialSuggestionsOfPlaylist() {
+    const playlistID = this.state.currentPlaylistId;
+    Api({
+      url: "api/playlists/" + playlistID + "/suggestions",
+      method: "GET"
+    }).then(fetchedSuggestions => {
+      console.log("fetched suggestions");
+      console.log(fetchedSuggestions);
+      this.setState({
+        currentPlaylistSuggestions: fetchedSuggestions
       });
     });
   }
@@ -191,6 +209,26 @@ class PlaylistsProvider extends React.Component {
     });
   }
 
+  manageSuggestion(state) {
+    Api({
+      url: `/api/playlists/${this.props.suggestion.id_video_playlist}/videos`,
+      method: "POST",
+      params: { id_playlist: this.props.suggestion.id_playlist }
+    }).then(() => {
+      Api({
+        url: `/api/suggestions/${this.props.suggestion}/videos`,
+        method: "UPDATE",
+        params: { state: this.props.suggestion.state }
+      }).then(() => {
+        if (state === "accepted") {
+          console.log("yeah!");
+        } else if (state === "refused") {
+          console.log("oh no!");
+        }
+      });
+    });
+  }
+
   render() {
     const {
       addPlaylist,
@@ -199,7 +237,8 @@ class PlaylistsProvider extends React.Component {
       addVideoCurrentPlaylist,
       removeVideoCurrentPlaylist,
       displayFilteredPlaylists,
-      loadInitialPlaylists
+      loadInitialPlaylists,
+      manageSuggestion
     } = this;
 
     const {
@@ -207,6 +246,7 @@ class PlaylistsProvider extends React.Component {
       myPlaylists,
       currentPlaylistId,
       currentPlaylistVideos,
+      currentPlaylistSuggestions,
       tags
     } = this.state;
     const { children } = this.props;
@@ -217,13 +257,15 @@ class PlaylistsProvider extends React.Component {
       tags,
       currentPlaylistId,
       currentPlaylistVideos,
+      currentPlaylistSuggestions,
       addPlaylist,
       removePlaylist,
       setCurrentPlaylist,
       addVideoCurrentPlaylist,
       removeVideoCurrentPlaylist,
       displayFilteredPlaylists,
-      loadInitialPlaylists
+      loadInitialPlaylists,
+      manageSuggestion
     };
     return (
       <PlaylistsContext.Provider value={providerValues}>
