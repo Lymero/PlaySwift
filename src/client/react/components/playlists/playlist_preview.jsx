@@ -34,7 +34,6 @@ class PlaylistPreview extends React.Component {
 
   goToPlaylist() {
     const toUrl = "/playlists/" + this.props.playlist["id_playlist"];
-    console.log(toUrl);
     this.props.history.push(toUrl);
   }
 
@@ -48,7 +47,6 @@ class PlaylistPreview extends React.Component {
 
   render() {
     const playlist = this.playlist;
-    console.log(playlist);
     if (playlist["url_thumbnail"] === null)
       playlist["url_thumbnail"] = "https://place-hold.it/16x9/212425";
     return (
