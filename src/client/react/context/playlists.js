@@ -64,7 +64,6 @@ class PlaylistsProvider extends React.Component {
       method: "POST",
       params: body
     }).then(resp => {
-      console.log(resp);
       currentPlaylistVideos.push(resp);
       this.setState({
         currentPlaylistVideos: currentPlaylistVideos
