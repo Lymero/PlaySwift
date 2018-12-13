@@ -1,6 +1,7 @@
 function toReadable(uglyDate) {
-    let date = new Date(uglyDate);
-    return date.getDay() + "/" + date.getMonth() + "/" + date.getFullYear();
+  let date = Date(uglyDate);
+  let splitedDate = date.split(" ");
+  return splitedDate[2] + " " + splitedDate[1] + " " + splitedDate[3];
 }
 
-export default {toReadable: toReadable};
+export default { toReadable: toReadable };
