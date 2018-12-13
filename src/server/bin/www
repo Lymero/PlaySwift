@@ -1,14 +1,12 @@
 #!/usr/bin/env node
 
 const { env, port } = require("../config/vars");
-const { logger } = require("../modules/logger")
+const { logger } = require("../modules/logger");
 
 /**
  * Read env variables
  */
-if (env === "development") {
-  require("dotenv").config();
-}
+require("dotenv").config();
 
 /**
  * Module dependencies.
