@@ -11,7 +11,7 @@ const SuggestVideoComponent = ({ url, handleChange, suggestVideo }) => {
         value={url}
         placeholder="Url"
         onChange={handleChange}
-        autocomplete="off"
+        autoComplete="off"
       />
       <Button bsstyle="primary" onClick={suggestVideo}>
         Suggest

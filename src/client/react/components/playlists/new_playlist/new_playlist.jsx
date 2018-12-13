@@ -34,7 +34,7 @@ const NewPlaylistComponent = ({
             value={name}
             placeholder="Name"
             onChange={handleChange}
-            autocomplete="off"
+            autoComplete="off"
           />
           <FormControl
             type="text"
@@ -42,7 +42,7 @@ const NewPlaylistComponent = ({
             value={description}
             placeholder="Description"
             onChange={handleChange}
-            autocomplete="off"
+            autoComplete="off"
           />
         </ListGroupItem>
         <ListGroupItem>
@@ -61,7 +61,7 @@ const NewPlaylistComponent = ({
             value={tagFilter}
             placeholder="Tag"
             onChange={handleChange}
-            autocomplete="off"
+            autoComplete="off"
           />
         </ListGroupItem>
       </ListGroup>
