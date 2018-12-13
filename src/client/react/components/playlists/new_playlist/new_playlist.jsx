@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Form,
-  FormControl,
-  FormGroup,
-  ControlLabel,
-  Button
-} from "react-bootstrap";
+import { Form, FormControl, Card, Button, ListGroup, ListGroupItem } from "react-bootstrap";
 
 const NewPlaylistComponent = ({
   name,
@@ -18,38 +12,52 @@ const NewPlaylistComponent = ({
   addPlaylist
 }) => {
   return (
-    <div>
-      <h3>Add a new playlist</h3>
-      <FormControl
-        type="text"
-        name="name"
-        value={name}
-        placeholder="Name"
-        onChange={handleChange}
-      />
-      <FormControl
-        type="text"
-        name="description"
-        value={description}
-        placeholder="Description"
-        onChange={handleChange}
-      />
-      <Form.Check
-        type="checkbox"
-        name="visible"
-        label="private"
-        onChange={handleChange}
-        inline
-      />
-      <FormControl
-        type="text"
-        name="tagFilter"
-        value={tagFilter}
-        placeholder="Tag"
-        onChange={handleChange}
-      />
+    <Card className="floatHover flex-fill">
+      <Card.Header>Add a new playlist</Card.Header>
+      <Card.Body>
+        <Card.Text>Add a new playlist by filling this form</Card.Text>
+      </Card.Body>
+
+      <ListGroup className="list-group-flush">
+        <ListGroupItem>
+          <FormControl
+            className="mb-2"
+            type="text"
+            name="name"
+            value={name}
+            placeholder="Name"
+            onChange={handleChange}
+          />
+          <FormControl
+            type="text"
+            name="description"
+            value={description}
+            placeholder="Description"
+            onChange={handleChange}
+          />
+        </ListGroupItem>
+        <ListGroupItem>
+          <Form.Check
+            type="checkbox"
+            name="visible"
+            label="private"
+            onChange={handleChange}
+            inline
+          />
+        </ListGroupItem>
+        <ListGroupItem>
+          <FormControl
+            type="text"
+            name="tagFilter"
+            value={tagFilter}
+            placeholder="Tag"
+            onChange={handleChange}
+          />
+        </ListGroupItem>
+      </ListGroup>
+
       <Form.Group controlId="exampleForm.ControlSelect1">
-        <Form.Control as="select" multiple name="tag" onChange={handleChange}>
+        <Form.Control as="select" multiple name="tag" className="suggestionsSelect" onChange={handleChange}>
           {filteredTags !== undefined &&
             filteredTags.map((tag, i) => (
               <option value={tag.id_tag} key={i}>
@@ -59,10 +67,10 @@ const NewPlaylistComponent = ({
         </Form.Control>
       </Form.Group>
 
-      <Button bsstyle="primary" onClick={addPlaylist}>
-        Add
+      <Button variant="primary" className="addBtn" onClick={addPlaylist}>
+        Add this playlist
       </Button>
-    </div>
+    </Card>
   );
 };
 

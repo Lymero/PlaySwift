@@ -58,6 +58,7 @@ class AllPlaylistsContainer extends React.Component {
         sortByNewests={this.state.sortByNewests}
         handleOnlySubscribed={this.toggleShowOnlySubscribed}
         handleSortByNewests={this.toggleSortByNewests}
+        className="allPlaylists"
         title={this.state.title}
         playlistsToShow={result}
         {...this.props}

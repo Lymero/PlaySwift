@@ -24,6 +24,9 @@ function sendApiRequest({ url, method = "GET", params = null }) {
       case 500:
         createNotification("error", message);
         break;
+      case 201:
+        createNotification("success", message);
+        break;
     }
   }
 

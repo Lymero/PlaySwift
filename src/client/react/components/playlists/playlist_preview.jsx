@@ -20,7 +20,10 @@ import {
   faThumbsDown,
   faThumbsUp,
   faTrashAlt,
-  faEdit
+  faEdit,
+  faFolderPlus,
+  faFolder,
+  faFolderMinus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -83,15 +86,14 @@ class PlaylistPreview extends React.Component {
     if (!playlist["url_thumbnail"])
       playlist["url_thumbnail"] = "https://place-hold.it/16x9/212425";
     return (
-      <div>
-        <Card className="floatHover h-100">
+        <Card className="floatHover flex-fill">
           {playlist.id_user === this.props.userId && location.hash !== "#/" && (
-            <Button onClick={this.reviewSuggestions}>
+            <Button onClick={this.reviewSuggestions} className="editBtn">
               <FontAwesomeIcon icon={faEdit} />
             </Button>
           )}
           {playlist.id_user === this.props.userId && location.hash !== "#/" && (
-            <Button variant="danger" onClick={this.removePlaylist}>
+            <Button variant="danger" className="removeBtn" onClick={this.removePlaylist}>
               <FontAwesomeIcon icon={faTrashAlt} />
             </Button>
           )}
@@ -120,11 +122,10 @@ class PlaylistPreview extends React.Component {
           <ListGroup className="list-group-flush">
             <ListGroupItem>
               <strong>Tag </strong>
-              <span>{playlist["tag_name"]}</span>
               {this.amISubscribed(playlist.id_tag) ? (
-                <Button onClick={this.unsubscribe}>UNSUBSCRIBE</Button>
+                <Button variant="outline-primary" onClick={this.unsubscribe}><span>{playlist["tag_name"]}</span> <FontAwesomeIcon icon={faFolderMinus} /></Button>
               ) : (
-                <Button onClick={this.subscribe}>SUBSCRIBE</Button>
+                <Button variant="outline-secondary" onClick={this.subscribe}><span>{playlist["tag_name"]}</span> <FontAwesomeIcon icon={faFolderPlus} /></Button>
               )}
             </ListGroupItem>
             <ListGroupItem>
@@ -137,7 +138,6 @@ class PlaylistPreview extends React.Component {
             </ListGroupItem>
           </ListGroup>
         </Card>
-      </div>
     );
   }
 }

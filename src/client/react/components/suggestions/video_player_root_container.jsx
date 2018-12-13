@@ -36,7 +36,6 @@ class VideoPlayerRoot extends React.Component {
             (suggestion.id_playlist === this.playlistId) &
             (suggestion.state === "pending")
         );
-        console.log(suggestions);
         this.setState((state, props) => ({
           selectedVideo: this.state.playlistSuggestions[0],
           playlistSuggestions: suggestions,
