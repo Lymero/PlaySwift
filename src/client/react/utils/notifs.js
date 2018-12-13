@@ -12,11 +12,7 @@ function createNotification(type, message) {
       NotificationManager.warning(message, "WARNING", 5000);
       break;
     case "error":
-      if (process.env.NODE_ENV === "dev") {
-        NotificationManager.error(message, "ERROR", 10000);
-      } else if (process.env.NODE_ENV === "prod") {
-        NotificationManager.error("", "ERROR", 10000);
-      }
+      NotificationManager.error(message, "ERROR", 10000);
       break;
   }
 }
