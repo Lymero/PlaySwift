@@ -25,7 +25,6 @@ export default class VideoPlayer extends React.Component {
     this.previousVideo = this.previousVideo.bind(this);
     this.nextVideo = this.nextVideo.bind(this);
     this.videoId = 0;
-    this.oldVideos = undefined;
   }
 
   wrapSource(url) {
@@ -47,10 +46,7 @@ export default class VideoPlayer extends React.Component {
   }
 
   componentDidUpdate() {
-    if (this.props.videos !== this.oldVideos) {
-      this.oldVideos = this.props.videos;
-      this.loadVideo(this.props.videoId);
-    }
+    this.loadVideo(this.props.videoId);
   }
 
   componentWillUnmount() {
