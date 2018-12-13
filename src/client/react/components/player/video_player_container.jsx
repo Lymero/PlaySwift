@@ -57,8 +57,10 @@ export default class VideoPlayer extends React.Component {
   }
 
   render() {
+    let video = this.props.video;
     return (
       <div>
+        
         <div data-vjs-player>
           <video
             id="video-1"
@@ -67,6 +69,9 @@ export default class VideoPlayer extends React.Component {
             className="video-js vjs-default-skin vjs-big-play-centered"
           />
         </div>
+        
+        <h2 className="mt-3">{video !== undefined ? this.props.video.title : "Chargement en cours"}</h2>
+        <h5 className="mt-2">{video !== undefined ? this.props.video.description : "Chargement en cours"}</h5>
       </div>
     );
   }

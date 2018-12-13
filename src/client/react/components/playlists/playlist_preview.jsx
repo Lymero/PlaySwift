@@ -127,7 +127,7 @@ class PlaylistPreview extends React.Component {
             </h4>
           </ListGroupItem>
           <ListGroupItem>
-            <strong>Tag </strong>
+            <strong className="mr-2">Tag </strong>
             {this.amISubscribed(playlist.id_tag) ? (
               <Button variant="outline-primary" onClick={this.unsubscribe}>
                 <span>{playlist["tag_name"]}</span>{" "}

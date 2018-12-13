@@ -11,7 +11,7 @@ const SearchForm = ({ filter, handleChange, search }) => {
           name="filter"
           value={filter}
           placeholder="Search"
-          className=""
+          className="searchInput"
           onChange={handleChange}
           autocomplete="off"
         />
