@@ -47,17 +47,17 @@ class VideoPlayerRoot extends React.Component {
   changeVideo(event) {
     if (event.target.innerHTML === "Play") {
       let id = event.target.dataset.videoid;
-      let dom = event.target.closest(".list-group-item");
-      if (this.state.selectedVideoDom !== undefined)
-        this.state.selectedVideoDom.classList.remove("active");
+      // let dom = event.target.closest(".list-group-item");
+      // if (this.state.selectedVideoDom !== undefined)
+      // this.state.selectedVideoDom.classList.remove("active");
       this.setState(
         (state, props) => ({
-          selectedVideoDom: dom,
-          selectedVideo: this.props.mySuggestions[id]
-        }),
-        () => {
-          this.state.selectedVideoDom.classList.add("active");
-        }
+          // selectedVideoDom: dom,
+          selectedVideo: this.state.playlistSuggestions[id]
+        }) //,
+        // () => {
+        //   this.state.selectedVideoDom.classList.add("active");
+        // }
       );
     }
   }
