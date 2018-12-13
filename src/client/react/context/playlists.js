@@ -110,27 +110,27 @@ class PlaylistsProvider extends React.Component {
       url: "/api/playlists/" + this.state.currentPlaylistId + "/videos",
       method: "POST",
       params: body
-    })
-      .then(resp => {
-        urlThumbnail = resp.url_thumbnail;
-        currentPlaylistVideos.push(resp);
-        this.setState({
-          currentPlaylistVideos: currentPlaylistVideos
-        });
-      })
-      .then(() => {
-        if (this.state.currentPlaylistVideos.length === 1) {
-          // retrieve the playlist wich we've added a video to
-          const id = this.state.currentPlaylistVideos[0].id_playlist;
-          const playlist = this.state.myPlaylists.filter(
-            playlist => playlist.id_playlist === id
-          );
-          playlist[0].url_thumbnail = urlThumbnail;
-          this.setState({
-            playlists: [...this.state.playlists, playlist[0]]
-          });
-        }
+    }).then(resp => {
+      urlThumbnail = resp.url_thumbnail;
+      currentPlaylistVideos.push(resp);
+      this.setState({
+        currentPlaylistVideos: currentPlaylistVideos
       });
+      const id = this.state.currentPlaylistVideos[0].id_playlist;
+      const playlist = this.state.myPlaylists.filter(
+        playlist => playlist.id_playlist === id
+      );
+      if (
+        playlist[0].visible &&
+        this.state.currentPlaylistVideos.length === 1
+      ) {
+        // retrieve the playlist wich we've added a video to
+        playlist[0].url_thumbnail = urlThumbnail;
+        this.setState({
+          playlists: [...this.state.playlists, playlist[0]]
+        });
+      }
+    });
   }
 
   removeVideoCurrentPlaylist(idVideoToRemove) {
