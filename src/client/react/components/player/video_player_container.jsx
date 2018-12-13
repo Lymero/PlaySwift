@@ -45,7 +45,7 @@ export default class VideoPlayer extends React.Component {
   }
 
   componentDidUpdate() {
-    // this.loadVideo(this.props.videoId);
+    this.loadVideo(this.props.videoId);
   }
 
   componentWillUnmount() {
