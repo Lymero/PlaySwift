@@ -14,7 +14,7 @@ import image from "../../../resources/logo.png";
 
 const Navigation = ({ authState, profile }) => {
   return (
-    <Navbar bg="dark" variant="dark">
+    <Navbar bg="dark" variant="dark" sticky="top">
       <Navbar.Brand as={Link} to="/">
         <Image src={image} height="40px" />
       </Navbar.Brand>
