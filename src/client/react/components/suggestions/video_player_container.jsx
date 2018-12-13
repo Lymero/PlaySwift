@@ -6,7 +6,6 @@ export default class VideoPlayer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      pluginLoaded: false,
       options: {
         fluid: true,
         autoplay: false,
@@ -30,9 +29,8 @@ export default class VideoPlayer extends React.Component {
   }
 
   componentDidMount() {
-    if (!this.state.pluginLoaded) {
+    if (videojs.getPlugin("youtube") === undefined) {
       videojs.registerPlugin("youtube", () => youtube);
-      this.setState({ pluginLoaded: true });
     }
     this.player = videojs(
       this.videoNode,
