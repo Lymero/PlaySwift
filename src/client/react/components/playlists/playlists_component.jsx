@@ -10,7 +10,7 @@ const PlaylistsComponent = ({ title, playlistsToShow, showOnlySubscribed, sortBy
       <h3>
         {title}
         <span className="badge badge-secondary">{playlistsToShow.length}</span>
-        <ButtonGroup className="float-right">
+        <ButtonGroup className="float-right noFloatMobile" id="filtersSelector">
           { showOnlySubscribed !== undefined ?
           <Button variant="primary" onClick={handleOnlySubscribed}>
               { showOnlySubscribed ? "Show all" : "Show only subscribed"}

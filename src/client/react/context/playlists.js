@@ -282,15 +282,11 @@ class PlaylistsProvider extends React.Component {
       description: body.title // TODO : add a field tied to the video itself
     };
     Api({
-      url: `/api/playlists/${id_playlist}/videos`,
-      method: "POST",
-      params: video
-    }).then(() => {
-      Api({
-        url: `/api/suggestions/${body.id_suggestion}`,
-        method: "UPDATE",
-        params: { state: body.state }
-      }).then(() => {
+      url: `/api/suggestions/${body.id_suggestion}`,
+      method: "PUT",
+      params: { state: body.state }
+    })
+      .then(() => {
         mySuggestions.splice(
           mySuggestions.findIndex(e => e.id_suggestion === id_suggestion),
           1
@@ -298,8 +294,16 @@ class PlaylistsProvider extends React.Component {
         this.setState({
           mySuggestions: mySuggestions
         });
+      })
+      .then(() => {
+        if (body.state === "accepted") {
+          Api({
+            url: `/api/playlists/${id_playlist}/videos`,
+            method: "POST",
+            params: video
+          });
+        }
       });
-    });
   }
 
   render() {
