@@ -16,11 +16,15 @@ class NewVideoContainer extends React.Component {
   }
 
   handleChange(event) {
+    console.log(event.target.name);
+    console.log(event.target.value);
     this.setState({ [event.target.name]: event.target.value });
   }
 
   addVideo(event) {
     event.preventDefault();
+    this.setState({ url: "" });
+    this.setState({ description: "" });
     const body = {
       url_video: this.state.url,
       description: this.state.description

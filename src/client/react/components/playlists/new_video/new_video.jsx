@@ -1,14 +1,14 @@
 import React from "react";
 import { FormControl, FormGroup, ControlLabel, Button } from "react-bootstrap";
 
-const NewVideoComponent = ({ name, description, handleChange, addVideo }) => {
+const NewVideoComponent = ({ url, description, handleChange, addVideo }) => {
   return (
     <div>
       <h3>Add a new video</h3>
       <FormControl
         type="text"
         name="url"
-        value={name}
+        value={url}
         placeholder="Url"
         onChange={handleChange}
       />
