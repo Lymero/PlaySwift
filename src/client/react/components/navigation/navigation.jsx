@@ -16,7 +16,7 @@ const Navigation = ({ authState, profile }) => {
   return (
     <Navbar bg="dark" variant="dark">
       <Navbar.Brand as={Link} to="/">
-        <Image src={image} />
+        <Image src={image} height="40px" />
       </Navbar.Brand>
       <Nav className="m-auto">
         <SearchFormContainer />
