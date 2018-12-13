@@ -40,6 +40,8 @@ pipeline {
 
         stage("Testing react") {
             steps {
+                echo "Getting accessToken from Auth0"
+                sh "./cypress/scripts/cy_auth0.sh"
                 echo "Running build ${env.BUILD_ID}"
                 sh "npm run cy:test-react"
             }
