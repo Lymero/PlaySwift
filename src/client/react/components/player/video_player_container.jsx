@@ -20,7 +20,6 @@ export default class VideoPlayer extends React.Component {
         }
       ]
     };
-    this.pluginLoaded = false;
     this.loadVideo = this.loadVideo.bind(this);
     this.previousVideo = this.previousVideo.bind(this);
     this.nextVideo = this.nextVideo.bind(this);
@@ -35,18 +34,18 @@ export default class VideoPlayer extends React.Component {
   }
 
   componentDidMount() {
-    if (!this.pluginLoaded) {
+    if (videojs.getPlugin("youtube") === undefined) {
       videojs.registerPlugin("youtube", () => youtube);
-      this.pluginLoaded = true;
     }
     this.player = videojs(this.videoNode, this.options, () => {
       console.log("Player ready");
+      this.loadVideo(this.props.videoId);
     });
     this.player.on("ended", this.nextVideo);
   }
 
   componentDidUpdate() {
-    this.loadVideo(this.props.videoId);
+    // this.loadVideo(this.props.videoId);
   }
 
   componentWillUnmount() {
@@ -56,7 +55,6 @@ export default class VideoPlayer extends React.Component {
   }
 
   loadVideo(videoId) {
-    console.log("Loading video : " + videoId);
     if (videoId < 0 || videoId >= this.props.videos.length) {
       createNotification("error", "Video index OOB");
       return;
@@ -88,7 +86,6 @@ export default class VideoPlayer extends React.Component {
   }
 
   render() {
-    let video = this.props.video;
     return (
       <React.Fragment>
         <div>
