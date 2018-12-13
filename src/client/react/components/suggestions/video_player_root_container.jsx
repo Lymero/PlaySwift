@@ -1,10 +1,7 @@
 import React from "react";
 import { Container, Row, Col, Button, ListGroup } from "react-bootstrap";
-import VideoPlayerContainer from "./video_player_container";
-import NewVideoContainer from "react/components/playlists/new_video/new_video_container";
-import ReactionsContainer from "react/components/reactions/reactions_container";
-import SuggestVideoContainer from "react/components/player/suggest_video/suggest_video_container";
-import RemoveVideoContainer from "react/components/player/remove_video/remove_video_container";
+import VideoPlayerContainer from "react/components/player/video_player_container";
+import SuggestionsContainer from "./suggestions_container";
 import { withPlaylists } from "react/context/playlists";
 import { connect } from "react-redux";
 
@@ -12,24 +9,37 @@ class VideoPlayerRoot extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      playlistId: parseInt(location.href.split("/").pop()),
-      selectedVideo: this.props.currentPlaylistVideos[0],
-      selectedVideoDom: undefined,
-      updated: false
+      playlistSuggestions: [],
+      selectedVideo: undefined,
+      selectedVideoDom: undefined
     };
-    this.changeVideo = this.changeVideo.bind(this);
+    this.playlistId = parseInt(
+      location.href
+        .substr(0, location.href.indexOf("/suggestions"))
+        .split("/")
+        .pop()
+    );
     this.ctxSetCurrentPlaylist = this.props.setCurrentPlaylist;
+    this.changeVideo = this.changeVideo.bind(this);
+    this.updated = false;
   }
 
   componentDidMount() {
-    this.ctxSetCurrentPlaylist(this.state.playlistId);
+    this.ctxSetCurrentPlaylist(this.playlistId);
   }
 
   componentDidUpdate() {
     if (!this.state.updated) {
-      if (this.props.currentPlaylistVideos[0] !== undefined) {
+      if (this.props.mySuggestions[0] !== undefined) {
+        const suggestions = this.props.mySuggestions.filter(
+          suggestion =>
+            (suggestion.id_playlist === this.playlistId) &
+            (suggestion.state === "pending")
+        );
+        console.log(suggestions);
         this.setState((state, props) => ({
-          selectedVideo: this.props.currentPlaylistVideos[0],
+          selectedVideo: this.state.playlistSuggestions[0],
+          playlistSuggestions: suggestions,
           updated: true
         }));
       }
@@ -45,7 +55,7 @@ class VideoPlayerRoot extends React.Component {
       this.setState(
         (state, props) => ({
           selectedVideoDom: dom,
-          selectedVideo: this.props.currentPlaylistVideos[id]
+          selectedVideo: this.props.mySuggestions[id]
         }),
         () => {
           this.state.selectedVideoDom.classList.add("active");
@@ -54,52 +64,42 @@ class VideoPlayerRoot extends React.Component {
     }
   }
 
-  isMyPlaylist() {
-    return (
-      this.props.myPlaylists.filter(
-        p => p.id_playlist === this.state.playlistId
-      ).length > 0
-    );
-  }
-
   render() {
     return (
       <Container>
         <Row>
           <Col xl={7} l={7} md={7} sm={12} xs={12}>
-            <VideoPlayerContainer video={this.state.selectedVideo} />
+            {this.props.mySuggestions !== undefined &&
+              this.props.mySuggestions.length > 0 && (
+                <VideoPlayerContainer video={this.state.selectedVideo} />
+              )}
+            {this.props.mySuggestions !== undefined &&
+              this.props.mySuggestions.length === 0 && (
+                <h1>Pas de suggestion :'(</h1>
+              )}
           </Col>
           <Col xl={5} l={5} md={5} sm={12} xs={12}>
             <ListGroup onClick={this.changeVideo}>
-              {this.props.currentPlaylistVideos !== undefined &&
-                this.props.currentPlaylistVideos.map((video, i) => (
+              {this.props.mySuggestions !== undefined &&
+                this.props.mySuggestions.map((video, i) => (
                   <ListGroup.Item key={i} data-videoid={i}>
                     <Row>
                       <Col className="thumbnail-container" xl={4} sm={12}>
                         <img className="thumbnail" src={video.url_thumbnail} />
-                        <ReactionsContainer video={video} />
                       </Col>
                       <Col xl={8} sm={12}>
                         <h5>{video.title}</h5>
                         <span>{video.description}</span>
                         <br />
                         <Button data-videoid={i}>Play</Button>
-                        {this.isMyPlaylist() == true && (
-                          <RemoveVideoContainer video={video} />
-                        )}
-                        {/* TODO : show number of suggestions
-                        for that playlist and button to redirect */}
+                      </Col>
+                      <Col>
+                        <SuggestionsContainer suggestion={video} />
                       </Col>
                     </Row>
                   </ListGroup.Item>
                 ))}
             </ListGroup>
-            {this.isMyPlaylist() == false && (
-              <SuggestVideoContainer id_playlist={this.state.playlistId} />
-            )}
-            {this.isMyPlaylist() == true && (
-              <NewVideoContainer id={this.state.playlistId} />
-            )}
           </Col>
         </Row>
       </Container>

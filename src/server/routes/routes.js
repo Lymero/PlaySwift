@@ -22,7 +22,7 @@ router.use(auth.currentUser);
 router.use("/playlists", playlistsRouter);
 router.use("/reactions", reactionsRouter);
 router.use("/suggestions", suggestionsRouter);
-router.use("/subscriptions", subscriptionsRouter)
+router.use("/subscriptions", subscriptionsRouter);
 router.use("/tags", tagsRouter);
 router.use("/users", usersRouter);
 router.use("/videos", videosRouter);

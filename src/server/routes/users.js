@@ -70,4 +70,29 @@ router.post("/me/subscriptions", async (req, res, next) => {
   }
 });
 
+router.get("/me/suggestions", async (req, res, next) => {
+  const client = await pool.connect();
+  const query = `
+  select
+    S.*, V.*
+  from
+    playswift.suggestions S,
+    playswift.videos V,
+    playswift.playlists P
+  where
+    P.id_user = $1
+    and P.id_playlist = S.id_playlist
+    and S.id_playlist = P.id_playlist
+    and S.id_video = V.id_video`;
+  const values = [req.body.id_user];
+  try {
+    const result = await client.query(query, values);
+    res.send(result.rows);
+  } catch (err) {
+    return next(err);
+  } finally {
+    client.release();
+  }
+});
+
 module.exports = router;

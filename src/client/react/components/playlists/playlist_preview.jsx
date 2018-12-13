@@ -19,7 +19,8 @@ import DateUtils from "react/utils/date";
 import {
   faThumbsDown,
   faThumbsUp,
-  faTrashAlt
+  faTrashAlt,
+  faEdit
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -27,6 +28,7 @@ class PlaylistPreview extends React.Component {
   constructor(props) {
     super(props);
     this.goToPlaylist = this.goToPlaylist.bind(this);
+    this.reviewSuggestions = this.reviewSuggestions.bind(this);
     this.ctxRemovePlaylist = this.props.removePlaylist;
     this.removePlaylist = this.removePlaylist.bind(this);
     this.subscribe = this.subscribe.bind(this);
@@ -39,16 +41,20 @@ class PlaylistPreview extends React.Component {
     this.props.history.push(toUrl);
   }
 
-  removePlaylist(event) {
-    event.preventDefault();
+  reviewSuggestions() {
+    const toUrl =
+      "/playlists/" + this.props.playlist["id_playlist"] + "/suggestions";
+    this.props.history.push(toUrl);
+  }
+
+  removePlaylist() {
     const body = {
       id_playlist: this.props.playlist.id_playlist
     };
     this.ctxRemovePlaylist(body);
   }
 
-  subscribe(event) {
-    event.preventDefault();
+  subscribe() {
     const body = {
       user_id: this.props.userId,
       id_playlist: this.props.playlist.id_playlist,
@@ -57,8 +63,7 @@ class PlaylistPreview extends React.Component {
     this.props.addSubscribedTag(body);
   }
 
-  unsubscribe(event) {
-    event.preventDefault();
+  unsubscribe() {
     const body = {
       user_id: this.props.userId,
       id_playlist: this.props.playlist.id_playlist,
@@ -80,6 +85,11 @@ class PlaylistPreview extends React.Component {
     return (
       <div>
         <Card className="floatHover h-100">
+          {playlist.id_user === this.props.userId && location.hash !== "#/" && (
+            <Button onClick={this.reviewSuggestions}>
+              <FontAwesomeIcon icon={faEdit} />
+            </Button>
+          )}
           {playlist.id_user === this.props.userId && location.hash !== "#/" && (
             <Button variant="danger" onClick={this.removePlaylist}>
               <FontAwesomeIcon icon={faTrashAlt} />

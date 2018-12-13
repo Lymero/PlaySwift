@@ -11,7 +11,7 @@ const PlaylistsContext = React.createContext({
   myPlaylists: [],
   currentPlaylistId: undefined,
   currentPlaylistVideos: [],
-  currentPlaylistSuggestions: [],
+  mySuggestions: [],
   tags: [],
   myTags: []
 });
@@ -27,7 +27,7 @@ class PlaylistsProvider extends React.Component {
       myPlaylists: [],
       currentPlaylistId: undefined,
       currentPlaylistVideos: [],
-      currentPlaylistSuggestions: [],
+      mySuggestions: [],
       tags: [],
       myTags: []
     };
@@ -36,6 +36,7 @@ class PlaylistsProvider extends React.Component {
     this.loadMyPlaylists();
     this.loadTags();
     this.loadMyTags();
+    this.loadMySuggestions();
 
     this.addSubscribedTag = this.addSubscribedTag.bind(this);
     this.removeSubscribedTag = this.removeSubscribedTag.bind(this);
@@ -157,7 +158,6 @@ class PlaylistsProvider extends React.Component {
       },
       () => {
         this.loadInitialVideosOfPlaylist();
-        this.loadInitialSuggestionsOfPlaylist();
       }
     );
   }
@@ -171,18 +171,6 @@ class PlaylistsProvider extends React.Component {
     }).then(fetchedVideos => {
       this.setState({
         currentPlaylistVideos: fetchedVideos
-      });
-    });
-  }
-
-  loadInitialSuggestionsOfPlaylist() {
-    const playlistID = this.state.currentPlaylistId;
-    Api({
-      url: "api/playlists/" + playlistID + "/suggestions",
-      method: "GET"
-    }).then(fetchedSuggestions => {
-      this.setState({
-        currentPlaylistSuggestions: fetchedSuggestions
       });
     });
   }
@@ -273,27 +261,42 @@ class PlaylistsProvider extends React.Component {
     });
   }
 
+  loadMySuggestions() {
+    Api({
+      url: "/api/users/me/suggestions",
+      method: "GET"
+    }).then(fetchedSuggestions => {
+      this.setState({
+        mySuggestions: fetchedSuggestions
+      });
+    });
+  }
+
   manageSuggestion(body) {
-    const { currentPlaylistSuggestions } = this.state;
+    const { mySuggestions } = this.state;
     const { id_suggestion, id_playlist, state } = body;
+    const video = {
+      id_playlist: body.id_playlist,
+      id_user: body.id_user,
+      url_video: body.url_video,
+      description: body.title // TODO : add a field tied to the video itself
+    };
     Api({
       url: `/api/playlists/${id_playlist}/videos`,
       method: "POST",
-      params: { id_playlist: id_playlist }
+      params: video
     }).then(() => {
       Api({
-        url: `/api/suggestions/${id_suggestion}/videos`,
+        url: `/api/suggestions/${body.id_suggestion}`,
         method: "UPDATE",
-        params: { state: state }
+        params: { state: body.state }
       }).then(() => {
-        currentPlaylistSuggestions.splice(
-          currentPlaylistSuggestions.findIndex(
-            e => e.id_suggestion === id_suggestion
-          ),
+        mySuggestions.splice(
+          mySuggestions.findIndex(e => e.id_suggestion === id_suggestion),
           1
         );
         this.setState({
-          currentPlaylistSuggestions: currentPlaylistSuggestions
+          mySuggestions: mySuggestions
         });
       });
     });
@@ -318,7 +321,7 @@ class PlaylistsProvider extends React.Component {
       myPlaylists,
       currentPlaylistId,
       currentPlaylistVideos,
-      currentPlaylistSuggestions,
+      mySuggestions,
       tags,
       myTags
     } = this.state;
@@ -331,7 +334,7 @@ class PlaylistsProvider extends React.Component {
       myTags,
       currentPlaylistId,
       currentPlaylistVideos,
-      currentPlaylistSuggestions,
+      mySuggestions,
       addPlaylist,
       removePlaylist,
       setCurrentPlaylist,

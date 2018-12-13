@@ -9,28 +9,27 @@ class SuggestionsContainer extends React.Component {
     this.ctxManageSuggestion = this.props.manageSuggestion;
   }
 
-  accept(event) {
-    event.preventDefault();
-    const body = {
-      id_suggestion: this.props.currentPlaylistSuggestions.id_suggestion,
-      id_playlist: this.props.currentPlaylistSuggestions.id_playlist,
+  accept(suggestion) {
+    const body = Object.assign(suggestion, {
       state: "accepted"
-    };
+    });
     this.ctxManageSuggestion(body);
   }
 
-  refuse(event) {
-    event.preventDefault();
-    const body = {
-      id_suggestion: this.props.currentPlaylistSuggestions.id_suggestion,
-      id_playlist: this.props.currentPlaylistSuggestions.id_playlist,
+  refuse(suggestion) {
+    const body = Object.assign(suggestion, {
       state: "refused"
-    };
+    });
     this.ctxManageSuggestion(body);
   }
 
   render() {
-    return <SuggestionsComponent accept={this.accept} refuse={this.refuse} />;
+    return (
+      <SuggestionsComponent
+        accept={() => this.accept(this.props.suggestion)}
+        refuse={() => this.refuse(this.props.suggestion)}
+      />
+    );
   }
 }
 
