@@ -12,53 +12,37 @@ class VideoPlayerRoot extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      playlistId: parseInt(location.href.split("/").pop()),
-      selectedVideo: this.props.currentPlaylistVideos[0],
-      selectedVideoDom: undefined,
-      updated: false
+      videoId: 0
     };
+    this.selectedVideoDom = undefined;
+    this.playlistId = parseInt(location.href.split("/").pop());
     this.changeVideo = this.changeVideo.bind(this);
     this.ctxSetCurrentPlaylist = this.props.setCurrentPlaylist;
   }
 
   componentDidMount() {
-    this.ctxSetCurrentPlaylist(this.state.playlistId);
+    this.ctxSetCurrentPlaylist(this.playlistId);
   }
 
-  componentDidUpdate() {
-    if (!this.state.updated) {
-      if (this.props.currentPlaylistVideos[0] !== undefined) {
-        this.setState((state, props) => ({
-          selectedVideo: this.props.currentPlaylistVideos[0],
-          updated: true
-        }));
-      }
-    }
-  }
+  componentDidUpdate() {}
 
   changeVideo(event) {
     if (event.target.innerHTML === "Play") {
       let id = event.target.dataset.videoid;
       let dom = event.target.closest(".list-group-item");
-      if (this.state.selectedVideoDom !== undefined)
-        this.state.selectedVideoDom.classList.remove("active");
-      this.setState(
-        (state, props) => ({
-          selectedVideoDom: dom,
-          selectedVideo: this.props.currentPlaylistVideos[id]
-        }),
-        () => {
-          this.state.selectedVideoDom.classList.add("active");
-        }
-      );
+      if (this.selectedVideoDom !== undefined) {
+        this.selectedVideoDom.classList.remove("active");
+      }
+      this.selectedVideoDom = dom;
+      this.selectedVideoDom.classList.add("active");
+      this.setState({ videoId: id });
     }
   }
 
   isMyPlaylist() {
     return (
-      this.props.myPlaylists.filter(
-        p => p.id_playlist === this.state.playlistId
-      ).length > 0
+      this.props.myPlaylists.filter(p => p.id_playlist === this.playlistId)
+        .length > 0
     );
   }
 
@@ -67,7 +51,13 @@ class VideoPlayerRoot extends React.Component {
       <Container>
         <Row>
           <Col xl={7} l={7} md={7} sm={12} xs={12}>
-            <VideoPlayerContainer video={this.state.selectedVideo} />
+            {this.props.currentPlaylistVideos !== undefined &&
+              this.props.currentPlaylistVideos.length > 0 && (
+                <VideoPlayerContainer
+                  videoId={this.state.videoId}
+                  videos={this.props.currentPlaylistVideos}
+                />
+              )}
           </Col>
           <Col xl={5} l={5} md={5} sm={12} xs={12}>
             <ListGroup onClick={this.changeVideo}>
@@ -94,11 +84,11 @@ class VideoPlayerRoot extends React.Component {
                   </ListGroup.Item>
                 ))}
             </ListGroup>
-            {this.isMyPlaylist() == false && (
-              <SuggestVideoContainer id_playlist={this.state.playlistId} />
+            {this.isMyPlaylist() === false && (
+              <SuggestVideoContainer id_playlist={this.playlistId} />
             )}
-            {this.isMyPlaylist() == true && (
-              <NewVideoContainer id={this.state.playlistId} />
+            {this.isMyPlaylist() === true && (
+              <NewVideoContainer id={this.playlistId} />
             )}
           </Col>
         </Row>
