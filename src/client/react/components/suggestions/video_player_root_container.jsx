@@ -1,10 +1,9 @@
 import React from "react";
 import { Container, Row, Col, Button, ListGroup } from "react-bootstrap";
-import VideoPlayerContainer from "react/components/player/video_player_container";
+import VideoPlayerContainer from "react/components/suggestions/video_player_container";
 import SuggestionsContainer from "./suggestions_container";
 import { withPlaylists } from "react/context/playlists";
 import { connect } from "react-redux";
-
 class VideoPlayerRoot extends React.Component {
   constructor(props) {
     super(props);
@@ -68,19 +67,19 @@ class VideoPlayerRoot extends React.Component {
       <Container>
         <Row>
           <Col xl={7} l={7} md={7} sm={12} xs={12}>
-            {this.props.mySuggestions !== undefined &&
-              this.props.mySuggestions.length > 0 && (
+            {this.state.playlistSuggestions !== undefined &&
+              this.state.playlistSuggestions.length > 0 && (
                 <VideoPlayerContainer video={this.state.selectedVideo} />
               )}
-            {this.props.mySuggestions !== undefined &&
-              this.props.mySuggestions.length === 0 && (
-                <h1>Pas de suggestion :'(</h1>
+            {this.state.playlistSuggestions !== undefined &&
+              this.state.playlistSuggestions.length === 0 && (
+                <h1>No suggestion yet :'(</h1>
               )}
           </Col>
           <Col xl={5} l={5} md={5} sm={12} xs={12}>
             <ListGroup onClick={this.changeVideo}>
-              {this.props.mySuggestions !== undefined &&
-                this.props.mySuggestions.map((video, i) => (
+              {this.state.playlistSuggestions !== undefined &&
+                this.state.playlistSuggestions.map((video, i) => (
                   <ListGroup.Item key={i} data-videoid={i}>
                     <Row>
                       <Col className="thumbnail-container" xl={4} sm={12}>
