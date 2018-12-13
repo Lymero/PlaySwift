@@ -1,5 +1,12 @@
 import React from "react";
-import { Form, FormControl, Card, Button, ListGroup, ListGroupItem } from "react-bootstrap";
+import {
+  Form,
+  FormControl,
+  Card,
+  Button,
+  ListGroup,
+  ListGroupItem
+} from "react-bootstrap";
 
 const NewPlaylistComponent = ({
   name,
@@ -27,6 +34,7 @@ const NewPlaylistComponent = ({
             value={name}
             placeholder="Name"
             onChange={handleChange}
+            autocomplete="off"
           />
           <FormControl
             type="text"
@@ -34,6 +42,7 @@ const NewPlaylistComponent = ({
             value={description}
             placeholder="Description"
             onChange={handleChange}
+            autocomplete="off"
           />
         </ListGroupItem>
         <ListGroupItem>
@@ -52,12 +61,19 @@ const NewPlaylistComponent = ({
             value={tagFilter}
             placeholder="Tag"
             onChange={handleChange}
+            autocomplete="off"
           />
         </ListGroupItem>
       </ListGroup>
 
       <Form.Group controlId="exampleForm.ControlSelect1">
-        <Form.Control as="select" multiple name="tag" className="suggestionsSelect" onChange={handleChange}>
+        <Form.Control
+          as="select"
+          multiple
+          name="tag"
+          className="suggestionsSelect"
+          onChange={handleChange}
+        >
           {filteredTags !== undefined &&
             filteredTags.map((tag, i) => (
               <option value={tag.id_tag} key={i}>

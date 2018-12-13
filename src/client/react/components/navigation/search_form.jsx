@@ -13,6 +13,7 @@ const SearchForm = ({ filter, handleChange, search }) => {
           placeholder="Search"
           className=""
           onChange={handleChange}
+          autocomplete="off"
         />
         <InputGroup.Append>
           <Button variant="outline-info" onClick={search}>

@@ -9,7 +9,7 @@ class AllPlaylistsContainer extends React.Component {
     super(props);
     this.state = {
       updated: false,
-      title: "All playlist",
+      title: "All playlists ",
       showOnlySubscribed: false,
       sortByNewests: false
     };
@@ -32,7 +32,6 @@ class AllPlaylistsContainer extends React.Component {
   componentDidMount() {}
 
   render() {
-
     let result =
       this.state.showOnlySubscribed === true
         ? this.props.playlists.filter(p => {
