@@ -1,6 +1,8 @@
 import React from "react";
 import videojs from "video.js";
 import youtube from "videojs-youtube";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faForward, faBackward } from "@fortawesome/free-solid-svg-icons";
 
 export default class VideoPlayer extends React.Component {
   constructor(props) {

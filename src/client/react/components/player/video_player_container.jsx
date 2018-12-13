@@ -3,6 +3,8 @@ import videojs from "video.js";
 import youtube from "videojs-youtube";
 import { createNotification } from "react/utils/notifs";
 import { Button } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faForward, faBackward } from "@fortawesome/free-solid-svg-icons";
 
 export default class VideoPlayer extends React.Component {
   constructor(props) {
@@ -98,20 +100,22 @@ export default class VideoPlayer extends React.Component {
             />
           </div>
         </div>
-        <div>
+        <div className="custom-video-player text-center">
           <Button
+            variant="secondary"
             onClick={() => {
               this.previousVideo();
             }}
           >
-            prev
+            <FontAwesomeIcon icon={faBackward} />
           </Button>
           <Button
+            variant="secondary"
             onClick={() => {
               this.nextVideo();
             }}
           >
-            next
+            <FontAwesomeIcon icon={faForward} />
           </Button>
         </div>
       </React.Fragment>

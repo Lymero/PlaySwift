@@ -7,23 +7,23 @@ body {
 }
 
 nav.bg-dark {
-  background-color:#484c50 !important;
+  background-color: #484c50 !important;
 }
 
 @media screen and (max-width: 575px) {
   #filtersSelector.noFloatMobile {
-    float:none !important;
+    float: none !important;
   }
 }
 
 .searchInput {
   background-color: transparent;
-  color:white;
+  color: white;
 }
 
 .searchInput:focus {
   background-color: transparent;
-  color:white;
+  color: white;
 }
 
 .searchInput::placeholder {
@@ -53,7 +53,7 @@ div.myPlaylists {
 
     .suggestionsSelect {
       border-radius: 0px;
-      border:0px;
+      border: 0px;
     }
 
     button.addBtn {
@@ -61,12 +61,11 @@ div.myPlaylists {
       border-top-left-radius: 0px;
       border-top-right-radius: 0px;
     }
-
   }
 }
 
 div.card.floatHover:hover {
-  box-shadow: 0px 0px 25px rgba(0,0,0,0.4);
+  box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.4);
 }
 
 .joinedBadges .badge:first-child {
@@ -101,6 +100,12 @@ div.thumbnail-container img.thumbnail {
     width: 35px;
     margin-right: 8px;
   }
-
 }
 
+.custom-video-player {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.custom-video-player button {
+  margin: 0.2em;
+}
