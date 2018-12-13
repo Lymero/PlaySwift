@@ -57,11 +57,11 @@ class NewPlaylistContainer extends React.Component {
   }
 
   addPlaylist() {
-    this.setState({ name: "" });
-    this.setState({ description: "" });
-    this.setState({ tags: [] });
-    this.setState({ tagFilter: "" });
-    this.setState({ filteredTags: [] });
+    // this.setState({ name: "" });
+    // this.setState({ description: "" });
+    // this.setState({ tags: [] });
+    // this.setState({ tagFilter: "" });
+    // this.setState({ filteredTags: [] });
 
     const body = {
       name: this.state.name,

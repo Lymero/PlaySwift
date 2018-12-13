@@ -21,8 +21,8 @@ class NewVideoContainer extends React.Component {
 
   addVideo(event) {
     event.preventDefault();
-    this.setState({ url: "" });
-    this.setState({ description: "" });
+    // this.setState({ url: "" });
+    // this.setState({ description: "" });
     const body = {
       url_video: this.state.url,
       description: this.state.description
