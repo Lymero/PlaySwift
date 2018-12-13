@@ -171,6 +171,14 @@ router.post("/:id_playlist/videos", async (req, res, next) => {
 
     if (video.rowCount <= 0) {
       getYoutubeVideo(url_video, async resp => {
+        if (resp.length === 0) {
+          return next(
+            createError(
+              httpStatus.BAD_REQUEST,
+              "Cannot find your video, your URL might be wrong"
+            )
+          );
+        }
         const { title } = resp[0].snippet;
         const { url } = resp[0].snippet.thumbnails.high;
         values = [url_video, title, url];
@@ -252,6 +260,14 @@ router.post("/:id_playlist/suggestions", async (req, res, next) => {
     const video = await client.query(queryExistingVideo, values);
     if (video.rowCount <= 0) {
       getYoutubeVideo(url_video, async resp => {
+        if (resp.length === 0) {
+          return next(
+            createError(
+              httpStatus.BAD_REQUEST,
+              "Cannot find your video, your URL might be wrong"
+            )
+          );
+        }
         const { title } = resp[0].snippet;
         const { url } = resp[0].snippet.thumbnails.high;
         values = [url_video, title, url];
@@ -262,6 +278,8 @@ router.post("/:id_playlist/suggestions", async (req, res, next) => {
             queryInsertSuggestion,
             values
           );
+          res.statusCode = 201;
+          res.statusMessage = "Your suggestion is created";
           res.send(insertedSuggestion.rows[0]);
           await client.query("COMMIT");
         } catch (err) {
@@ -278,12 +296,24 @@ router.post("/:id_playlist/suggestions", async (req, res, next) => {
         }
       });
     } else {
-      values = [id_playlist, video.rows[0].id_video, id_user];
-      const insertedSuggestion = await client.query(
-        queryInsertSuggestion,
-        values
-      );
-      res.send(insertedSuggestion.rows[0]);
+      try {
+        values = [id_playlist, video.rows[0].id_video, id_user];
+        const insertedSuggestion = await client.query(
+          queryInsertSuggestion,
+          values
+        );
+        res.send(insertedSuggestion.rows[0]);
+      } catch (err) {
+        if (err.constraint) {
+          return next(
+            createError(
+              httpStatus.BAD_REQUEST,
+              "You already suggested this video for this playlist"
+            )
+          );
+        }
+        return next(err);
+      }
     }
     await client.query("COMMIT");
   } catch (err) {
