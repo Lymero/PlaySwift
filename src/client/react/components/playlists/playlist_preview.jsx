@@ -23,7 +23,7 @@ import {
   faEdit,
   faFolderPlus,
   faFolder,
-  faFolderMinus,
+  faFolderMinus
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -86,29 +86,36 @@ class PlaylistPreview extends React.Component {
     if (!playlist["url_thumbnail"])
       playlist["url_thumbnail"] = "https://place-hold.it/16x9/212425";
     return (
-        <Card className="floatHover flex-fill">
-          {playlist.id_user === this.props.userId && location.hash !== "#/" && (
-            <Button onClick={this.reviewSuggestions} className="editBtn">
-              <FontAwesomeIcon icon={faEdit} />
-            </Button>
-          )}
-          {playlist.id_user === this.props.userId && location.hash !== "#/" && (
-            <Button variant="danger" className="removeBtn" onClick={this.removePlaylist}>
-              <FontAwesomeIcon icon={faTrashAlt} />
-            </Button>
-          )}
-          <CardImg
-            variant="top"
-            width="100%"
-            src={playlist["url_thumbnail"]}
-            alt="Playlist preview thumbnail"
-            onClick={this.goToPlaylist}
-          />
-          <Card.Body onClick={this.goToPlaylist}>
-            <Card.Title>
-              <h3>{playlist["name"]}</h3>
-            </Card.Title>
-            <Card.Text>{playlist["description"]}</Card.Text>
+      <Card className="floatHover flex-fill">
+        {playlist.id_user === this.props.userId && location.hash !== "#/" && (
+          <Button onClick={this.reviewSuggestions} className="editBtn">
+            <FontAwesomeIcon icon={faEdit} />
+          </Button>
+        )}
+        {playlist.id_user === this.props.userId && location.hash !== "#/" && (
+          <Button
+            variant="danger"
+            className="removeBtn"
+            onClick={this.removePlaylist}
+          >
+            <FontAwesomeIcon icon={faTrashAlt} />
+          </Button>
+        )}
+        <CardImg
+          variant="top"
+          width="100%"
+          src={playlist["url_thumbnail"]}
+          alt="Playlist preview thumbnail"
+          onClick={this.goToPlaylist}
+        />
+        <Card.Body onClick={this.goToPlaylist}>
+          <Card.Title>
+            <h3>{playlist["name"]}</h3>
+          </Card.Title>
+          <Card.Text>{playlist["description"]}</Card.Text>
+        </Card.Body>
+        <ListGroup className="list-group-flush">
+          <ListGroupItem>
             <h4 className="joinedBadges bottomRightCardBody">
               <Badge variant="primary">
                 {playlist["likes_number"]} <FontAwesomeIcon icon={faThumbsUp} />
@@ -118,26 +125,31 @@ class PlaylistPreview extends React.Component {
                 <FontAwesomeIcon icon={faThumbsDown} />
               </Badge>
             </h4>
-          </Card.Body>
-          <ListGroup className="list-group-flush">
-            <ListGroupItem>
-              <strong>Tag </strong>
-              {this.amISubscribed(playlist.id_tag) ? (
-                <Button variant="outline-primary" onClick={this.unsubscribe}><span>{playlist["tag_name"]}</span> <FontAwesomeIcon icon={faFolderMinus} /></Button>
-              ) : (
-                <Button variant="outline-secondary" onClick={this.subscribe}><span>{playlist["tag_name"]}</span> <FontAwesomeIcon icon={faFolderPlus} /></Button>
-              )}
-            </ListGroupItem>
-            <ListGroupItem>
-              <strong>Created on </strong>
-              <span>{DateUtils.toReadable(playlist["creation_date"])}</span>
-            </ListGroupItem>
-            <ListGroupItem>
-              <strong>Modified on </strong>
-              <span>{DateUtils.toReadable(playlist["last_update_date"])}</span>
-            </ListGroupItem>
-          </ListGroup>
-        </Card>
+          </ListGroupItem>
+          <ListGroupItem>
+            <strong>Tag </strong>
+            {this.amISubscribed(playlist.id_tag) ? (
+              <Button variant="outline-primary" onClick={this.unsubscribe}>
+                <span>{playlist["tag_name"]}</span>{" "}
+                <FontAwesomeIcon icon={faFolderMinus} />
+              </Button>
+            ) : (
+              <Button variant="outline-secondary" onClick={this.subscribe}>
+                <span>{playlist["tag_name"]}</span>{" "}
+                <FontAwesomeIcon icon={faFolderPlus} />
+              </Button>
+            )}
+          </ListGroupItem>
+          <ListGroupItem>
+            <strong>Created on </strong>
+            <span>{DateUtils.toReadable(playlist["creation_date"])}</span>
+          </ListGroupItem>
+          <ListGroupItem>
+            <strong>Modified on </strong>
+            <span>{DateUtils.toReadable(playlist["last_update_date"])}</span>
+          </ListGroupItem>
+        </ListGroup>
+      </Card>
     );
   }
 }
