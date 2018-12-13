@@ -7,9 +7,8 @@ const PlaylistsComponent = ({ title, playlistsToShow, showOnlySubscribed, sortBy
 
   return (
     <Container className={className}>
-      <h3>
-        {title}
-        <span className="badge badge-secondary">{playlistsToShow.length}</span>
+      <h3 className="mb-4">
+        {title} <span className="badge badge-secondary">{playlistsToShow.length}</span>
         <ButtonGroup className="float-right noFloatMobile" id="filtersSelector">
           { showOnlySubscribed !== undefined ?
           <Button variant="primary" onClick={handleOnlySubscribed}>
