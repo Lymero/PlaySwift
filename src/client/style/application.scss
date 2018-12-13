@@ -5,6 +5,36 @@
 div.card.floatHover {
   transition: box-shadow 0.2s linear;
   cursor: pointer;
+  height: 100%;
+}
+
+div.myPlaylists {
+  div.card.floatHover {
+    button.editBtn {
+      border-bottom-left-radius: 0px;
+      border-bottom-right-radius: 0px;
+    }
+
+    button.removeBtn {
+      border-radius: 0px;
+    }
+
+    img {
+      border-radius: 0px;
+    }
+
+    .suggestionsSelect {
+      border-radius: 0px;
+      border:0px;
+    }
+
+    button.addBtn {
+      height: 10%;
+      border-top-left-radius: 0px;
+      border-top-right-radius: 0px;
+    }
+
+  }
 }
 
 div.card.floatHover:hover {

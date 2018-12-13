@@ -3,10 +3,10 @@ import { Container, Row, Col, Button, ButtonGroup } from "react-bootstrap";
 import PlaylistPreview from "./playlist_preview";
 import NewPlaylistForm from "./new_playlist/new_playlist_form_container";
 
-const PlaylistsComponent = ({ title, playlistsToShow, showOnlySubscribed, sortByNewests, handleOnlySubscribed, handleSortByNewests}) => {
+const PlaylistsComponent = ({ title, playlistsToShow, showOnlySubscribed, sortByNewests, handleOnlySubscribed, handleSortByNewests, className}) => {
 
   return (
-    <Container>
+    <Container className={className}>
       <h3>
         {title}
         <span className="badge badge-secondary">{playlistsToShow.length}</span>
@@ -25,11 +25,11 @@ const PlaylistsComponent = ({ title, playlistsToShow, showOnlySubscribed, sortBy
       </h3>
       <Row>
         {playlistsToShow.map((playlist, i) => (
-          <Col className="mb-5" xs={12} sm={6} md={3} key={playlist.id_playlist}>
+          <Col className="mb-5 d-flex" xs={12} sm={6} md={3} key={playlist.id_playlist}>
             <PlaylistPreview playlist={playlist} key={playlist.id_playlist} />
           </Col>
         ))}
-        <Col xs={12} sm={6} md={3}>
+        <Col className="mb-5 d-flex" xs={12} sm={6} md={3}>
           {location.href.split("/")[
             location.href.split("/").indexOf("#") + 1
           ] && <NewPlaylistForm />}
